@@ -33,7 +33,38 @@
         }
     </style>
 </head>
-<body class="p-3 md:p-8">
+<body class="p-3 md:p-8 relative">
+
+    <!-- 🔒 Security PIN Protection Overlay Modal -->
+    <div id="pinModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-white w-full max-w-sm p-6 sm:p-8 rounded-3xl shadow-2xl border border-gray-100 text-center space-y-5">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-2xl mx-auto shadow-inner">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">অ্যাডমিন সিকিউরিটি পিন</h2>
+                <p class="text-xs text-gray-500 mt-1">মেস অ্যাডমিন ড্যাশবোর্ডে প্রবেশ করতে পিন দিন</p>
+            </div>
+
+            <form onsubmit="verifyPin(event)" class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="adminPinInput" placeholder="****" required maxlength="10"
+                           class="w-full text-center tracking-widest text-2xl font-bold py-3 border-2 border-indigo-200 rounded-2xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition">
+                </div>
+
+                <div id="pinErrorMsg" class="hidden text-xs text-red-600 font-bold bg-red-50 py-2 rounded-xl border border-red-200">
+                    ⚠️ ভুল পিন! আবার চেষ্টা করুন।
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-key"></i> ড্যাশবোর্ড আনলক করুন
+                </button>
+            </form>
+            
+            <p class="text-[11px] text-gray-400">ডিফল্ট সিকিউরিটি পিন: <strong class="text-indigo-600">1234</strong></p>
+        </div>
+    </div>
 
     <div class="max-w-6xl mx-auto space-y-6">
         
@@ -45,9 +76,14 @@
                 </h1>
                 <p class="text-indigo-200 text-sm mt-1">কাদের ভাই ক্যাটারিং সার্ভিস মিল ট্র্যাকার (মিল রেট: ৳৮০/মিল)</p>
             </div>
-            <div class="bg-indigo-800 px-4 py-2 rounded-xl text-center border border-indigo-500 w-full md:w-auto">
-                <span class="text-xs text-indigo-300 block uppercase font-semibold">আজকের তারিখ</span>
-                <span id="currentDate" class="text-lg font-bold"></span>
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <div class="bg-indigo-800 px-4 py-2 rounded-xl text-center border border-indigo-500 flex-1 md:flex-initial">
+                    <span class="text-xs text-indigo-300 block uppercase font-semibold">আজকের তারিখ</span>
+                    <span id="currentDate" class="text-lg font-bold"></span>
+                </div>
+                <button onclick="lockAdmin()" title="লক করুন" class="bg-indigo-800 hover:bg-indigo-900 text-indigo-200 hover:text-white p-3 rounded-xl border border-indigo-500 transition shadow">
+                    <i class="fa-solid fa-lock text-base"></i>
+                </button>
             </div>
         </header>
 
@@ -330,6 +366,37 @@
     <!-- Live Sync Javascript -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywAafCK7BshPOKEduGquTBcR4g0JGE8JKUnOGxRR3LQttItOatkfrMfrF9gJCBUF2A/exec";
+        const ADMIN_PIN = "1122";
+
+        function checkPinAuth() {
+            if (sessionStorage.getItem('admin_authenticated') === 'true') {
+                document.getElementById('pinModal').classList.add('hidden');
+            } else {
+                document.getElementById('pinModal').classList.remove('hidden');
+            }
+        }
+
+        function verifyPin(e) {
+            e.preventDefault();
+            const inputVal = document.getElementById('adminPinInput').value;
+            const errorMsg = document.getElementById('pinErrorMsg');
+            
+            if (inputVal === ADMIN_PIN) {
+                sessionStorage.setItem('admin_authenticated', 'true');
+                document.getElementById('pinModal').classList.add('hidden');
+                errorMsg.classList.add('hidden');
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('adminPinInput').value = "";
+                document.getElementById('adminPinInput').focus();
+            }
+        }
+
+        function lockAdmin() {
+            sessionStorage.removeItem('admin_authenticated');
+            document.getElementById('adminPinInput').value = "";
+            checkPinAuth();
+        }
 
         // 📌 AUTO TODAY DATE FUNCTION: Sets default value to Today, but remains fully editable!
         function setTodayDates() {
@@ -651,6 +718,7 @@
         }
 
         // Initialize Page
+        checkPinAuth();
         setTodayDates();
         fetchLiveSheetData();
     </script>
