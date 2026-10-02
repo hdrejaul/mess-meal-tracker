@@ -108,7 +108,7 @@
 
             <!-- Final Result Box -->
             <div class="pt-3 border-t-2 border-amber-500/40 text-center space-y-1">
-                <span class="text-xs sm:text-sm font-extrabold text-slate-200 block">অতএব বর্তমান বকেয়া / পাওনা বাকি রইল:</span>
+                <span id="dueLabelTxt" class="text-xs sm:text-sm font-extrabold text-slate-200 block">অতএব বর্তমান হিসাব:</span>
                 <div id="netDueBig" class="text-4xl sm:text-5xl font-black text-amber-400 tracking-tight drop-shadow-2xl py-1">
                     ৳ 0
                 </div>
@@ -277,7 +277,30 @@
                 document.getElementById('totalMealCountTxt').innerText = totalMealSum;
                 document.getElementById('totalBillCalc').innerText = '৳ ' + totalBillAmount;
                 document.getElementById('totalPaidCalc').innerText = '- ৳ ' + (lastSinglePayAmt || paidAmt);
-                document.getElementById('netDueBig').innerText = '৳ ' + dueAmt;
+
+                const dueLabel = document.getElementById('dueLabelTxt');
+                const dueBig = document.getElementById('netDueBig');
+
+                if (dueAmt < 0) {
+                    const posAmt = Math.abs(dueAmt);
+                    if (dueLabel) dueLabel.innerText = "অতএব আপনাকে বেশি দেওয়া আছে:";
+                    if (dueBig) {
+                        dueBig.className = "text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ ' + posAmt;
+                    }
+                } else if (dueAmt > 0) {
+                    if (dueLabel) dueLabel.innerText = "অতএব আপনার পাওনা বাকি রইল:";
+                    if (dueBig) {
+                        dueBig.className = "text-4xl sm:text-5xl font-black text-amber-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ ' + dueAmt;
+                    }
+                } else {
+                    if (dueLabel) dueLabel.innerText = "অতএব সকল হিসাব সম্পূর্ণ পরিশোধিত:";
+                    if (dueBig) {
+                        dueBig.className = "text-4xl sm:text-5xl font-black text-blue-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ 0';
+                    }
+                }
 
                 document.getElementById('modalTotalMeal').innerText = totalMealSum + ' টি মিল';
                 document.getElementById('modalTotalTk').innerText = '৳ ' + totalBillAmount;
@@ -318,7 +341,30 @@
             document.getElementById('totalMealCountTxt').innerText = runningTotalMeal;
             document.getElementById('totalBillCalc').innerText = '৳ ' + totalBill;
             document.getElementById('totalPaidCalc').innerText = '- ৳ 1000';
-            document.getElementById('netDueBig').innerText = '৳ ' + (totalBill - 1000 > 0 ? totalBill - 1000 : 440);
+            
+            let diff = totalBill - 1000;
+            const dueLabel = document.getElementById('dueLabelTxt');
+            const dueBig = document.getElementById('netDueBig');
+
+            if (diff < 0) {
+                if (dueLabel) dueLabel.innerText = "অতএব আপনাকে বেশি দেওয়া আছে:";
+                if (dueBig) {
+                    dueBig.className = "text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight drop-shadow-2xl py-1";
+                    dueBig.innerText = '৳ ' + Math.abs(diff);
+                }
+            } else if (diff > 0) {
+                if (dueLabel) dueLabel.innerText = "অতএব আপনার পাওনা বাকি রইল:";
+                if (dueBig) {
+                    dueBig.className = "text-4xl sm:text-5xl font-black text-amber-400 tracking-tight drop-shadow-2xl py-1";
+                    dueBig.innerText = '৳ ' + diff;
+                }
+            } else {
+                if (dueLabel) dueLabel.innerText = "অতএব সকল হিসাব সম্পূর্ণ পরিশোধিত:";
+                if (dueBig) {
+                    dueBig.className = "text-4xl sm:text-5xl font-black text-blue-400 tracking-tight drop-shadow-2xl py-1";
+                    dueBig.innerText = '৳ 0';
+                }
+            }
 
             document.getElementById('modalTotalMeal').innerText = runningTotalMeal + ' টি মিল';
             document.getElementById('modalTotalTk').innerText = '৳ ' + totalBill;
