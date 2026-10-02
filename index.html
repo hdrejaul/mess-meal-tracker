@@ -218,30 +218,6 @@
                         </div>
                     </div>
 
-                    <!-- Member 5: Kader Vai -->
-                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="font-semibold text-gray-800 text-sm flex items-center gap-2">
-                                <div class="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold">K</div>
-                                Kader Vai
-                            </span>
-                            <select id="meal_Kader" onchange="toggleCustomMealInput('Kader')" class="bg-white border text-gray-800 font-semibold rounded-xl px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
-                                <option value="0">0 Meal</option>
-                                <option value="1">1 Meal</option>
-                                <option value="2">2 Meal</option>
-                                <option value="3">3 Meal</option>
-                                <option value="custom">✨ Custom / কাস্টম</option>
-                            </select>
-                        </div>
-                        <div id="custom_box_Kader" class="hidden pt-1">
-                            <div class="flex items-center gap-2 bg-indigo-50/70 p-2 rounded-xl border border-indigo-200">
-                                <i class="fa-solid fa-pen-to-square text-indigo-600 text-xs"></i>
-                                <input type="number" id="custom_meal_Kader" placeholder="কাস্টম মিল সংখ্যা" min="0" class="w-full bg-white border border-indigo-200 text-indigo-900 font-bold rounded-lg px-2.5 py-1 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                                <span class="text-xs font-bold text-indigo-700 pr-1">Meal</span>
-                            </div>
-                        </div>
-                    </div>
-
                     <button type="submit" id="submitMealBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md flex items-center justify-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i> মিল সেভ করুন
                     </button>
@@ -262,7 +238,6 @@
                             <option value="Tafiqul">Tafiqul</option>
                             <option value="Rafiul">Rafiul</option>
                             <option value="Samiul">Samiul</option>
-                            <option value="Kader Vai">Kader Vai</option>
                         </select>
                     </div>
 
@@ -540,7 +515,7 @@
         }
 
         function resetMealForm() {
-            ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul', 'Kader'].forEach(name => {
+            ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'].forEach(name => {
                 document.getElementById('meal_' + name).value = "0";
                 const customBox = document.getElementById('custom_box_' + name);
                 const customInp = document.getElementById('custom_meal_' + name);
@@ -571,8 +546,7 @@
                 Rejaul: getMemberMealValue('Rejaul'),
                 Tafiqul: getMemberMealValue('Tafiqul'),
                 Rafiul: getMemberMealValue('Rafiul'),
-                Samiul: getMemberMealValue('Samiul'),
-                Kader: getMemberMealValue('Kader')
+                Samiul: getMemberMealValue('Samiul')
             };
 
             if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {

@@ -11,11 +11,11 @@ function doGet(e) {
   
   var sheet = ss.getSheetByName(currentMonthName) || ss.getActiveSheet();
   
-  // 📌 ২. সদস্যভিত্তিক হিসাব টেবিল পড়া (H2:L7 Range)
-  var summaryRange = sheet.getRange("H2:L7").getValues();
+  // 📌 ২. সদস্যভিত্তিক হিসাব টেবিল পড়া (H2:L6 Range)
+  var summaryRange = sheet.getRange("H2:L6").getValues();
   
-  // 📌 ৩. বকেয়া টাকা সেল পড়া (J12)
-  var dueAmount = sheet.getRange("J12").getValue();
+  // 📌 ৩. বকেয়া টাকা সেল পড়া (J13)
+  var dueAmount = sheet.getRange("J13").getValue();
   
   // 📌 ৪. খাবার ওয়ালাকে দেওয়া মোট পরিশোধ (I10 থেকে I23 পর্যন্ত ডাইনামিক যোগফল)
   var paidValues = sheet.getRange("I10:I23").getValues();
@@ -28,8 +28,8 @@ function doGet(e) {
   // 📌 ৫. খাবার ওয়ালাকে দেওয়া পেমেন্ট লিস্ট (H10:I23 Range)
   var cateringPayments = sheet.getRange("H10:I23").getValues();
 
-  // 📌 ৬. দৈনিক ৩০ দিনের মিলের হিসাব পড়া (A2:F32 Range)
-  var dailyMealsList = sheet.getRange("A2:F32").getValues();
+  // 📌 ৬. দৈনিক ৩০ দিনের মিলের হিসাব পড়া (A2:E32 Range)
+  var dailyMealsList = sheet.getRange("A2:E32").getValues();
 
   var result = {
     "currentMonth": sheet.getName(),
@@ -76,18 +76,18 @@ function doPost(e) {
     }
   }
   
-  // 📌 টাইপ ২: মেস জমা এন্ট্রি (সরাসরি H2:H6 মেম্বার খুঁজে K কলামের Total Deposit এ যোগ করা)
+  // 📌 টাইপ ২: মেস জমা এন্ট্রি (সরাসরি H2:H5 মেম্বার খুঁজে K কলামের Total Deposit এ যোগ করা)
   else if (data.type === 'deposit') {
-    var memberNames = sheet.getRange("H2:H6").getValues();
-    var selectedMember = data.member; // e.g. "Rejaul", "Tafiqul", "Rafiul", "Samiul", "Kader"
+    var memberNames = sheet.getRange("H2:H5").getValues();
+    var selectedMember = data.member; // e.g. "Rejaul", "Tafiqul", "Rafiul", "Samiul"
     var depositVal = parseFloat(data.amount) || 0;
     var memberRow = -1;
     
-    // H2:H6 থেকে মেম্বারের নাম মিলিয়ে রো বের করা
+    // H2:H5 থেকে মেম্বারের নাম মিলিয়ে রো বের করা
     for (var m = 0; m < memberNames.length; m++) {
       var nameInSheet = memberNames[m][0].toString().trim();
       if (nameInSheet.toLowerCase().indexOf(selectedMember.toLowerCase()) !== -1 || selectedMember.toLowerCase().indexOf(nameInSheet.toLowerCase()) !== -1) {
-        memberRow = 2 + m; // Row 2, 3, 4, 5, or 6
+        memberRow = 2 + m; // Row 2, 3, 4, or 5
         break;
       }
     }
@@ -112,7 +112,7 @@ function doPost(e) {
     }
   }
   
-  // 📌 টাইপ ৩: দৈনিক মিল এন্ট্রি (A2:A32 তারিখ মিলিয়ে B-F কলামে মেম্বার মিল বসানো)
+  // 📌 টাইপ ৩: দৈনিক মিল এন্ট্রি (A2:A32 তারিখ মিলিয়ে B-E কলামে মেম্বার মিল বসানো)
   else {
     var datesRange = sheet.getRange("A2:A32").getValues();
     var entryDateStr = data.date; // e.g. "2026-10-02"
@@ -141,7 +141,7 @@ function doPost(e) {
       }
     }
     
-    // ব্যাকআপ ফলব্যাক: তারিখের দিন সংখ্যা অনুযায়ী সরাসরি রো (যেমন ২ তারিখ মানে row 3)
+    // ব্যাকআপ ফলfallback: তারিখের দিন সংখ্যা অনুযায়ী সরাসরি রো (যেমন ২ তারিখ মানে row 3)
     if (foundRow === -1 && entryDay >= 1 && entryDay <= 31) {
       foundRow = 1 + entryDay;
     }
@@ -151,9 +151,8 @@ function doPost(e) {
       sheet.getRange("C" + foundRow).setValue(data.Tafiqul);
       sheet.getRange("D" + foundRow).setValue(data.Rafiul);
       sheet.getRange("E" + foundRow).setValue(data.Samiul);
-      sheet.getRange("F" + foundRow).setValue(data.Kader);
     } else {
-      sheet.appendRow([data.date, data.Rejaul, data.Tafiqul, data.Rafiul, data.Samiul, data.Kader]);
+      sheet.appendRow([data.date, data.Rejaul, data.Tafiqul, data.Rafiul, data.Samiul]);
     }
     
     return ContentService.createTextOutput(JSON.stringify({"result": "success", "row": foundRow})).setMimeType(ContentService.MimeType.JSON);

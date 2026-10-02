@@ -98,9 +98,10 @@
 
                 <div class="flex items-center justify-between p-3.5 rounded-2xl bg-emerald-950/70 border border-emerald-500/50">
                     <span class="text-xs sm:text-sm text-emerald-200 font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i> সর্বশেষ আপনাকে জমা দেওয়া হয়েছে
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-lg shrink-0"></i>
+                        <span>সর্বশেষ আপনাকে জমা দেওয়া হয়েছে <span id="lastPayDateBadge" class="text-xs font-bold text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/40 ml-1"></span></span>
                     </span>
-                    <span id="totalPaidCalc" class="text-xl sm:text-2xl font-black text-emerald-400">- ৳ 0</span>
+                    <span id="totalPaidCalc" class="text-xl sm:text-2xl font-black text-emerald-400 shrink-0">- ৳ 0</span>
                 </div>
 
             </div>
@@ -123,12 +124,7 @@
         </button>
 
         <!-- Footer -->
-        <div class="text-center pt-2 space-y-3">
-            <div>
-                <a href="index.html" class="inline-flex items-center gap-2 text-xs text-amber-300 font-bold bg-slate-800/80 hover:bg-slate-700 active:scale-95 px-4 py-2 rounded-xl border border-slate-700 transition shadow">
-                    <i class="fa-solid fa-house"></i> মেস মিল অ্যাডমিন ড্যাশবোর্ডে যান
-                </a>
-            </div>
+        <div class="text-center pt-2">
             <p class="text-xs text-slate-400 font-medium flex items-center justify-center gap-1">
                 <i class="fa-solid fa-shield-halved text-emerald-500"></i> কাদের ভাই ক্যাটারিং সার্ভিস - লাইভ শিট অটো স্টেটমেন্ট
             </p>
@@ -251,9 +247,36 @@
                 let paidAmt = parseFloat(data.paidAmount) || 0;
                 let dueAmt = parseFloat(data.dueAmount) || (totalBillAmount - paidAmt);
 
+                // 📌 সর্বশেষ পরিশোধের তারিখ ও জমার পরিমাণ বের করা (H10:I23 Range থেকে)
+                let lastPayDateStr = "";
+                let lastSinglePayAmt = 0;
+                if (data.cateringPayments && data.cateringPayments.length > 0) {
+                    for (let i = data.cateringPayments.length - 1; i >= 0; i--) {
+                        let pRow = data.cateringPayments[i];
+                        let pDate = pRow[0];
+                        let pAmt = parseFloat(pRow[1]) || 0;
+                        if (pAmt > 0 || (pDate !== "" && pDate !== null && pDate !== undefined)) {
+                            lastSinglePayAmt = pAmt;
+                            if (typeof pDate === 'number' || (!isNaN(pDate) && !String(pDate).includes('-') && !String(pDate).includes('/'))) {
+                                let dayNum = parseInt(pDate, 10);
+                                lastPayDateStr = (dayNum < 10 ? '0' + dayNum : dayNum) + ' তারিখ';
+                            } else {
+                                let d = new Date(pDate);
+                                lastPayDateStr = !isNaN(d.getTime()) ? d.toLocaleDateString('en-GB') : String(pDate);
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                const badgeElem = document.getElementById('lastPayDateBadge');
+                if (badgeElem) {
+                    badgeElem.innerText = lastPayDateStr ? `(${lastPayDateStr})` : '';
+                }
+
                 document.getElementById('totalMealCountTxt').innerText = totalMealSum;
                 document.getElementById('totalBillCalc').innerText = '৳ ' + totalBillAmount;
-                document.getElementById('totalPaidCalc').innerText = '- ৳ ' + paidAmt;
+                document.getElementById('totalPaidCalc').innerText = '- ৳ ' + (lastSinglePayAmt || paidAmt);
                 document.getElementById('netDueBig').innerText = '৳ ' + dueAmt;
 
                 document.getElementById('modalTotalMeal').innerText = totalMealSum + ' টি মিল';
@@ -290,6 +313,8 @@
             }
 
             let totalBill = runningTotalMeal * 80;
+            const badgeElem = document.getElementById('lastPayDateBadge');
+            if (badgeElem) badgeElem.innerText = '(02-10-2026)';
             document.getElementById('totalMealCountTxt').innerText = runningTotalMeal;
             document.getElementById('totalBillCalc').innerText = '৳ ' + totalBill;
             document.getElementById('totalPaidCalc').innerText = '- ৳ 1000';
