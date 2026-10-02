@@ -1,0 +1,5 @@
+{
+  "summary":  "Updated catering-view.html to compute dynamic daily meal sums directly from A2:E32 values, avoiding dependence on F column formulas.",
+  "updatedAt":  "2026-10-02T15:34:36.243650900Z",
+  "userFacing":  true
+}

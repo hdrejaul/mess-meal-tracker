@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mess Meal Management System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="p-3 md:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <header class="bg-indigo-700 text-white rounded-2xl p-5 md:p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-utensils"></i> মেস মিল ম্যানেজমেন্ট সিস্টেম
+                </h1>
+                <p class="text-indigo-200 text-sm mt-1">কাদের ভাই ক্যাটারিং সার্ভিস মিল ট্র্যাকার (মিল রেট: ৳৮০/মিল)</p>
+            </div>
+            <div class="bg-indigo-800 px-4 py-2 rounded-xl text-center border border-indigo-500 w-full md:w-auto">
+                <span class="text-xs text-indigo-300 block uppercase font-semibold">আজকের তারিখ</span>
+                <span id="currentDate" class="text-lg font-bold"></span>
+            </div>
+        </header>
+
+        <!-- Dynamic Summary Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-lg md:text-xl shrink-0">
+                    <i class="fa-solid fa-bowl-food"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">মোট মিল সংখ্যা</p>
+                    <h3 id="cardTotalMeals" class="text-xl md:text-2xl font-bold text-gray-800">0 টি</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-lg md:text-xl shrink-0">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">মোট ক্যাটারিং খরচ</p>
+                    <h3 id="cardTotalCost" class="text-xl md:text-2xl font-bold text-gray-800">৳ 0</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-lg md:text-xl shrink-0">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">মোট জমা টাকা</p>
+                    <h3 id="cardTotalDeposit" class="text-xl md:text-2xl font-bold text-gray-800">৳ 0</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-lg md:text-xl shrink-0">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">স্টক ব্যালেন্স</p>
+                    <h3 id="cardStockBalance" class="text-xl md:text-2xl font-bold text-emerald-600">৳ 0</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Entry Form with 3 Tabs -->
+            <div class="lg:col-span-1 bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                
+                <!-- 3 Tab Switching Buttons -->
+                <div class="flex bg-gray-100 p-1 rounded-xl gap-1 text-[11px] font-bold">
+                    <button id="tabMealBtn" onclick="switchTab('meal')" class="flex-1 py-2 rounded-lg transition bg-white text-indigo-700 shadow-sm flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-utensils"></i> মিল এন্ট্রি
+                    </button>
+                    <button id="tabDepositBtn" onclick="switchTab('deposit')" class="flex-1 py-2 rounded-lg transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-wallet"></i> মেস জমা
+                    </button>
+                    <button id="tabCateringBtn" onclick="switchTab('catering')" class="flex-1 py-2 rounded-lg transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা
+                    </button>
+                </div>
+
+                <!-- ১. দৈনিক মিল এন্ট্রি ফর্ম (Auto Today Date + Custom Date Picker Option) -->
+                <form id="mealForm" onsubmit="submitMeals(event)" class="space-y-3.5">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-semibold text-gray-600">তারিখ (Date)</label>
+                            <span class="text-[10px] bg-indigo-50 text-indigo-600 font-bold px-2 py-0.5 rounded">অটো আজকের তারিখ</span>
+                        </div>
+                        <input type="date" id="entryDate" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm text-gray-800 font-semibold bg-gray-50/50">
+                    </div>
+
+                    <!-- Member 1: Rejaul -->
+                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                                <div class="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold">R</div>
+                                Rejaul
+                            </span>
+                            <select id="meal_Rejaul" onchange="toggleCustomMealInput('Rejaul')" class="bg-white border text-gray-800 font-semibold rounded-xl px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                                <option value="0">0 Meal</option>
+                                <option value="1">1 Meal</option>
+                                <option value="2">2 Meal</option>
+                                <option value="3">3 Meal</option>
+                                <option value="custom">✨ Custom / কাস্টম</option>
+                            </select>
+                        </div>
+                        <div id="custom_box_Rejaul" class="hidden pt-1">
+                            <div class="flex items-center gap-2 bg-indigo-50/70 p-2 rounded-xl border border-indigo-200">
+                                <i class="fa-solid fa-pen-to-square text-indigo-600 text-xs"></i>
+                                <input type="number" id="custom_meal_Rejaul" placeholder="কাস্টম মিল সংখ্যা" min="0" class="w-full bg-white border border-indigo-200 text-indigo-900 font-bold rounded-lg px-2.5 py-1 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                <span class="text-xs font-bold text-indigo-700 pr-1">Meal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 2: Tafiqul -->
+                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                                <div class="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold">T</div>
+                                Tafiqul
+                            </span>
+                            <select id="meal_Tafiqul" onchange="toggleCustomMealInput('Tafiqul')" class="bg-white border text-gray-800 font-semibold rounded-xl px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                                <option value="0">0 Meal</option>
+                                <option value="1">1 Meal</option>
+                                <option value="2">2 Meal</option>
+                                <option value="3">3 Meal</option>
+                                <option value="custom">✨ Custom / কাস্টম</option>
+                            </select>
+                        </div>
+                        <div id="custom_box_Tafiqul" class="hidden pt-1">
+                            <div class="flex items-center gap-2 bg-indigo-50/70 p-2 rounded-xl border border-indigo-200">
+                                <i class="fa-solid fa-pen-to-square text-indigo-600 text-xs"></i>
+                                <input type="number" id="custom_meal_Tafiqul" placeholder="কাস্টম মিল সংখ্যা" min="0" class="w-full bg-white border border-indigo-200 text-indigo-900 font-bold rounded-lg px-2.5 py-1 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                <span class="text-xs font-bold text-indigo-700 pr-1">Meal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 3: Rafiul -->
+                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                                <div class="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold">R</div>
+                                Rafiul
+                            </span>
+                            <select id="meal_Rafiul" onchange="toggleCustomMealInput('Rafiul')" class="bg-white border text-gray-800 font-semibold rounded-xl px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                                <option value="0">0 Meal</option>
+                                <option value="1">1 Meal</option>
+                                <option value="2">2 Meal</option>
+                                <option value="3">3 Meal</option>
+                                <option value="custom">✨ Custom / কাস্টম</option>
+                            </select>
+                        </div>
+                        <div id="custom_box_Rafiul" class="hidden pt-1">
+                            <div class="flex items-center gap-2 bg-indigo-50/70 p-2 rounded-xl border border-indigo-200">
+                                <i class="fa-solid fa-pen-to-square text-indigo-600 text-xs"></i>
+                                <input type="number" id="custom_meal_Rafiul" placeholder="কাস্টম মিল সংখ্যা" min="0" class="w-full bg-white border border-indigo-200 text-indigo-900 font-bold rounded-lg px-2.5 py-1 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                <span class="text-xs font-bold text-indigo-700 pr-1">Meal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 4: Samiul -->
+                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                                <div class="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold">S</div>
+                                Samiul
+                            </span>
+                            <select id="meal_Samiul" onchange="toggleCustomMealInput('Samiul')" class="bg-white border text-gray-800 font-semibold rounded-xl px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                                <option value="0">0 Meal</option>
+                                <option value="1">1 Meal</option>
+                                <option value="2">2 Meal</option>
+                                <option value="3">3 Meal</option>
+                                <option value="custom">✨ Custom / কাস্টম</option>
+                            </select>
+                        </div>
+                        <div id="custom_box_Samiul" class="hidden pt-1">
+                            <div class="flex items-center gap-2 bg-indigo-50/70 p-2 rounded-xl border border-indigo-200">
+                                <i class="fa-solid fa-pen-to-square text-indigo-600 text-xs"></i>
+                                <input type="number" id="custom_meal_Samiul" placeholder="কাস্টম মিল সংখ্যা" min="0" class="w-full bg-white border border-indigo-200 text-indigo-900 font-bold rounded-lg px-2.5 py-1 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                <span class="text-xs font-bold text-indigo-700 pr-1">Meal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 5: Kader Vai -->
+                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                                <div class="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold">K</div>
+                                Kader Vai
+                            </span>
+                            <select id="meal_Kader" onchange="toggleCustomMealInput('Kader')" class="bg-white border text-gray-800 font-semibold rounded-xl px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                                <option value="0">0 Meal</option>
+                                <option value="1">1 Meal</option>
+                                <option value="2">2 Meal</option>
+                                <option value="3">3 Meal</option>
+                                <option value="custom">✨ Custom / কাস্টম</option>
+                            </select>
+                        </div>
+                        <div id="custom_box_Kader" class="hidden pt-1">
+                            <div class="flex items-center gap-2 bg-indigo-50/70 p-2 rounded-xl border border-indigo-200">
+                                <i class="fa-solid fa-pen-to-square text-indigo-600 text-xs"></i>
+                                <input type="number" id="custom_meal_Kader" placeholder="কাস্টম মিল সংখ্যা" min="0" class="w-full bg-white border border-indigo-200 text-indigo-900 font-bold rounded-lg px-2.5 py-1 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                <span class="text-xs font-bold text-indigo-700 pr-1">Meal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitMealBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> মিল সেভ করুন
+                    </button>
+                </form>
+
+                <!-- ২. মেম্বারদের টাকা জমা এন্ট্রি ফর্ম -->
+                <form id="depositForm" onsubmit="submitDeposit(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">জমার তারিখ</label>
+                        <input type="date" id="depositDate" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-gray-700 font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">মেম্বার সিলেক্ট করুন</label>
+                        <select id="depositMember" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-gray-800 font-semibold">
+                            <option value="" disabled selected>-- মেম্বার নির্বাচন করুন --</option>
+                            <option value="Rejaul">Rejaul</option>
+                            <option value="Tafiqul">Tafiqul</option>
+                            <option value="Rafiul">Rafiul</option>
+                            <option value="Samiul">Samiul</option>
+                            <option value="Kader Vai">Kader Vai</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">জমা টাকার পরিমাণ (৳)</label>
+                        <input type="number" id="depositAmount" placeholder="যেমন: 500" min="1" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-gray-800 font-bold">
+                    </div>
+
+                    <button type="submit" id="submitDepositBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-piggy-bank"></i> মেস জমা সেভ করুন
+                    </button>
+                </form>
+
+                <!-- ৩. খাবার ওয়ালাকে পরিশোধের এন্ট্রি -->
+                <form id="cateringPayForm" onsubmit="submitCateringPay(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">পরিশোধের তারিখ</label>
+                        <input type="date" id="cateringPayDate" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-amber-500 outline-none text-sm text-gray-700 font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">খাবার ওয়ালাকে দেওয়া টাকার পরিমাণ (৳)</label>
+                        <input type="number" id="cateringPayAmount" placeholder="যেমন: 1000" min="1" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-amber-500 outline-none text-sm text-gray-800 font-bold">
+                    </div>
+
+                    <button type="submit" id="submitCateringBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা সেভ করুন
+                    </button>
+                </form>
+
+                <!-- Status Message Badge -->
+                <div id="statusMsg" class="hidden p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2"></div>
+            </div>
+
+            <!-- Summary Table -->
+            <div class="lg:col-span-2 bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                <div class="border-b pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fa-solid fa-table-list text-indigo-600"></i> সদস্যভিত্তিক সার্বিক হিসাব
+                        </h2>
+                        <p class="text-xs text-gray-500">গুগোল শিট থেকে নিয়মিত লাইভ আপডেট</p>
+                    </div>
+                    <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-3 py-1 rounded-full border border-indigo-100">
+                        মিল রেট: ৳৮০
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 border-b border-gray-200">
+                                <th class="p-3 font-semibold">Name (নাম)</th>
+                                <th class="p-3 font-semibold text-center">Total Meal</th>
+                                <th class="p-3 font-semibold text-right">Total Cost (৳)</th>
+                                <th class="p-3 font-semibold text-right">Total Deposit (৳)</th>
+                                <th class="p-3 font-semibold text-right">Stock Balance (৳)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody" class="divide-y divide-gray-100">
+                            <!-- Live JS Render -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-indigo-50 text-indigo-900 font-bold border-t border-indigo-200">
+                                <td class="p-3">Total (All)</td>
+                                <td id="tblTotalMeal" class="p-3 text-center">0</td>
+                                <td id="tblTotalCost" class="p-3 text-right">৳ 0</td>
+                                <td id="tblTotalDeposit" class="p-3 text-right">৳ 0</td>
+                                <td id="tblStockBalance" class="p-3 text-right text-emerald-700">৳ 0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Live Sync Javascript -->
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywAafCK7BshPOKEduGquTBcR4g0JGE8JKUnOGxRR3LQttItOatkfrMfrF9gJCBUF2A/exec";
+
+        // 📌 AUTO TODAY DATE FUNCTION: Sets default value to Today, but remains fully editable!
+        function setTodayDates() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const todayStr = `${yyyy}-${mm}-${dd}`;
+
+            document.getElementById('entryDate').value = todayStr;
+            document.getElementById('depositDate').value = todayStr;
+            document.getElementById('cateringPayDate').value = todayStr;
+
+            const formattedDate = dd + '-' + mm + '-' + yyyy;
+            document.getElementById('currentDate').innerText = formattedDate;
+        }
+
+        function toggleCustomMealInput(memberName) {
+            const selectVal = document.getElementById('meal_' + memberName).value;
+            const customBox = document.getElementById('custom_box_' + memberName);
+            const customInput = document.getElementById('custom_meal_' + memberName);
+            
+            if(selectVal === 'custom') {
+                customBox.classList.remove('hidden');
+                customInput.value = "";
+                customInput.focus();
+            } else {
+                customBox.classList.add('hidden');
+                customInput.value = "";
+            }
+        }
+
+        function switchTab(tab) {
+            const mealForm = document.getElementById('mealForm');
+            const depositForm = document.getElementById('depositForm');
+            const cateringPayForm = document.getElementById('cateringPayForm');
+            
+            const tabMealBtn = document.getElementById('tabMealBtn');
+            const tabDepositBtn = document.getElementById('tabDepositBtn');
+            const tabCateringBtn = document.getElementById('tabCateringBtn');
+            
+            hideStatus();
+
+            mealForm.classList.add('hidden');
+            depositForm.classList.add('hidden');
+            cateringPayForm.classList.add('hidden');
+
+            tabMealBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1";
+            tabDepositBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1";
+            tabCateringBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1";
+
+            if(tab === 'meal') {
+                mealForm.classList.remove('hidden');
+                tabMealBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-indigo-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+            } else if(tab === 'deposit') {
+                depositForm.classList.remove('hidden');
+                tabDepositBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-emerald-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+            } else if(tab === 'catering') {
+                cateringPayForm.classList.remove('hidden');
+                tabCateringBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-amber-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+            }
+        }
+
+        function showStatus(msg, isSuccess = true) {
+            const statusMsg = document.getElementById('statusMsg');
+            statusMsg.innerHTML = isSuccess ? `<i class="fa-solid fa-circle-check text-lg"></i> <span>${msg}</span>` : `<i class="fa-solid fa-triangle-exclamation text-lg"></i> <span>${msg}</span>`;
+            statusMsg.className = isSuccess 
+                ? "p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2 bg-emerald-100 text-emerald-800 border border-emerald-200" 
+                : "p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2 bg-red-100 text-red-800 border border-red-200";
+            statusMsg.classList.remove('hidden');
+            
+            setTimeout(() => {
+                hideStatus();
+            }, 4000);
+        }
+
+        function hideStatus() {
+            document.getElementById('statusMsg').classList.add('hidden');
+        }
+
+        async function fetchLiveSheetData() {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                renderDemoUI();
+                return;
+            }
+
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL);
+                const data = await res.json();
+
+                const tbody = document.getElementById('memberTableBody');
+                tbody.innerHTML = '';
+
+                let totalMeals = 0;
+                let totalCost = 0;
+                let totalDeposit = 0;
+                let totalStock = 0;
+
+                if(data.summaryTable && data.summaryTable.length > 0) {
+                    data.summaryTable.forEach((row, index) => {
+                        let name = row[0];
+                        let meal = parseInt(row[1]) || 0;
+                        let cost = parseFloat(row[2]) || 0;
+                        let deposit = parseFloat(row[3]) || 0;
+                        let stock = parseFloat(row[4]) || 0;
+
+                        if (name.toString().toLowerCase().includes('total')) {
+                            document.getElementById('tblTotalMeal').innerText = meal;
+                            document.getElementById('tblTotalCost').innerText = '৳ ' + cost;
+                            document.getElementById('tblTotalDeposit').innerText = '৳ ' + deposit;
+                            document.getElementById('tblStockBalance').innerText = '৳ ' + stock;
+
+                            document.getElementById('cardTotalMeals').innerText = meal + ' টি';
+                            document.getElementById('cardTotalCost').innerText = '৳ ' + cost;
+                            document.getElementById('cardTotalDeposit').innerText = '৳ ' + deposit;
+                            document.getElementById('cardStockBalance').innerText = '৳ ' + stock;
+                        } else {
+                            totalMeals += meal;
+                            totalCost += cost;
+                            totalDeposit += deposit;
+                            totalStock += stock;
+
+                            const stockClass = stock >= 0 ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold';
+                            const tr = document.createElement('tr');
+                            tr.className = 'hover:bg-gray-50 transition';
+                            tr.innerHTML = `
+                                <td class="p-3 font-medium text-gray-800 flex items-center gap-2">
+                                    <div class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">${name.charAt(0)}</div>
+                                    ${name}
+                                </td>
+                                <td class="p-3 text-center font-semibold">${meal}</td>
+                                <td class="p-3 text-right">৳ ${cost}</td>
+                                <td class="p-3 text-right text-indigo-600 font-medium">৳ ${deposit}</td>
+                                <td class="p-3 text-right ${stockClass}">৳ ${stock}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        }
+                    });
+                }
+            } catch(err) {
+                renderDemoUI();
+            }
+        }
+
+        function renderDemoUI() {
+            let demoData = [
+                { name: 'Rejaul', meal: 2, cost: 160, deposit: 430, stock: 270 },
+                { name: 'Tafiqul', meal: 0, cost: 0, deposit: 560, stock: 560 },
+                { name: 'Rafiul', meal: 4, cost: 320, deposit: -250, stock: -570 },
+                { name: 'Samiul', meal: 1, cost: 80, deposit: 410, stock: 330 }
+            ];
+
+            const tbody = document.getElementById('memberTableBody');
+            tbody.innerHTML = '';
+            let totalMeals = 0, totalCost = 0, totalDeposit = 0, totalStock = 0;
+
+            demoData.forEach(m => {
+                totalMeals += m.meal; totalCost += m.cost; totalDeposit += m.deposit; totalStock += m.stock;
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-medium text-gray-800 flex items-center gap-2">
+                        <div class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">${m.name.charAt(0)}</div>
+                        ${m.name}
+                    </td>
+                    <td class="p-3 text-center font-semibold">${m.meal}</td>
+                    <td class="p-3 text-right">৳ ${m.cost}</td>
+                    <td class="p-3 text-right text-indigo-600 font-medium">৳ ${m.deposit}</td>
+                    <td class="p-3 text-right ${m.stock >= 0 ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">৳ ${m.stock}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('tblTotalMeal').innerText = totalMeals;
+            document.getElementById('tblTotalCost').innerText = '৳ ' + totalCost;
+            document.getElementById('tblTotalDeposit').innerText = '৳ ' + totalDeposit;
+            document.getElementById('tblStockBalance').innerText = '৳ ' + totalStock;
+
+            document.getElementById('cardTotalMeals').innerText = totalMeals + ' টি';
+            document.getElementById('cardTotalCost').innerText = '৳ ' + totalCost;
+            document.getElementById('cardTotalDeposit').innerText = '৳ ' + totalDeposit;
+            document.getElementById('cardStockBalance').innerText = '৳ ' + totalStock;
+        }
+
+        function resetMealForm() {
+            ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul', 'Kader'].forEach(name => {
+                document.getElementById('meal_' + name).value = "0";
+                const customBox = document.getElementById('custom_box_' + name);
+                const customInp = document.getElementById('custom_meal_' + name);
+                customInp.value = "";
+                customBox.classList.add('hidden');
+            });
+            setTodayDates(); // Reset date back to today
+        }
+
+        function getMemberMealValue(memberName) {
+            const selectVal = document.getElementById('meal_' + memberName).value;
+            if (selectVal === 'custom') {
+                const customVal = document.getElementById('custom_meal_' + memberName).value;
+                return customVal === "" ? 0 : (parseInt(customVal) || 0);
+            }
+            return parseInt(selectVal) || 0;
+        }
+
+        async function submitMeals(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitMealBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
+
+            const payload = {
+                type: 'meal',
+                date: document.getElementById('entryDate').value,
+                Rejaul: getMemberMealValue('Rejaul'),
+                Tafiqul: getMemberMealValue('Tafiqul'),
+                Rafiul: getMemberMealValue('Rafiul'),
+                Samiul: getMemberMealValue('Samiul'),
+                Kader: getMemberMealValue('Kader')
+            };
+
+            if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    showStatus("মিল সফলভাবে গুগোল শিটে সেভ হয়েছে!", true);
+                    setTimeout(fetchLiveSheetData, 1500);
+                } catch(err) {
+                    showStatus("সেভ করতে সমস্যা হয়েছে!", false);
+                }
+            } else {
+                showStatus("গুগোল স্ক্রিপ্ট লিংক সেট করা নেই!", false);
+            }
+
+            resetMealForm();
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> মিল সেভ করুন`;
+        }
+
+        async function submitDeposit(event) {
+            event.preventDefault();
+            const memberSelect = document.getElementById('depositMember');
+            const member = memberSelect.value;
+            const amount = parseInt(document.getElementById('depositAmount').value);
+            const btn = document.getElementById('submitDepositBtn');
+
+            if(!member) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
+
+            const payload = {
+                type: 'deposit',
+                date: document.getElementById('depositDate').value,
+                member: member,
+                amount: amount
+            };
+
+            if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    showStatus(`${member} এর ৳${amount} টাকা গুগোল শিটে সেভ হয়েছে!`, true);
+                    setTimeout(fetchLiveSheetData, 1500);
+                } catch(err) {
+                    showStatus("সেভ করতে সমস্যা হয়েছে!", false);
+                }
+            } else {
+                showStatus("গুগোল স্ক্রিপ্ট লিংক সেট করা নেই!", false);
+            }
+
+            memberSelect.selectedIndex = 0;
+            document.getElementById('depositAmount').value = '';
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-piggy-bank"></i> মেস জমা সেভ করুন`;
+        }
+
+        async function submitCateringPay(event) {
+            event.preventDefault();
+            const dateVal = document.getElementById('cateringPayDate').value;
+            const amount = parseInt(document.getElementById('cateringPayAmount').value);
+            const btn = document.getElementById('submitCateringBtn');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
+
+            const payload = {
+                type: 'catering_pay',
+                date: dateVal,
+                amount: amount
+            };
+
+            if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    showStatus(`খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধের এন্ট্রি সেভ হয়েছে!`, true);
+                    setTimeout(fetchLiveSheetData, 1500);
+                } catch(err) {
+                    showStatus("সেভ করতে সমস্যা হয়েছে!", false);
+                }
+            } else {
+                showStatus("গুগোল স্ক্রিপ্ট লিংক সেট করা নেই!", false);
+            }
+
+            document.getElementById('cateringPayAmount').value = '';
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা সেভ করুন`;
+        }
+
+        // Initialize Page
+        setTodayDates();
+        fetchLiveSheetData();
+    </script>
+</body>
+</html>
