@@ -83,5 +83,5 @@ const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 ---
 
 <p align="center">
-  <b>কাদের ভাই ক্যাটারিং সার্ভিস - লাইভ মেস মিল ট্র্যাকার</b>
+  <b>নাবিলা ক্যাটারিং সার্ভিস - লাইভ মেস মিল ট্র্যাকার</b>
 </p>

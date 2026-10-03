@@ -1,5 +1,6 @@
 // =================================================================
 // 🚀 MESS MEAL MANAGEMENT SYSTEM - FINAL GOOGLE APPS SCRIPT (Code.gs)
+// ⚡ ULTRA-FAST BATCH READ & REAL-TIME SYNC
 // =================================================================
 
 function doGet(e) {
@@ -8,29 +9,43 @@ function doGet(e) {
   // 📌 ১. চলতি মাসের নাম অনুযায়ী অটো শিট ডিটেকশন (Jan, Feb, Oct ইত্যাদি)
   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var currentMonthName = monthNames[new Date().getMonth()];
-  
   var sheet = ss.getSheetByName(currentMonthName) || ss.getActiveSheet();
   
-  // 📌 ২. সদস্যভিত্তিক হিসাব টেবিল পড়া (H2:L6 Range)
-  var summaryRange = sheet.getRange("H2:L6").getValues();
+  // ⚡ অপটিমাইজড: ৫ বার আলাদা getRange কল না করে মাত্র ১টি ব্যাচ রিড কল (Batch Read - 10x Faster)
+  var allValues = sheet.getRange(1, 1, 35, 12).getDisplayValues();
   
-  // 📌 ৩. বকেয়া টাকা সেল পড়া (J13)
-  var dueAmount = sheet.getRange("J13").getValue();
-  
-  // 📌 ৪. খাবার ওয়ালাকে দেওয়া মোট পরিশোধ (I10 থেকে I23 পর্যন্ত ডাইনামিক যোগফল)
-  var paidValues = sheet.getRange("I10:I23").getValues();
-  var paidAmount = 0;
-  for (var i = 0; i < paidValues.length; i++) {
-    var val = parseFloat(paidValues[i][0]);
-    if (!isNaN(val)) paidAmount += val;
+  // 📌 ২. দৈনিক ৩০ দিনের মিলের হিসাব পড়া (A2:E32 -> Rows 1..31, Cols 0..4)
+  var dailyMealsList = [];
+  for (var r = 1; r <= 31; r++) {
+    if (allValues[r]) {
+      dailyMealsList.push(allValues[r].slice(0, 5));
+    }
   }
   
-  // 📌 ৫. খাবার ওয়ালাকে দেওয়া পেমেন্ট লিস্ট (H10:I23 Range)
-  var cateringPayments = sheet.getRange("H10:I23").getValues();
-
-  // 📌 ৬. দৈনিক ৩০ দিনের মিলের হিসাব পড়া (A2:E32 Range)
-  var dailyMealsList = sheet.getRange("A2:E32").getValues();
-
+  // 📌 ৩. সদস্যভিত্তিক হিসাব টেবিল পড়া (H2:L6 -> Rows 1..5, Cols 7..11)
+  var summaryRange = [];
+  for (var r = 1; r <= 5; r++) {
+    if (allValues[r]) {
+      summaryRange.push(allValues[r].slice(7, 12));
+    }
+  }
+  
+  // 📌 ৪. খাবার ওয়ালাকে দেওয়া পেমেন্ট লিস্ট ও মোট পরিশোধ (H10:I23 -> Rows 9..22, Cols 7..8)
+  var cateringPayments = [];
+  var paidAmount = 0;
+  for (var r = 9; r <= 22; r++) {
+    if (allValues[r]) {
+      var hVal = allValues[r][7];
+      var iVal = allValues[r][8];
+      cateringPayments.push([hVal, iVal]);
+      var parsedVal = parseFloat(iVal);
+      if (!isNaN(parsedVal)) paidAmount += parsedVal;
+    }
+  }
+  
+  // 📌 ৫. বকেয়া টাকা সেল পড়া (J12 -> Row index 11, Col index 9)
+  var dueAmount = (allValues[11] && allValues[11][9] !== undefined) ? allValues[11][9] : 0;
+  
   var result = {
     "currentMonth": sheet.getName(),
     "summaryTable": summaryRange,
@@ -114,34 +129,24 @@ function doPost(e) {
   
   // 📌 টাইপ ৩: দৈনিক মিল এন্ট্রি (A2:A32 তারিখ মিলিয়ে B-E কলামে মেম্বার মিল বসানো)
   else {
-    var datesRange = sheet.getRange("A2:A32").getValues();
-    var entryDateStr = data.date; // e.g. "2026-10-02"
-    var entryDay = parseInt(entryDateStr.split("-")[2], 10); // Day number e.g. 2
+    var datesRange = sheet.getRange("A2:A32").getDisplayValues();
+    var entryDateStr = data.date; // e.g. "2026-10-03"
+    var entryDay = parseInt(entryDateStr.split("-")[2], 10); // Day number e.g. 3
     var foundRow = -1;
     
     for (var r = 0; r < datesRange.length; r++) {
       var sheetDateCell = datesRange[r][0];
       if (sheetDateCell !== "" && sheetDateCell !== null && sheetDateCell !== undefined) {
-        if (sheetDateCell instanceof Date) {
-          if (sheetDateCell.getDate() === entryDay) {
-            foundRow = 2 + r;
-            break;
-          }
-        } else {
-          var cellStr = sheetDateCell.toString().trim();
-          if (parseInt(cellStr, 10) === entryDay) {
-            foundRow = 2 + r;
-            break;
-          }
-          if (cellStr.indexOf(entryDateStr) !== -1 || entryDateStr.indexOf(cellStr) !== -1) {
-            foundRow = 2 + r;
-            break;
-          }
+        var cellStr = sheetDateCell.toString().trim();
+        var match = cellStr.match(/^0?(\d{1,2})/);
+        if (match && parseInt(match[1], 10) === entryDay) {
+          foundRow = 2 + r;
+          break;
         }
       }
     }
     
-    // ব্যাকআপ ফলfallback: তারিখের দিন সংখ্যা অনুযায়ী সরাসরি রো (যেমন ২ তারিখ মানে row 3)
+    // ব্যাকআপ fallback: তারিখের দিন সংখ্যা অনুযায়ী সরাসরি রো (যেমন ৩ তারিখ মানে row 4)
     if (foundRow === -1 && entryDay >= 1 && entryDay <= 31) {
       foundRow = 1 + entryDay;
     }
