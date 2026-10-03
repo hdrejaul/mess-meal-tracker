@@ -83,6 +83,25 @@
             </div>
         </header>
 
+        <!-- ⚠️ অফলাইন / সেভড ডাটা স্পষ্ট ওয়ার্নিং ব্যানার (শুধুমাত্র লাইভ না পাওয়া গেলে দেখাবে) -->
+        <div id="savedDataWarningBanner" class="hidden bg-gradient-to-r from-amber-950/95 via-rose-950/90 to-amber-950/95 border-2 border-amber-500/80 rounded-2xl p-3 sm:p-3.5 shadow-xl transition-all duration-300">
+            <div class="flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/80 flex items-center justify-center text-amber-400 text-base shrink-0 shadow-sm">
+                        <i class="fa-solid fa-wifi text-amber-400 animate-pulse text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-black text-amber-300">কাস্টমারের সর্বশেষ হিসাব দেখতে</h4>
+                        <p class="text-[11px] text-slate-300 font-medium">ইন্টারনেট কানেকশন ঠিক করে আবার রিফ্রেশ করুন</p>
+                    </div>
+                </div>
+                <button onclick="fetchLiveCateringData()" class="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-110 active:scale-95 text-slate-950 font-black px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 text-xs border border-amber-300 shrink-0 transition cursor-pointer">
+                    <i class="fa-solid fa-arrows-rotate text-slate-950 text-xs"></i>
+                    <span>আবার রিফ্রেশ করুন</span>
+                </button>
+            </div>
+        </div>
+
         <!-- 🍲 আজকের খাবার অর্ডার লাইভ ব্যানার কার্ড -->
         <div id="todayOrderCardBanner" class="p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 shadow-lg hidden">
             <!-- Dynamically populated via JS -->
@@ -93,7 +112,7 @@
             
             <div class="flex items-center justify-between gap-2">
                 <span class="text-[11px] sm:text-xs font-extrabold text-amber-300 uppercase tracking-wider bg-amber-950/90 border border-amber-500/60 px-2.5 py-1 rounded-full inline-block shadow-sm">
-                    হিসাবের বিবরণ (Bill Summary)
+                    হিসাবের বিবরণ
                 </span>
                 <button onclick="openModal()" class="text-xs font-black text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 px-3 py-1 rounded-full flex items-center gap-1.5 transition shadow-md border border-amber-300 cursor-pointer">
                     <i class="fa-solid fa-calendar-days text-slate-950 text-xs"></i>
@@ -582,17 +601,24 @@
 
         function setSyncStatus(state, msg) {
             const badge = document.getElementById('syncBadge');
+            const warnBanner = document.getElementById('savedDataWarningBanner');
             if (!badge) return;
             badge.classList.remove('hidden');
+
             if (state === 'loading') {
+                badge.onclick = null;
                 badge.className = "bg-amber-950/80 border border-amber-500/50 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-amber-300 inline-flex items-center gap-1 shadow";
                 badge.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin text-amber-400"></i> ${msg || 'সিঙ্ক হচ্ছে...'}`;
             } else if (state === 'live') {
-                badge.className = "bg-emerald-950/80 border border-emerald-500/50 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-emerald-300 inline-flex items-center gap-1 shadow";
-                badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg || 'লাইভ'}`;
+                badge.onclick = null;
+                badge.className = "bg-emerald-950/80 border border-emerald-500/50 px-3 py-0.5 rounded-full text-[11px] font-bold text-emerald-300 inline-flex items-center gap-1.5 shadow";
+                badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg || 'কাস্টমার থেকে সর্বশেষ হিসাব'}`;
+                if (warnBanner) warnBanner.classList.add('hidden');
             } else if (state === 'cached') {
-                badge.className = "bg-slate-800 border border-slate-700 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-slate-300 inline-flex items-center gap-1 shadow";
-                badge.innerHTML = `<i class="fa-solid fa-cloud text-blue-400"></i> ${msg || 'সেভড ডাটা'}`;
+                badge.className = "bg-rose-950/90 hover:bg-rose-900 border border-rose-500/70 px-3 py-0.5 rounded-full text-[11px] font-extrabold text-rose-300 inline-flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95";
+                badge.onclick = () => fetchLiveCateringData();
+                badge.innerHTML = `<i class="fa-solid fa-arrows-rotate text-rose-400"></i> ${msg || 'কাস্টমারের সর্বশেষ হিসাব দেখতে রিফ্রেশ দিন'}`;
+                if (warnBanner) warnBanner.classList.remove('hidden');
             }
         }
 
@@ -635,7 +661,7 @@
 
             if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
                 if (!hasLoadedCache) renderDemoData();
-                setSyncStatus('live', 'লাইভ');
+                setSyncStatus('live', 'কাস্টমার থেকে সর্বশেষ হিসাব');
                 hideTopProgress();
                 return;
             }
@@ -652,7 +678,7 @@
                 if (data && (data.dailyMealsList || data.summaryTable)) {
                     try { localStorage.setItem(CACHE_KEY_CATERING, JSON.stringify(data)); } catch(e){}
                     renderCateringUI(data);
-                    setSyncStatus('live', 'লাইভ');
+                    setSyncStatus('live', 'কাস্টমার থেকে সর্বশেষ হিসাব');
                 }
             } catch(err) {
                 console.warn("Live fetch notice:", err);
@@ -660,14 +686,13 @@
                 if (raw) {
                     try {
                         renderCateringUI(JSON.parse(raw));
-                        setSyncStatus('cached', 'সেভড ডাটা');
                     } catch(e) {
                         renderDemoData();
                     }
                 } else if (!hasLoadedCache) {
                     renderDemoData();
-                    setSyncStatus('cached', 'সেভড ডাটা');
                 }
+                setSyncStatus('cached', 'পেজ আবার রিফ্রেশ দিন');
             } finally {
                 hideTopProgress();
             }
