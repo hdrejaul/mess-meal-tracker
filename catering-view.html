@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>কাদের ভাই ক্যাটারিং সার্ভিস - বিল বিবরণী</title>
+    <title>নাবিলা ক্যাটারিং সার্ভিস - বিল বিবরণী</title>
     <!-- WhatsApp, Facebook, Social Link Preview Thumbnail -->
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="apple-touch-icon" href="logo.jpg">
-    <meta property="og:site_name" content="কাদের ভাই ক্যাটারিং সার্ভিস">
-    <meta property="og:title" content="কাদের ভাই ক্যাটারিং সার্ভিস - বিল বিবরণী">
+    <meta property="og:site_name" content="নাবিলা ক্যাটারিং সার্ভিস">
+    <meta property="og:title" content="নাবিলা ক্যাটারিং সার্ভিস - বিল বিবরণী">
     <meta property="og:description" content="মেস মিল ও বিল ট্র্যাকার | লাইভ অটো স্টেটমেন্ট | মিল রেট: ৳৮০ টাকা">
     <meta property="og:image" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
     <meta property="og:image:secure_url" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
@@ -18,7 +18,7 @@
     <meta property="og:url" content="https://hdrejaul.github.io/mess-meal-tracker/catering-view.html">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="কাদের ভাই ক্যাটারিং সার্ভিস - বিল বিবরণী">
+    <meta name="twitter:title" content="নাবিলা ক্যাটারিং সার্ভিস - বিল বিবরণী">
     <meta name="twitter:description" content="মেস মিল ও বিল ট্র্যাকার | মিল রেট: ৳৮০ টাকা">
     <meta name="twitter:image" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
     <!-- Tailwind CSS -->
@@ -56,13 +56,13 @@
             <!-- Large Prominent Circular Logo -->
             <div class="flex justify-center pt-1">
                 <div class="relative p-1 rounded-full bg-gradient-to-tr from-amber-500 via-emerald-500 to-amber-300 shadow-2xl gold-glow">
-                    <img src="logo.jpg" alt="কাদের ভাই ক্যাটারিং সার্ভিস" class="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-cover border-4 border-slate-900 shadow-inner">
+                    <img src="logo.jpg" alt="নাবিলা ক্যাটারিং সার্ভিস" class="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-cover border-4 border-slate-900 shadow-inner">
                 </div>
             </div>
 
             <!-- Title -->
             <h1 class="text-2xl sm:text-3xl font-black text-amber-400 tracking-normal py-0.5 leading-snug drop-shadow-md">
-                কাদের ভাই ক্যাটারিং সার্ভিস
+                নাবিলা ক্যাটারিং সার্ভিস
             </h1>
 
             <!-- Subtitle -->
@@ -134,7 +134,7 @@
         <!-- Footer -->
         <div class="text-center pt-1">
             <p class="text-xs text-slate-400 font-medium flex items-center justify-center gap-1">
-                <i class="fa-solid fa-shield-halved text-emerald-500"></i> কাদের ভাই ক্যাটারিং সার্ভিস - লাইভ শিট অটো স্টেটমেন্ট
+                <i class="fa-solid fa-shield-halved text-emerald-500"></i> নাবিলা ক্যাটারিং সার্ভিস - লাইভ শিট অটো স্টেটমেন্ট
             </p>
         </div>
 
@@ -158,13 +158,13 @@
                 </button>
             </div>
 
-            <div class="overflow-y-auto p-4 flex-1">
+            <div class="overflow-y-auto p-2 sm:p-4 flex-1">
                 <table class="w-full text-left text-sm border-collapse">
-                    <thead class="sticky top-0 bg-slate-800 text-slate-200 border-b border-slate-700">
+                    <thead class="sticky top-0 bg-slate-800 text-slate-200 border-b border-slate-700 z-10">
                         <tr>
-                            <th class="p-3 text-center font-bold">তারিখ</th>
-                            <th class="p-3 text-center font-bold">দৈনিক মিল</th>
-                            <th class="p-3 text-right font-bold">হিসাব (৳৮০/মিল)</th>
+                            <th class="py-3 px-1 sm:px-3 text-center font-bold w-[34%]">তারিখ</th>
+                            <th class="py-3 px-1 sm:px-3 text-center font-bold w-[42%]">দৈনিক মিল</th>
+                            <th class="py-3 px-2 sm:px-3 text-right font-bold w-[24%]">হিসাব (৳৮০)</th>
                         </tr>
                     </thead>
                     <tbody id="modalTbody" class="divide-y divide-slate-800 text-slate-200">
@@ -191,10 +191,49 @@
 
         function openModal() {
             document.getElementById('mealModal').classList.remove('hidden');
+            setTimeout(() => {
+                const todayElem = document.getElementById('todayRow');
+                if (todayElem) {
+                    todayElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
         }
 
         function closeModal() {
             document.getElementById('mealModal').classList.add('hidden');
+        }
+
+        function checkIfDateIsToday(rawDate) {
+            if (rawDate === null || rawDate === undefined || rawDate === "") return false;
+            const now = new Date();
+            const curDay = now.getDate();
+            const curMonth = now.getMonth();
+            const curYear = now.getFullYear();
+
+            if (typeof rawDate === 'number' || (!isNaN(rawDate) && !String(rawDate).includes('-') && !String(rawDate).includes('/'))) {
+                return parseInt(rawDate, 10) === curDay;
+            }
+
+            let d = new Date(rawDate);
+            if (!isNaN(d.getTime())) {
+                if (d.getDate() === curDay && d.getMonth() === curMonth && d.getFullYear() === curYear) {
+                    return true;
+                }
+            }
+
+            let s = String(rawDate).trim();
+            let padDay = curDay < 10 ? '0' + curDay : '' + curDay;
+            let padMonth = (curMonth + 1) < 10 ? '0' + (curMonth + 1) : '' + (curMonth + 1);
+
+            if (s.includes(`${padDay}/${padMonth}/${curYear}`) ||
+                s.includes(`${padDay}-${padMonth}-${curYear}`) ||
+                s.includes(`${curYear}-${padMonth}-${padDay}`) ||
+                s.startsWith(String(curDay) + '/') ||
+                s.startsWith(String(curDay) + '-')) {
+                return true;
+            }
+
+            return false;
         }
 
         async function fetchLiveCateringData() {
@@ -222,9 +261,18 @@
                     data.dailyMealsList.forEach(row => {
                         let rawDate = row[0];
                         let mealCount = 0;
+                        let filledCount = 0;
+                        let totalMembers = row.length - 1; // ৪ জন মেস মেম্বার
+
                         for (let c = 1; c < row.length; c++) {
-                            mealCount += (parseInt(row[c]) || 0);
+                            let val = row[c];
+                            if (val !== "" && val !== null && val !== undefined) {
+                                filledCount++;
+                                mealCount += (parseInt(val, 10) || 0);
+                            }
                         }
+                        
+                        let isAllZero = (mealCount === 0 && filledCount >= totalMembers && totalMembers > 0);
                         
                         let dateStr = '-';
                         if (rawDate !== null && rawDate !== undefined && rawDate !== "") {
@@ -240,13 +288,89 @@
                         let dayTk = mealCount * 80;
                         totalMealSum += mealCount;
 
+                        let isToday = checkIfDateIsToday(rawDate);
+
                         let tr = document.createElement('tr');
-                        tr.className = 'hover:bg-slate-800/60 transition';
-                        tr.innerHTML = `
-                            <td class="p-3 text-center font-semibold text-slate-300">${dateStr}</td>
-                            <td class="p-3 text-center font-extrabold ${mealCount > 0 ? 'text-amber-300' : 'text-slate-600'}">${mealCount > 0 ? mealCount + ' টি' : '-'}</td>
-                            <td class="p-3 text-right font-extrabold ${dayTk > 0 ? 'text-emerald-400' : 'text-slate-600'}">${dayTk > 0 ? '৳ ' + dayTk : '-'}</td>
-                        `;
+                        if (isToday) {
+                            tr.id = "todayRow";
+                            if (mealCount > 0) {
+                                // 🟢 স্টেট ১: আজকের মিল এন্ট্রি করা হয়েছে (আপডেট সম্পন্ন - সবুজ কালার)
+                                tr.className = 'bg-emerald-950/70 border-y-2 border-emerald-400/80 font-bold shadow-lg';
+                                tr.innerHTML = `
+                                    <td class="py-3 px-1 sm:px-3 text-center">
+                                        <div class="inline-flex items-center justify-center gap-1 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-400/60 shadow-sm">
+                                            <span class="bg-emerald-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded leading-none">আজ</span>
+                                            <span class="font-extrabold text-emerald-200 text-xs sm:text-sm whitespace-nowrap">${dateStr}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-1 sm:px-3 text-center">
+                                        <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-950/90 px-3 py-1 rounded-full border border-emerald-500/50 shadow-sm whitespace-nowrap text-xs sm:text-sm">
+                                            <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
+                                            <span class="text-emerald-300 font-bold">আজকে</span>
+                                            <span class="text-amber-300 font-extrabold">${mealCount}</span>
+                                            <span class="text-emerald-300 font-bold">টা দিবেন</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-400 text-sm sm:text-base whitespace-nowrap">
+                                        ৳ ${dayTk}
+                                    </td>
+                                `;
+                            } else if (isAllZero) {
+                                // 🔴 স্টেট ২: সবার (৪ জনের) ঘরেই ০ দেওয়া হয়েছে (আজ মিল লাগবে না / বন্ধ - লালচে/গোলাপী কালার)
+                                tr.className = 'bg-rose-950/60 border-y-2 border-rose-500/80 font-bold shadow-lg';
+                                tr.innerHTML = `
+                                    <td class="py-3 px-1 sm:px-3 text-center">
+                                        <div class="inline-flex items-center justify-center gap-1 bg-rose-500/20 px-2 py-0.5 rounded-full border border-rose-400/60 shadow-sm">
+                                            <span class="bg-rose-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded leading-none">আজ</span>
+                                            <span class="font-extrabold text-rose-200 text-xs sm:text-sm whitespace-nowrap">${dateStr}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-1 sm:px-3 text-center">
+                                        <div class="inline-flex items-center justify-center gap-1.5 bg-rose-950/90 px-3 py-1 rounded-full border border-rose-500/50 shadow-sm whitespace-nowrap">
+                                            <i class="fa-solid fa-ban text-rose-400 text-xs"></i>
+                                            <span class="text-xs sm:text-sm font-bold text-rose-300">আজ মিল লাগবে না</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-2 sm:px-3 text-right font-bold text-rose-300/80 text-sm sm:text-base whitespace-nowrap">
+                                        ৳ 0
+                                    </td>
+                                `;
+                            } else {
+                                // 🟡 স্টেট ৩: এখনও সবার এন্ট্রি সম্পন্ন হয়নি বা খালি আছে (আপডেট বাকি - হলুদ কালার)
+                                tr.className = 'bg-amber-950/60 border-y-2 border-amber-400/80 font-bold shadow-lg';
+                                tr.innerHTML = `
+                                    <td class="py-3 px-1 sm:px-3 text-center">
+                                        <div class="inline-flex items-center justify-center gap-1 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-400/60 shadow-sm">
+                                            <span class="bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded leading-none">আজ</span>
+                                            <span class="font-extrabold text-amber-200 text-xs sm:text-sm whitespace-nowrap">${dateStr}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-1 sm:px-3 text-center">
+                                        <div class="inline-flex items-center justify-center gap-1.5 bg-amber-950/90 px-3 py-1 rounded-full border border-amber-500/50 shadow-sm whitespace-nowrap">
+                                            <i class="fa-solid fa-clock text-amber-400 text-xs"></i>
+                                            <span class="text-xs sm:text-sm font-bold text-amber-300">এখনও জানানো হয়নি</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-2 sm:px-3 text-right font-bold text-slate-500 whitespace-nowrap">
+                                        -
+                                    </td>
+                                `;
+                            }
+                        } else {
+                            tr.className = 'hover:bg-slate-800/60 transition';
+                            let countHtml = mealCount > 0 
+                                ? `<span class="text-amber-300 font-extrabold text-base">${mealCount} টি</span>` 
+                                : (isAllZero ? `<span class="text-rose-400/80 font-semibold text-xs">মিল লাগবে না (০)</span>` : `<span class="text-slate-600">-</span>`);
+                            let tkHtml = dayTk > 0 
+                                ? `<span class="text-emerald-400 font-extrabold text-base">৳ ${dayTk}</span>` 
+                                : (isAllZero ? `<span class="text-slate-400 font-bold">৳ 0</span>` : `<span class="text-slate-600">-</span>`);
+
+                            tr.innerHTML = `
+                                <td class="py-3 px-1 sm:px-3 text-center font-semibold text-slate-300 text-xs sm:text-sm">${dateStr}</td>
+                                <td class="py-3 px-1 sm:px-3 text-center font-extrabold">${countHtml}</td>
+                                <td class="py-3 px-2 sm:px-3 text-right font-extrabold">${tkHtml}</td>
+                            `;
+                        }
                         tbody.appendChild(tr);
                     });
                 }
@@ -324,22 +448,98 @@
             const tbody = document.getElementById('modalTbody');
             tbody.innerHTML = '';
 
-            const sampleMeals = [3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            const sampleMeals = [3, 4, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
             let runningTotalMeal = 0;
+            const todayDateNum = (new Date()).getDate();
 
             for(let i = 1; i <= 30; i++) {
                 let dayStr = (i < 10 ? '0' + i : i) + '-10-2026';
-                let mealCount = sampleMeals[i-1] || 0;
+                let rawVal = sampleMeals[i-1];
+                let isFilled = (rawVal !== null && rawVal !== undefined);
+                let mealCount = isFilled ? (parseInt(rawVal, 10) || 0) : 0;
+                let isAllZero = (isFilled && mealCount === 0);
                 let dayTk = mealCount * 80;
                 runningTotalMeal += mealCount;
+                let isToday = (i === todayDateNum);
 
                 let tr = document.createElement('tr');
-                tr.className = i % 2 === 0 ? 'bg-slate-800/50' : '';
-                tr.innerHTML = `
-                    <td class="p-3 text-center font-semibold text-slate-300">${dayStr}</td>
-                    <td class="p-3 text-center font-extrabold ${mealCount > 0 ? 'text-amber-300' : 'text-slate-600'}">${mealCount > 0 ? mealCount + ' টি' : '-'}</td>
-                    <td class="p-3 text-right font-extrabold ${dayTk > 0 ? 'text-emerald-400' : 'text-slate-600'}">${dayTk > 0 ? '৳ ' + dayTk : '-'}</td>
-                `;
+                if (isToday) {
+                    tr.id = "todayRow";
+                    if (mealCount > 0) {
+                        tr.className = 'bg-emerald-950/70 border-y-2 border-emerald-400/80 font-bold shadow-lg';
+                        tr.innerHTML = `
+                            <td class="py-3 px-1 sm:px-3 text-center">
+                                <div class="inline-flex items-center justify-center gap-1 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-400/60 shadow-sm">
+                                    <span class="bg-emerald-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded leading-none">আজ</span>
+                                    <span class="font-extrabold text-emerald-200 text-xs sm:text-sm whitespace-nowrap">${dayStr}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-1 sm:px-3 text-center">
+                                <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-950/90 px-3 py-1 rounded-full border border-emerald-500/50 shadow-sm whitespace-nowrap text-xs sm:text-sm">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
+                                    <span class="text-emerald-300 font-bold">আজকে</span>
+                                    <span class="text-amber-300 font-extrabold">${mealCount}</span>
+                                    <span class="text-emerald-300 font-bold">টা দিবেন</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-400 text-sm sm:text-base whitespace-nowrap">
+                                ৳ ${dayTk}
+                            </td>
+                        `;
+                    } else if (isAllZero) {
+                        tr.className = 'bg-rose-950/60 border-y-2 border-rose-500/80 font-bold shadow-lg';
+                        tr.innerHTML = `
+                            <td class="py-3 px-1 sm:px-3 text-center">
+                                <div class="inline-flex items-center justify-center gap-1 bg-rose-500/20 px-2 py-0.5 rounded-full border border-rose-400/60 shadow-sm">
+                                    <span class="bg-rose-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded leading-none">আজ</span>
+                                    <span class="font-extrabold text-rose-200 text-xs sm:text-sm whitespace-nowrap">${dayStr}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-1 sm:px-3 text-center">
+                                <div class="inline-flex items-center justify-center gap-1.5 bg-rose-950/90 px-3 py-1 rounded-full border border-rose-500/50 shadow-sm whitespace-nowrap">
+                                    <i class="fa-solid fa-ban text-rose-400 text-xs"></i>
+                                    <span class="text-xs sm:text-sm font-bold text-rose-300">আজ মিল লাগবে না</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-2 sm:px-3 text-right font-bold text-rose-300/80 text-sm sm:text-base whitespace-nowrap">
+                                ৳ 0
+                            </td>
+                        `;
+                    } else {
+                        tr.className = 'bg-amber-950/60 border-y-2 border-amber-400/80 font-bold shadow-lg';
+                        tr.innerHTML = `
+                            <td class="py-3 px-1 sm:px-3 text-center">
+                                <div class="inline-flex items-center justify-center gap-1 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-400/60 shadow-sm">
+                                    <span class="bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded leading-none">আজ</span>
+                                    <span class="font-extrabold text-amber-200 text-xs sm:text-sm whitespace-nowrap">${dayStr}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-1 sm:px-3 text-center">
+                                <div class="inline-flex items-center justify-center gap-1.5 bg-amber-950/90 px-3 py-1 rounded-full border border-amber-500/50 shadow-sm whitespace-nowrap">
+                                    <i class="fa-solid fa-clock text-amber-400 text-xs"></i>
+                                    <span class="text-xs sm:text-sm font-bold text-amber-300">এখনও জানানো হয়নি</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-2 sm:px-3 text-right font-bold text-slate-500 whitespace-nowrap">
+                                -
+                            </td>
+                        `;
+                    }
+                } else {
+                    tr.className = i % 2 === 0 ? 'bg-slate-800/50 hover:bg-slate-800 transition' : 'hover:bg-slate-800 transition';
+                    let countHtml = mealCount > 0 
+                        ? `<span class="text-amber-300 font-extrabold text-base">${mealCount} টি</span>` 
+                        : (isAllZero ? `<span class="text-rose-400/80 font-semibold text-xs">মিল লাগবে না (০)</span>` : `<span class="text-slate-600">-</span>`);
+                    let tkHtml = dayTk > 0 
+                        ? `<span class="text-emerald-400 font-extrabold text-base">৳ ${dayTk}</span>` 
+                        : (isAllZero ? `<span class="text-slate-400 font-bold">৳ 0</span>` : `<span class="text-slate-600">-</span>`);
+
+                    tr.innerHTML = `
+                        <td class="py-3 px-1 sm:px-3 text-center font-semibold text-slate-300 text-xs sm:text-sm">${dayStr}</td>
+                        <td class="py-3 px-1 sm:px-3 text-center font-extrabold">${countHtml}</td>
+                        <td class="py-3 px-2 sm:px-3 text-right font-extrabold">${tkHtml}</td>
+                    `;
+                }
                 tbody.appendChild(tr);
             }
 
