@@ -48,44 +48,8 @@
 </head>
 <body class="p-3 sm:p-5 flex items-center justify-center min-h-screen">
 
-    <!-- ⚡ প্রিমিয়াম ইন্টারেক্টিভ লাইভ কানেকশন ও লোডার স্ক্রিন -->
-    <div id="pageLoader" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex flex-col items-center justify-center p-6 transition-all duration-500">
-        <div class="w-full max-w-xs flex flex-col items-center text-center space-y-5">
-            
-            <!-- Animated Glowing Logo Pulse Box -->
-            <div class="relative flex items-center justify-center">
-                <div class="absolute -inset-2 bg-gradient-to-r from-amber-500 via-emerald-500 to-amber-400 rounded-full blur-lg opacity-40 animate-pulse"></div>
-                <div class="relative w-20 h-20 rounded-full bg-slate-900 border-2 border-amber-400/80 p-1 flex items-center justify-center shadow-2xl overflow-hidden">
-                    <img src="logo.jpg" alt="নাবিলা ক্যাটারিং" class="w-full h-full rounded-full object-cover">
-                </div>
-                <div class="absolute -bottom-1 -right-1 bg-slate-900 border border-emerald-400 rounded-full w-7 h-7 flex items-center justify-center text-emerald-400 text-xs shadow-lg">
-                    <i id="loaderStepIcon" class="fa-solid fa-wifi animate-bounce"></i>
-                </div>
-            </div>
-
-            <!-- Dynamic Live Status Messages -->
-            <div class="space-y-1.5 w-full">
-                <h3 class="text-amber-300 font-extrabold text-base sm:text-lg tracking-wide flex items-center justify-center gap-2">
-                    <span id="loaderMainTitle">সার্ভারে সংযোগ হচ্ছে...</span>
-                </h3>
-                <p id="loaderSubTitle" class="text-slate-400 text-xs font-medium">লাইভ নেটওয়ার্ক ও ডাটা সিঙ্ক যাচাই করা হচ্ছে</p>
-            </div>
-
-            <!-- Smooth Animated Progress Line -->
-            <div class="w-full bg-slate-800/80 rounded-full h-1.5 overflow-hidden border border-slate-700/60 shadow-inner">
-                <div id="loaderProgressBar" class="bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 h-full rounded-full w-[20%] transition-all duration-500 ease-out"></div>
-            </div>
-
-            <!-- Trust Badge Note -->
-            <div class="pt-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-700/80 text-[11px] text-slate-300 shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"></span>
-                    <span>গুগল শিট থেকে রিয়েল-টাইম তথ্য যাচাই হচ্ছে</span>
-                </span>
-            </div>
-
-        </div>
-    </div>
+    <!-- ⚡ নন-ব্লকিং টপ প্রগ্রেস বার -->
+    <div id="topProgressBar" class="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 z-50 transition-all duration-300 shadow-md opacity-0"></div>
 
     <div class="w-full max-w-md mx-auto space-y-3.5">
         
@@ -113,8 +77,8 @@
                 <span id="monthBadge" class="bg-slate-800 border border-slate-600 px-3 py-0.5 rounded-full font-bold text-emerald-300 shadow text-[11px] sm:text-xs">
                     📅 চলতি মাস: লোড হচ্ছে...
                 </span>
-                <span id="syncBadge" class="bg-emerald-950/80 border border-emerald-500/50 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-emerald-300 hidden items-center gap-1 shadow">
-                    <i class="fa-solid fa-circle-check text-emerald-400"></i> লাইভ
+                <span id="syncBadge" class="bg-amber-950/80 border border-amber-500/50 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-amber-300 inline-flex items-center gap-1 shadow">
+                    <i class="fa-solid fa-arrows-rotate fa-spin text-amber-400"></i> সিঙ্ক হচ্ছে...
                 </span>
             </div>
         </header>
@@ -615,87 +579,97 @@
         }
 
         const CACHE_KEY_CATERING = "cached_catering_live_full";
-        let progressInterval = null;
 
-        function startLoaderAnimation() {
-            const title = document.getElementById('loaderMainTitle');
-            const subTitle = document.getElementById('loaderSubTitle');
-            const icon = document.getElementById('loaderStepIcon');
-            const bar = document.getElementById('loaderProgressBar');
-
-            let step = 0;
-            const steps = [
-                { progress: 35, title: "সার্ভারে সংযোগ হচ্ছে...", sub: "লাইভ নেটওয়ার্ক ও ডাটা সিঙ্ক যাচাই করা হচ্ছে", icon: "fa-solid fa-wifi" },
-                { progress: 65, title: "গুগল শিট থেকে তথ্য আনা হচ্ছে...", sub: "মিল ও বিল বিবরণীর সর্বশেষ হিসাব লোড হচ্ছে", icon: "fa-solid fa-cloud-arrow-down" },
-                { progress: 85, title: "আজকের হিসাব চূড়ান্ত করা হচ্ছে...", sub: "অনুগ্রহ করে ১ সেকেন্ড অপেক্ষা করুন", icon: "fa-solid fa-calculator" },
-                { progress: 95, title: "ধীরগতির ইন্টারনেট ডিটেক্টেড...", sub: "সার্ভারের সাথে সংযোগ সম্পূর্ণ করা হচ্ছে...", icon: "fa-solid fa-tower-broadcast" }
-            ];
-
-            progressInterval = setInterval(() => {
-                step++;
-                if (step < steps.length) {
-                    const cur = steps[step];
-                    if (title) title.innerText = cur.title;
-                    if (subTitle) subTitle.innerText = cur.sub;
-                    if (icon) icon.className = cur.icon + " animate-pulse";
-                    if (bar) bar.style.width = cur.progress + "%";
-                }
-            }, 750);
+        function setSyncStatus(state, msg) {
+            const badge = document.getElementById('syncBadge');
+            if (!badge) return;
+            badge.classList.remove('hidden');
+            if (state === 'loading') {
+                badge.className = "bg-amber-950/80 border border-amber-500/50 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-amber-300 inline-flex items-center gap-1 shadow";
+                badge.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin text-amber-400"></i> ${msg || 'সিঙ্ক হচ্ছে...'}`;
+            } else if (state === 'live') {
+                badge.className = "bg-emerald-950/80 border border-emerald-500/50 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-emerald-300 inline-flex items-center gap-1 shadow";
+                badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg || 'লাইভ'}`;
+            } else if (state === 'cached') {
+                badge.className = "bg-slate-800 border border-slate-700 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-slate-300 inline-flex items-center gap-1 shadow";
+                badge.innerHTML = `<i class="fa-solid fa-cloud text-blue-400"></i> ${msg || 'সেভড ডাটা'}`;
+            }
         }
 
-        function hidePageLoader() {
-            if (progressInterval) clearInterval(progressInterval);
-            const title = document.getElementById('loaderMainTitle');
-            const subTitle = document.getElementById('loaderSubTitle');
-            const icon = document.getElementById('loaderStepIcon');
-            const bar = document.getElementById('loaderProgressBar');
-            const loader = document.getElementById('pageLoader');
+        function showTopProgress() {
+            const bar = document.getElementById('topProgressBar');
+            if (bar) {
+                bar.style.width = '35%';
+                bar.classList.remove('opacity-0');
+                setTimeout(() => { if (bar) bar.style.width = '75%'; }, 400);
+            }
+        }
 
-            if (bar) bar.style.width = "100%";
-            if (title) title.innerHTML = '<span class="text-emerald-400 font-black flex items-center justify-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-400"></i> হিসাব সম্পূর্ণ প্রস্তুত!</span>';
-            if (subTitle) subTitle.innerText = "সফলভাবে লাইভ স্টেটমেন্ট লোড হয়েছে";
-            if (icon) icon.className = "fa-solid fa-check text-emerald-400";
-
-            setTimeout(() => {
-                if (loader) {
-                    loader.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
-                    setTimeout(() => loader.remove(), 400);
-                }
-            }, 300);
+        function hideTopProgress() {
+            const bar = document.getElementById('topProgressBar');
+            if (bar) {
+                bar.style.width = '100%';
+                setTimeout(() => {
+                    bar.classList.add('opacity-0');
+                    setTimeout(() => { if (bar) bar.style.width = '0%'; }, 300);
+                }, 300);
+            }
         }
 
         async function fetchLiveCateringData() {
-            startLoaderAnimation();
+            // ⚡ ১. ইনস্ট্যান্ট ক্যাশ লোড: পেজ ওপেন হওয়া মাত্রই ইনস্ট্যান্ট ডাটা দেখাবে
+            const rawCache = localStorage.getItem(CACHE_KEY_CATERING);
+            let hasLoadedCache = false;
+            if (rawCache) {
+                try {
+                    const cached = JSON.parse(rawCache);
+                    renderCateringUI(cached);
+                    hasLoadedCache = true;
+                    setSyncStatus('loading', 'আপডেট হচ্ছে...');
+                } catch(e) {}
+            } else {
+                setSyncStatus('loading', 'লোড হচ্ছে...');
+            }
+
+            showTopProgress();
 
             if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
-                renderDemoData();
-                hidePageLoader();
+                if (!hasLoadedCache) renderDemoData();
+                setSyncStatus('live', 'লাইভ');
+                hideTopProgress();
                 return;
             }
 
+            // ⚡ ২. সর্বোচ্চ ৮ সেকেন্ড টাইমআউট (যাতে কখনোই আটকে না থাকে)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+
             try {
-                const res = await fetch(GOOGLE_SCRIPT_URL);
+                const res = await fetch(GOOGLE_SCRIPT_URL, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 const data = await res.json();
                 
                 if (data && (data.dailyMealsList || data.summaryTable)) {
                     try { localStorage.setItem(CACHE_KEY_CATERING, JSON.stringify(data)); } catch(e){}
                     renderCateringUI(data);
-                    
-                    const syncBadge = document.getElementById('syncBadge');
-                    if (syncBadge) {
-                        syncBadge.classList.remove('hidden');
-                        syncBadge.classList.add('inline-flex');
-                    }
+                    setSyncStatus('live', 'লাইভ');
                 }
             } catch(err) {
+                console.warn("Live fetch notice:", err);
                 const raw = localStorage.getItem(CACHE_KEY_CATERING);
                 if (raw) {
-                    try { renderCateringUI(JSON.parse(raw)); } catch(e) { renderDemoData(); }
-                } else {
+                    try {
+                        renderCateringUI(JSON.parse(raw));
+                        setSyncStatus('cached', 'সেভড ডাটা');
+                    } catch(e) {
+                        renderDemoData();
+                    }
+                } else if (!hasLoadedCache) {
                     renderDemoData();
+                    setSyncStatus('cached', 'সেভড ডাটা');
                 }
             } finally {
-                hidePageLoader();
+                hideTopProgress();
             }
         }
 
