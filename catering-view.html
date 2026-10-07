@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>নাবিলা ক্যাটারিং সার্ভিস - বিল বিবরণী</title>
+    <!-- WhatsApp, Facebook, Social Link Preview Thumbnail -->
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    <meta property="og:site_name" content="নাবিলা ক্যাটারিং সার্ভিস">
+    <meta property="og:title" content="নাবিলা ক্যাটারিং সার্ভিস - বিল বিবরণী">
+    <meta property="og:description" content="মেস মিল ও বিল ট্র্যাকার | লাইভ অটো স্টেটমেন্ট | মিল রেট: ৳৮০ টাকা">
+    <meta property="og:image" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
+    <meta property="og:image:secure_url" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://hdrejaul.github.io/mess-meal-tracker/catering-view.html">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="নাবিলা ক্যাটারিং সার্ভিস - বিল বিবরণী">
+    <meta name="twitter:description" content="মেস মিল ও বিল ট্র্যাকার | মিল রেট: ৳৮০ টাকা">
+    <meta name="twitter:image" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: #090d16;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fde047 0%, #eab308 50%, #facc15 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .emerald-glow {
+            box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.3);
+        }
+        .gold-glow {
+            box-shadow: 0 0 40px -5px rgba(234, 179, 8, 0.45);
+        }
+    </style>
+</head>
+<body class="p-3 sm:p-5 flex items-center justify-center min-h-screen">
+
+    <!-- ⚡ নন-ব্লকিং টপ প্রগ্রেস বার -->
+    <div id="topProgressBar" class="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 z-50 transition-all duration-300 shadow-md opacity-0"></div>
+
+    <div class="w-full max-w-md mx-auto space-y-3.5">
+        
+        <!-- Header with Prominent Logo and Title -->
+        <header class="bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 text-white rounded-2xl p-4 sm:p-5 shadow-xl text-center border border-emerald-500/40 space-y-2 relative overflow-hidden emerald-glow">
+            
+            <!-- Compact Circular Logo -->
+            <div class="flex justify-center">
+                <div class="relative p-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-emerald-500 to-amber-300 shadow-lg gold-glow">
+                    <img src="logo.jpg" alt="নাবিলা ক্যাটারিং সার্ভিস" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-slate-900 shadow-inner">
+                </div>
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-xl sm:text-2xl font-black text-amber-400 tracking-normal leading-tight drop-shadow-md">
+                নাবিলা ক্যাটারিং সার্ভিস
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="text-slate-200 text-xs font-semibold">
+                মেস মিল ও বিল ট্র্যাকার | মিল রেট: <span class="text-amber-300 font-bold px-2 py-0.5 bg-amber-950/90 rounded border border-amber-500/40">৳৮০ টাকা</span>
+            </p>
+
+            <div class="pt-1 flex items-center justify-center gap-2 flex-wrap text-xs">
+                <span id="monthBadge" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-xl font-bold text-emerald-300 shadow text-[11px] sm:text-xs">
+                    📅 চলতি মাস: লোড হচ্ছে...
+                </span>
+                <span id="syncBadge" class="bg-amber-950/80 border border-amber-500/50 px-3 py-1 rounded-xl text-[11px] font-bold text-amber-300 inline-flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-arrows-rotate fa-spin text-amber-400"></i> সিঙ্ক হচ্ছে...
+                </span>
+            </div>
+        </header>
+
+        <!-- ⚠️ অফলাইন / সেভড ডাটা স্পষ্ট ওয়ার্নিং ব্যানার (শুধুমাত্র লাইভ না পাওয়া গেলে দেখাবে) -->
+        <div id="savedDataWarningBanner" class="hidden bg-gradient-to-r from-amber-950/95 via-rose-950/90 to-amber-950/95 border-2 border-amber-500/80 rounded-2xl p-3 sm:p-3.5 shadow-xl transition-all duration-300">
+            <div class="flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/80 flex items-center justify-center text-amber-400 text-base shrink-0 shadow-sm">
+                        <i class="fa-solid fa-wifi text-amber-400 animate-pulse text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-black text-amber-300">কাস্টমারের সর্বশেষ হিসাব দেখতে</h4>
+                        <p class="text-[11px] text-slate-300 font-medium">ইন্টারনেট কানেকশন ঠিক করে আবার রিফ্রেশ করুন</p>
+                    </div>
+                </div>
+                <button onclick="fetchLiveCateringData()" class="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-110 active:scale-95 text-slate-950 font-black px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 text-xs border border-amber-300 shrink-0 transition cursor-pointer">
+                    <i class="fa-solid fa-arrows-rotate text-slate-950 text-xs"></i>
+                    <span>আবার রিফ্রেশ করুন</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 🍲 আজকের খাবার অর্ডার লাইভ ব্যানার কার্ড -->
+        <div id="todayOrderCardBanner" class="p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 shadow-lg hidden">
+            <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Equation Summary Box -->
+        <div class="bg-gradient-to-b from-amber-950/50 via-slate-900 to-slate-900 p-3.5 sm:p-5 rounded-2xl shadow-xl border-2 border-amber-500/60 space-y-3 gold-glow">
+            
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] sm:text-xs font-extrabold text-amber-300 uppercase tracking-wider bg-amber-950/90 border border-amber-500/60 px-2.5 py-1 rounded-full inline-block shadow-sm">
+                    হিসাবের বিবরণ
+                </span>
+                <button onclick="openModal()" class="text-xs font-black text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 px-3 py-1 rounded-full flex items-center gap-1.5 transition shadow-md border border-amber-300 cursor-pointer">
+                    <i class="fa-solid fa-file-invoice-dollar text-slate-950 text-xs"></i>
+                    <span>এই মাসের হিসাব দেখুন</span>
+                    <i class="fa-solid fa-chevron-right text-[9px] text-slate-950"></i>
+                </button>
+            </div>
+
+            <!-- Calculation Steps Grid -->
+            <div class="space-y-2.5 pt-0.5">
+                
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-800/90 border border-slate-700 shadow-sm">
+                    <span class="text-xs sm:text-sm text-slate-100 font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-receipt text-blue-400 text-base"></i>
+                        <span>এই মাসের মোট মিল ( <strong id="totalMealCountTxt" class="text-amber-300 font-black text-sm sm:text-base mx-1">...</strong> টি )</span>
+                    </span>
+                    <span id="totalBillCalc" class="text-lg sm:text-xl font-black text-white shrink-0">লোড হচ্ছে...</span>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/80 border border-emerald-500/50 shadow-sm cursor-pointer hover:bg-emerald-950/90 transition" onclick="openPaymentHistoryModal()" title="জমা দেওয়ার বিস্তারিত হিসাব দেখতে ক্লিক করুন">
+                    <span class="text-xs sm:text-sm text-emerald-100 font-bold flex items-center gap-1.5 flex-wrap">
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-base shrink-0"></i>
+                        <span>সর্বশেষ জমা টাকা</span>
+                        <span id="lastPayDateBadge" class="text-[11px] font-bold text-amber-300 bg-amber-950/90 px-1.5 py-0.5 rounded border border-amber-500/40"></span>
+                    </span>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="totalPaidCalc" class="text-lg sm:text-xl font-black text-emerald-400">লোড হচ্ছে...</span>
+                        <i class="fa-solid fa-chevron-right text-emerald-400/60 text-xs"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Final Result Box -->
+            <div class="pt-2.5 border-t border-amber-500/40 text-center space-y-1.5">
+                <div id="dueBadgeWrap" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/60 text-amber-300 text-xs sm:text-sm font-extrabold shadow-md">
+                    <i id="dueIcon" class="fa-solid fa-hand-holding-dollar text-amber-400 text-sm"></i>
+                    <span id="dueLabelTxt">আজকের মিল সহ আপনি পাওনা:</span>
+                </div>
+                <div id="netDueBig" class="text-3xl sm:text-4xl font-black text-amber-400 tracking-tight drop-shadow-2xl py-0.5 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-spinner fa-spin text-amber-400 text-base"></i>
+                    <span>হিসাব লোড হচ্ছে...</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 📋 এই মাসের পূর্ণাঙ্গ মিল ও জমার হিসাব পপআপ (All-in-One Combined View) -->
+    <div id="mealModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+        <div class="bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto my-2 sm:hidden"></div>
+
+            <!-- Modal Header -->
+            <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
+                <div>
+                    <h2 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice-dollar text-amber-400"></i> এই মাসের মিল ও জমার হিসাব
+                    </h2>
+                    <p class="text-[11px] text-slate-400">মিল রেট: ৳৮০ | মেস: 291 Elephant Road</p>
+                </div>
+                <button onclick="closeModal()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition cursor-pointer">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Single Unified Scrollable Body (উভয় হিসাব একসাথে) -->
+            <div class="overflow-y-auto px-3.5 py-3 flex-1 space-y-4 max-h-[70vh]" id="modalScrollBody">
+                
+                <!-- 💰 সেকশন ১: জমা দেওয়ার হিসাব -->
+                <div id="sectionPayments" class="bg-slate-950/50 rounded-2xl p-3 border border-emerald-500/30 space-y-2.5">
+                    <div class="flex items-center justify-between pb-1.5 border-b border-slate-800">
+                        <span class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-hand-holding-dollar text-emerald-400"></i>
+                            <span>জমা দেওয়ার হিসাব (পেমেন্ট তালিকা)</span>
+                        </span>
+                        <span class="text-[11px] font-black text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-full" id="historySectionTotalBadge">
+                            মোট: ৳ 0
+                        </span>
+                    </div>
+
+                    <div id="paymentHistoryList" class="space-y-2">
+                        <div class="py-4 text-center text-slate-500 font-medium text-xs">
+                            <i class="fa-solid fa-spinner fa-spin text-emerald-400 mr-1.5"></i> লোড হচ্ছে...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🍽️ সেকশন ২: দৈনিক মিলের বিবরণী -->
+                <div id="sectionMeals" class="bg-slate-950/50 rounded-2xl p-3 border border-amber-500/30 space-y-2.5">
+                    <div class="flex items-center justify-between pb-1.5 border-b border-slate-800">
+                        <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-calendar-days text-amber-400"></i>
+                            <span>দৈনিক মিলের বিবরণী</span>
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-900">
+                        <table class="w-full text-xs sm:text-sm border-collapse">
+                            <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700/80 text-[11px]">
+                                <tr>
+                                    <th class="py-2 px-3 text-left font-semibold">তারিখ</th>
+                                    <th class="py-2 px-3 text-center font-semibold">দৈনিক মিল</th>
+                                    <th class="py-2 px-3 text-right font-semibold">হিসাব (৳)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalTbody" class="divide-y divide-slate-800/60 text-slate-200">
+                                <tr>
+                                    <td colspan="3" class="py-8 text-center text-slate-500 font-medium text-xs">
+                                        <i class="fa-solid fa-spinner fa-spin text-amber-400 mr-1.5"></i> লোড হচ্ছে...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Unified Footer -->
+            <div class="bg-slate-900 px-4 sm:px-5 py-3 border-t border-slate-800 flex justify-between items-center text-xs sm:text-sm">
+                <div class="flex items-center gap-2 sm:gap-3 flex-wrap text-slate-300 font-medium">
+                    <span>মোট মিল: <strong id="modalTotalMealCount" class="text-amber-300 font-black">... টি</strong></span>
+                    <span class="text-slate-600">|</span>
+                    <span>মিল বিল: <strong id="modalTotalTk" class="text-emerald-400 font-black">৳ ...</strong></span>
+                    <span class="text-slate-600">|</span>
+                    <span>জমা: <strong id="historyModalTotalPaid" class="text-emerald-400 font-black">৳ 0</strong></span>
+                </div>
+                <button onclick="closeModal()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 hover:text-white rounded-xl font-bold text-xs transition border border-slate-700 cursor-pointer shrink-0 ml-2">
+                    বন্ধ করুন
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Live Sync Javascript (Pure Live Data Load - No Stale Cache) -->
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywAafCK7BshPOKEduGquTBcR4g0JGE8JKUnOGxRR3LQttItOatkfrMfrF9gJCBUF2A/exec";
+
+        window._globalCateringPayments = [];
+
+        function openModal(targetSection = 'meals') {
+            renderPaymentHistoryList();
+            document.getElementById('mealModal').classList.remove('hidden');
+
+            setTimeout(() => {
+                if (targetSection === 'payments') {
+                    const sec = document.getElementById('sectionPayments');
+                    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    const todayElem = document.getElementById('todayRow');
+                    if (todayElem) {
+                        todayElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        const sec = document.getElementById('sectionMeals');
+                        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            }, 80);
+        }
+
+        function openPaymentHistoryModal() {
+            openModal('payments');
+        }
+
+        function closeModal() {
+            document.getElementById('mealModal').classList.add('hidden');
+        }
+
+        function renderPaymentHistoryList() {
+            const container = document.getElementById('paymentHistoryList');
+            const totalEl = document.getElementById('historyModalTotalPaid');
+            if (!container) return;
+
+            const payments = window._globalCateringPayments || [];
+            
+            // Filter out empty rows
+            const validPayments = payments.filter(p => {
+                if (!p) return false;
+                const pDate = p[0];
+                const pAmt = parseFloat(p[1]) || 0;
+                return pAmt > 0 || (pDate !== "" && pDate !== null && pDate !== undefined);
+            });
+
+            if (validPayments.length === 0) {
+                container.innerHTML = `
+                    <div class="py-8 text-center text-slate-500">
+                        <i class="fa-solid fa-receipt text-3xl text-slate-600 mb-2 block"></i>
+                        <p class="text-xs font-semibold">কোনো জমা বা পরিশোধের রেকর্ড পাওয়া যায়নি</p>
+                    </div>
+                `;
+                if (totalEl) totalEl.innerText = '৳ 0';
+                return;
+            }
+
+            let totalSum = 0;
+            let html = '';
+
+            validPayments.forEach((p, idx) => {
+                const rawDate = p[0];
+                const amt = parseFloat(p[1]) || 0;
+                totalSum += amt;
+                const formattedDate = formatDateDDMMYYYY(rawDate);
+                const isLatest = (idx === validPayments.length - 1);
+
+                html += `
+                    <div class="flex items-center justify-between p-3 rounded-xl ${isLatest ? 'bg-emerald-950/70 border-emerald-500/60' : 'bg-slate-800/80 border-slate-700/80'} border shadow-sm transition hover:border-emerald-500/60">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full ${isLatest ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-slate-700/60 text-slate-300 border border-slate-600/40'} flex items-center justify-center text-xs font-black shrink-0">
+                                #${idx + 1}
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs sm:text-sm font-bold text-white">${formattedDate}</span>
+                                    ${isLatest ? '<span class="text-[9px] font-extrabold text-amber-300 bg-amber-950/90 px-1.5 py-0.2 rounded border border-amber-500/40">সর্বশেষ</span>' : ''}
+                                </div>
+                                <p class="text-[11px] text-slate-400 font-medium">ক্যাটারিং বিল বাবদ জমা</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm sm:text-base font-black text-emerald-400">৳ ${amt}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            if (totalEl) totalEl.innerText = '৳ ' + totalSum;
+            const historyBadge = document.getElementById('historySectionTotalBadge');
+            if (historyBadge) historyBadge.innerText = 'মোট: ৳ ' + totalSum;
+        }
+
+        function extractDayFromCell(cellValue) {
+            if (cellValue === null || cellValue === undefined || cellValue === "") return null;
+            if (typeof cellValue === 'number' && !isNaN(cellValue) && cellValue >= 1 && cellValue <= 31) return cellValue;
+            const s = String(cellValue).trim();
+            if (!s) return null;
+            if (/^\d{1,2}$/.test(s)) {
+                const n = parseInt(s, 10);
+                if (n >= 1 && n <= 31) return n;
+            }
+            const matchDMY = s.match(/^0?(\d{1,2})[-/. ]\d{1,2}[-/. ]\d{2,4}/);
+            if (matchDMY) {
+                const n = parseInt(matchDMY[1], 10);
+                if (n >= 1 && n <= 31) return n;
+            }
+            const matchYMD = s.match(/^\d{4}[-/. ]\d{1,2}[-/. ]0?(\d{1,2})/);
+            if (matchYMD) {
+                const n = parseInt(matchYMD[1], 10);
+                if (n >= 1 && n <= 31) return n;
+            }
+            const d = new Date(s);
+            if (!isNaN(d.getTime())) return d.getDate();
+            return null;
+        }
+
+        function formatDateDDMMYYYY(rawDate) {
+            if (rawDate === null || rawDate === undefined || rawDate === "") return "-";
+            
+            // If it's just a number (day of month 1..31)
+            if (typeof rawDate === 'number' && !isNaN(rawDate) && rawDate >= 1 && rawDate <= 31) {
+                let d = rawDate < 10 ? '0' + rawDate : String(rawDate);
+                let now = new Date();
+                let m = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : String(now.getMonth() + 1);
+                let y = now.getFullYear();
+                return `${d}/${m}/${y}`;
+            }
+
+            let s = String(rawDate).trim();
+            if (/^\d{1,2}$/.test(s)) {
+                let dayNum = parseInt(s, 10);
+                if (dayNum >= 1 && dayNum <= 31) {
+                    let d = dayNum < 10 ? '0' + dayNum : String(dayNum);
+                    let now = new Date();
+                    let m = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : String(now.getMonth() + 1);
+                    let y = now.getFullYear();
+                    return `${d}/${m}/${y}`;
+                }
+            }
+
+            // Check if YYYY-MM-DD or YYYY/MM/DD
+            let matchYMD = s.match(/^(\d{4})[-/. ](\d{1,2})[-/. ](\d{1,2})/);
+            if (matchYMD) {
+                let y = matchYMD[1];
+                let m = parseInt(matchYMD[2], 10) < 10 ? '0' + parseInt(matchYMD[2], 10) : String(matchYMD[2]);
+                let d = parseInt(matchYMD[3], 10) < 10 ? '0' + parseInt(matchYMD[3], 10) : String(matchYMD[3]);
+                return `${d}/${m}/${y}`;
+            }
+
+            // Check if MM/DD/YYYY or DD/MM/YYYY
+            let matchParts = s.match(/^(\d{1,2})[-/. ](\d{1,2})[-/. ](\d{2,4})/);
+            if (matchParts) {
+                let p1 = parseInt(matchParts[1], 10);
+                let p2 = parseInt(matchParts[2], 10);
+                let y = matchParts[3].length === 2 ? '20' + matchParts[3] : matchParts[3];
+                
+                let d = p1, m = p2;
+                if (p2 > 12 && p1 <= 12) {
+                    d = p2;
+                    m = p1;
+                } else if (p1 > 12 && p2 <= 12) {
+                    d = p1;
+                    m = p2;
+                } else if (p1 <= 12 && p2 <= 12) {
+                    let curMonth = (new Date()).getMonth() + 1;
+                    if (p1 === curMonth && p2 !== curMonth) {
+                        d = p2;
+                        m = p1;
+                    } else if (p2 === curMonth && p1 !== curMonth) {
+                        d = p1;
+                        m = p2;
+                    } else {
+                        d = p1;
+                        m = p2;
+                    }
+                }
+                let dd = d < 10 ? '0' + d : String(d);
+                let mm = m < 10 ? '0' + m : String(m);
+                return `${dd}/${mm}/${y}`;
+            }
+
+            let parsed = new Date(s);
+            if (!isNaN(parsed.getTime())) {
+                let d = parsed.getDate() < 10 ? '0' + parsed.getDate() : String(parsed.getDate());
+                let m = (parsed.getMonth() + 1) < 10 ? '0' + (parsed.getMonth() + 1) : String(parsed.getMonth() + 1);
+                let y = parsed.getFullYear();
+                return `${d}/${m}/${y}`;
+            }
+
+            return s;
+        }
+
+        function checkIfDateIsToday(rawDate) {
+            const todayDay = (new Date()).getDate();
+            const extracted = extractDayFromCell(rawDate);
+            return extracted === todayDay;
+        }
+
+        // 📌 আজকের খাবার অর্ডারের লাইভ ব্যানার কার্ড রেন্ডার করা
+        function renderTodayOrderAlert(todayRow, isAllZero, mealCount, dateStr) {
+            const banner = document.getElementById('todayOrderCardBanner');
+            if (!banner) return;
+
+            if (mealCount > 0) {
+                banner.className = "p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/80 bg-gradient-to-br from-emerald-950/90 via-slate-900 to-emerald-950/90 shadow-xl emerald-glow transition-all duration-300";
+                banner.classList.remove('hidden');
+                banner.innerHTML = `
+                    <div class="space-y-3.5">
+                        <!-- Top Bar: Two Corners (Larger & Bold) -->
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="bg-emerald-400 text-slate-950 text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-utensils text-xs"></i> আজকের অর্ডার
+                            </span>
+                            <span class="text-slate-200 text-xs sm:text-sm font-extrabold bg-slate-950/90 px-3.5 py-1 rounded-full border border-slate-700 shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-days text-emerald-400"></i> ${dateStr}
+                            </span>
+                        </div>
+
+                        <!-- Center: Meal Count Showcase with Icon -->
+                        <div class="py-1 flex items-center justify-center gap-3">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/20 border border-emerald-400/80 flex items-center justify-center text-emerald-400 text-xl sm:text-2xl shrink-0 shadow-md">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-black text-amber-300 tracking-tight leading-snug">
+                                আজকে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${mealCount}</span> টা মিল দিবেন
+                            </h3>
+                        </div>
+
+                        <!-- Bottom: Centered Delivery Address -->
+                        <div class="pt-0.5 flex justify-center">
+                            <div class="inline-flex items-center gap-1.5 bg-slate-950/90 border border-slate-700/90 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 shadow-sm">
+                                <i class="fa-solid fa-location-dot text-rose-400 text-xs"></i>
+                                <span>ডেলিভারি ঠিকানা: <strong class="text-amber-300 font-extrabold">291 New Elephant Road</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (isAllZero) {
+                banner.className = "p-4 sm:p-5 rounded-2xl border-2 border-rose-500/80 bg-gradient-to-br from-rose-950/90 via-slate-900 to-rose-950/90 shadow-xl transition-all duration-300";
+                banner.classList.remove('hidden');
+                banner.innerHTML = `
+                    <div class="space-y-3.5">
+                        <!-- Top Bar: Two Corners (Larger & Bold) -->
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="bg-rose-500 text-white text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-ban text-xs"></i> আজকের নোটিশ
+                            </span>
+                            <span class="text-slate-200 text-xs sm:text-sm font-extrabold bg-slate-950/90 px-3.5 py-1 rounded-full border border-slate-700 shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-days text-rose-400"></i> ${dateStr}
+                            </span>
+                        </div>
+
+                        <!-- Center: Notice Content with Icon -->
+                        <div class="py-1 flex items-center justify-center gap-3">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-rose-500/20 border border-rose-400/80 flex items-center justify-center text-rose-400 text-xl sm:text-2xl shrink-0 shadow-md">
+                                <i class="fa-solid fa-ban"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-lg sm:text-xl font-black text-rose-300 tracking-tight leading-snug">
+                                    আজ কোনো খাবার লাগবে না
+                                </h3>
+                                <p class="text-xs font-bold text-rose-400/90">(মিল বন্ধ)</p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom: Centered Address -->
+                        <div class="pt-0.5 flex justify-center">
+                            <div class="inline-flex items-center gap-1.5 bg-slate-950/90 border border-slate-700/90 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 shadow-sm">
+                                <i class="fa-solid fa-location-dot text-rose-400 text-xs"></i>
+                                <span>মেস ঠিকানা: <strong class="text-slate-200 font-bold">291 New Elephant Road</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                banner.className = "p-4 sm:p-5 rounded-2xl border-2 border-amber-500/60 bg-gradient-to-r from-amber-950/60 via-slate-900 to-amber-950/60 shadow-lg";
+                banner.classList.remove('hidden');
+                banner.innerHTML = `
+                    <div class="space-y-3">
+                        <!-- Top Bar: Two Corners (Larger & Bold) -->
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="bg-amber-400 text-slate-950 text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-clock text-xs"></i> আজকের স্ট্যাটাস
+                            </span>
+                            <span class="text-slate-200 text-xs sm:text-sm font-extrabold bg-slate-950/90 px-3.5 py-1 rounded-full border border-slate-700 shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-days text-amber-400"></i> ${dateStr}
+                            </span>
+                        </div>
+
+                        <!-- Center: Pending Status with Icon -->
+                        <div class="py-1 flex items-center justify-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/80 flex items-center justify-center text-amber-400 text-base shrink-0 shadow-sm">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <h3 class="text-sm sm:text-base font-bold text-amber-200">আজ এখনও মিল জানানো হয়নি</h3>
+                        </div>
+
+                        <!-- Bottom: Centered Address -->
+                        <div class="pt-0.5 flex justify-center">
+                            <p class="text-[11px] text-slate-400 inline-flex items-center gap-1"><i class="fa-solid fa-location-dot text-rose-400 text-xs"></i> 291 New Elephant Road</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ⚡ একবারে লাইভ ডাটা রেন্ডার
+        function renderCateringUI(data) {
+            if (!data) return;
+
+            if (data.currentMonth) {
+                document.getElementById('monthBadge').innerText = '📅 চলতি মাস: ' + data.currentMonth;
+            }
+
+            const tbody = document.getElementById('modalTbody');
+            tbody.innerHTML = '';
+
+            let totalMealSum = 0;
+            let todayRowFound = null;
+            let todayIsAllZero = false;
+            let todayMealCount = 0;
+            let todayDateStr = formatDateDDMMYYYY(new Date());
+
+            if (data.dailyMealsList && data.dailyMealsList.length > 0) {
+                data.dailyMealsList.forEach(row => {
+                    let rawDate = row[0];
+                    let mealCount = 0;
+                    let filledCount = 0;
+                    let totalMembers = row.length - 1;
+
+                    for (let c = 1; c < row.length; c++) {
+                        let val = row[c];
+                        if (val !== "" && val !== null && val !== undefined) {
+                            filledCount++;
+                            mealCount += (parseInt(val, 10) || 0);
+                        }
+                    }
+                    
+                    let isAllZero = (mealCount === 0 && filledCount >= totalMembers && totalMembers > 0);
+                    let dateStr = formatDateDDMMYYYY(rawDate);
+                    
+                    let dayTk = mealCount * 80;
+                    totalMealSum += mealCount;
+
+                    let isToday = checkIfDateIsToday(rawDate);
+
+                    if (isToday) {
+                        todayRowFound = row;
+                        todayIsAllZero = isAllZero;
+                        todayMealCount = mealCount;
+                        todayDateStr = dateStr;
+                    }
+
+                    let tr = document.createElement('tr');
+
+                    if (isToday) {
+                        tr.id = "todayRow";
+                        tr.className = 'bg-slate-800 border-y border-amber-500/50 font-bold';
+                        
+                        let mealText = mealCount > 0 
+                            ? `<span class="text-amber-300 font-extrabold text-sm">${mealCount} টি</span>` 
+                            : (isAllZero ? `<span class="text-rose-400 text-xs font-semibold">০ (মিল লাগবে না)</span>` : `<span class="text-slate-500 text-xs">এন্ট্রি হয়নি</span>`);
+
+                        let tkText = dayTk > 0 
+                            ? `<span class="text-emerald-400 font-black text-sm">৳ ${dayTk}</span>` 
+                            : (isAllZero ? `<span class="text-slate-400 text-xs">৳ 0</span>` : `<span class="text-slate-600">—</span>`);
+
+                        tr.innerHTML = `
+                            <td class="py-2.5 px-3 text-left">
+                                <span class="bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded mr-1">আজ</span>
+                                <span class="text-amber-300 font-bold text-xs sm:text-sm">${dateStr}</span>
+                            </td>
+                            <td class="py-2.5 px-3 text-center">
+                                ${mealText}
+                            </td>
+                            <td class="py-2.5 px-3 text-right">
+                                ${tkText}
+                            </td>
+                        `;
+                    } else {
+                        tr.className = 'hover:bg-slate-800/40 transition';
+                        
+                        let mealText = mealCount > 0 
+                            ? `<span class="text-amber-300 font-bold text-xs sm:text-sm">${mealCount} টি</span>` 
+                            : (isAllZero ? `<span class="text-slate-500 text-xs">0</span>` : `<span class="text-slate-600 font-mono text-xs">—</span>`);
+
+                        let tkText = dayTk > 0 
+                            ? `<span class="text-emerald-400 font-bold text-xs sm:text-sm">৳ ${dayTk}</span>` 
+                            : (isAllZero ? `<span class="text-slate-500 text-xs">৳ 0</span>` : `<span class="text-slate-600 font-mono text-xs">—</span>`);
+
+                        tr.innerHTML = `
+                            <td class="py-2 px-3 text-left text-slate-300 text-xs sm:text-sm font-medium">${dateStr}</td>
+                            <td class="py-2 px-3 text-center">${mealText}</td>
+                            <td class="py-2 px-3 text-right font-medium">${tkText}</td>
+                        `;
+                    }
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // আজকের খাবার অর্ডার নোটিশ কার্ড ও ব্যানার
+            renderTodayOrderAlert(todayRowFound, todayIsAllZero, todayMealCount, todayDateStr);
+
+            let totalBillAmount = totalMealSum * 80;
+            let paidAmt = parseFloat(data.paidAmount) || 0;
+            let dueAmt = parseFloat(data.dueAmount) || (totalBillAmount - paidAmt);
+
+            window._globalCateringPayments = data.cateringPayments || [];
+            let lastPayDateStr = "";
+            let lastSinglePayAmt = 0;
+            if (data.cateringPayments && data.cateringPayments.length > 0) {
+                for (let i = data.cateringPayments.length - 1; i >= 0; i--) {
+                    let pRow = data.cateringPayments[i];
+                    let pDate = pRow[0];
+                    let pAmt = parseFloat(pRow[1]) || 0;
+                    if (pAmt > 0 || (pDate !== "" && pDate !== null && pDate !== undefined)) {
+                        lastSinglePayAmt = pAmt;
+                        lastPayDateStr = formatDateDDMMYYYY(pDate);
+                        break;
+                    }
+                }
+            }
+
+            const badgeElem = document.getElementById('lastPayDateBadge');
+            if (badgeElem) {
+                badgeElem.innerText = lastPayDateStr ? `(${lastPayDateStr})` : '';
+            }
+
+            document.getElementById('totalMealCountTxt').innerText = totalMealSum;
+            document.getElementById('totalBillCalc').innerText = '৳ ' + totalBillAmount;
+            document.getElementById('totalPaidCalc').innerText = '- ৳ ' + (lastSinglePayAmt || paidAmt);
+
+            const dueBadgeWrap = document.getElementById('dueBadgeWrap');
+            const dueIcon = document.getElementById('dueIcon');
+            const dueLabel = document.getElementById('dueLabelTxt');
+            const dueBig = document.getElementById('netDueBig');
+
+            if (todayMealCount > 0) {
+                let todayTk = todayMealCount * 80;
+                if (dueAmt < 0) {
+                    const posAmt = Math.abs(dueAmt);
+                    if (dueBadgeWrap) dueBadgeWrap.className = "inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-xs sm:text-sm font-extrabold shadow-md";
+                    if (dueIcon) dueIcon.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
+                    if (dueLabel) dueLabel.innerText = `আজকের ${todayMealCount} মিলের বিল (৳${todayTk}) সহ অগ্রিম বেশি দেওয়া আছে:`;
+                    if (dueBig) {
+                        dueBig.className = "text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ ' + posAmt;
+                    }
+                } else if (dueAmt > 0) {
+                    if (dueBadgeWrap) dueBadgeWrap.className = "inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/60 text-amber-300 text-xs sm:text-sm font-extrabold shadow-md";
+                    if (dueIcon) dueIcon.className = "fa-solid fa-hand-holding-dollar text-amber-400 text-sm";
+                    if (dueLabel) dueLabel.innerText = `আজকের ${todayMealCount} মিলের বিল (৳${todayTk}) সহ আপনি পাওনা:`;
+                    if (dueBig) {
+                        dueBig.className = "text-3xl sm:text-4xl font-black text-amber-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ ' + dueAmt;
+                    }
+                } else {
+                    if (dueBadgeWrap) dueBadgeWrap.className = "inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-950/90 border border-blue-500/60 text-blue-300 text-xs sm:text-sm font-extrabold shadow-md";
+                    if (dueIcon) dueIcon.className = "fa-solid fa-circle-check text-blue-400 text-sm";
+                    if (dueLabel) dueLabel.innerText = `আজকের ${todayMealCount} মিলের বিল (৳${todayTk}) সহ সম্পূর্ণ পরিশোধিত`;
+                    if (dueBig) {
+                        dueBig.className = "text-3xl sm:text-4xl font-black text-blue-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ 0';
+                    }
+                }
+            } else {
+                if (dueAmt < 0) {
+                    const posAmt = Math.abs(dueAmt);
+                    if (dueBadgeWrap) dueBadgeWrap.className = "inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-xs sm:text-sm font-extrabold shadow-md";
+                    if (dueIcon) dueIcon.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
+                    if (dueLabel) dueLabel.innerText = "অগ্রিম বেশি দেওয়া আছে:";
+                    if (dueBig) {
+                        dueBig.className = "text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ ' + posAmt;
+                    }
+                } else if (dueAmt > 0) {
+                    if (dueBadgeWrap) dueBadgeWrap.className = "inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/60 text-amber-300 text-xs sm:text-sm font-extrabold shadow-md";
+                    if (dueIcon) dueIcon.className = "fa-solid fa-hand-holding-dollar text-amber-400 text-sm";
+                    if (dueLabel) dueLabel.innerText = "আপনি পাওনা (বকেয়া):";
+                    if (dueBig) {
+                        dueBig.className = "text-3xl sm:text-4xl font-black text-amber-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ ' + dueAmt;
+                    }
+                } else {
+                    if (dueBadgeWrap) dueBadgeWrap.className = "inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-950/90 border border-blue-500/60 text-blue-300 text-xs sm:text-sm font-extrabold shadow-md";
+                    if (dueIcon) dueIcon.className = "fa-solid fa-circle-check text-blue-400 text-sm";
+                    if (dueLabel) dueLabel.innerText = "সকল হিসাব সম্পূর্ণ পরিশোধিত";
+                    if (dueBig) {
+                        dueBig.className = "text-3xl sm:text-4xl font-black text-blue-400 tracking-tight drop-shadow-2xl py-1";
+                        dueBig.innerText = '৳ 0';
+                    }
+                }
+            }
+
+            // Update Modal Meal Badges and Footer
+            const mMealBadge = document.getElementById('mealSectionTotalBadge');
+            if (mMealBadge) mMealBadge.innerText = `মোট: ${totalMealSum} টি মিল (৳ ${totalBillAmount})`;
+
+            const mTotalTk = document.getElementById('modalTotalTk');
+            if (mTotalTk) mTotalTk.innerText = '৳ ' + totalBillAmount;
+
+            const mTotalMeal = document.getElementById('modalTotalMealCount');
+            if (mTotalMeal) mTotalMeal.innerText = totalMealSum + ' টি';
+        }
+
+        const CACHE_KEY_CATERING = "cached_catering_live_full";
+        const CACHE_KEY_ADMIN = "cached_admin_sheet_full";
+
+        function loadFromLocalCache() {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY_CATERING) || localStorage.getItem(CACHE_KEY_ADMIN);
+                if (raw) {
+                    const cached = JSON.parse(raw);
+                    if (cached && (cached.dailyMealsList || cached.summaryTable)) {
+                        renderCateringUI(cached);
+                        return true;
+                    }
+                }
+            } catch(e) {}
+            return false;
+        }
+
+        function setSyncStatus(state, msg) {
+            const badge = document.getElementById('syncBadge');
+            const warnBanner = document.getElementById('savedDataWarningBanner');
+            if (!badge) return;
+            badge.classList.remove('hidden');
+
+            if (state === 'loading') {
+                badge.onclick = null;
+                badge.className = "bg-amber-950/80 border border-amber-500/50 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-amber-300 inline-flex items-center gap-1 shadow";
+                badge.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin text-amber-400"></i> ${msg || 'সিঙ্ক হচ্ছে...'}`;
+            } else if (state === 'live') {
+                badge.onclick = null;
+                badge.className = "bg-emerald-950/80 border border-emerald-500/50 px-3 py-0.5 rounded-full text-[11px] font-bold text-emerald-300 inline-flex items-center gap-1.5 shadow";
+                badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg || 'কাস্টমার থেকে সর্বশেষ হিসাব'}`;
+                if (warnBanner) warnBanner.classList.add('hidden');
+            } else if (state === 'cached') {
+                badge.className = "bg-rose-950/90 hover:bg-rose-900 border border-rose-500/70 px-3 py-0.5 rounded-full text-[11px] font-extrabold text-rose-300 inline-flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95";
+                badge.onclick = () => fetchLiveCateringData();
+                badge.innerHTML = `<i class="fa-solid fa-arrows-rotate text-rose-400"></i> ${msg || 'কাস্টমারের সর্বশেষ হিসাব দেখতে রিফ্রেশ দিন'}`;
+                if (warnBanner) warnBanner.classList.remove('hidden');
+            }
+        }
+
+        function showTopProgress() {
+            const bar = document.getElementById('topProgressBar');
+            if (bar) {
+                bar.style.width = '35%';
+                bar.classList.remove('opacity-0');
+                setTimeout(() => { if (bar) bar.style.width = '75%'; }, 400);
+            }
+        }
+
+        function hideTopProgress() {
+            const bar = document.getElementById('topProgressBar');
+            if (bar) {
+                bar.style.width = '100%';
+                setTimeout(() => {
+                    bar.classList.add('opacity-0');
+                    setTimeout(() => { if (bar) bar.style.width = '0%'; }, 300);
+                }, 300);
+            }
+        }
+
+        let isFetchingCatering = false;
+        async function fetchLiveCateringData(isSilent = false) {
+            if (isFetchingCatering) return;
+            const refreshIcon = document.getElementById('cateringRefreshIcon');
+            if (refreshIcon && !isSilent) refreshIcon.classList.add('fa-spin');
+
+            // ⚡ ১. ইনস্ট্যান্ট ক্যাশ লোড: লোকাল স্টোরেজ থেকে সাথে সাথে রেন্ডার (০ মিলিসেকেন্ড)
+            const hasLoadedCache = loadFromLocalCache();
+            if (hasLoadedCache && !isSilent) {
+                setSyncStatus('loading', 'আপডেট হচ্ছে...');
+            } else if (!hasLoadedCache && !isSilent) {
+                setSyncStatus('loading', 'লোড হচ্ছে...');
+            }
+
+            if (!isSilent) showTopProgress();
+
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                if (!hasLoadedCache) renderDemoData();
+                setSyncStatus('live', 'কাস্টমার থেকে সর্বশেষ হিসাব');
+                if (!isSilent) hideTopProgress();
+                if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+                return;
+            }
+
+            isFetchingCatering = true;
+
+            // ⚡ ২. সর্বোচ্চ ৮ সেকেন্ড টাইমআউট
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+            try {
+                const fetchUrl = GOOGLE_SCRIPT_URL + (GOOGLE_SCRIPT_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
+                const res = await fetch(fetchUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                
+                if (data && (data.dailyMealsList || data.summaryTable)) {
+                    try {
+                        localStorage.setItem(CACHE_KEY_CATERING, JSON.stringify(data));
+                        localStorage.setItem(CACHE_KEY_ADMIN, JSON.stringify(data));
+                    } catch(e){}
+                    renderCateringUI(data);
+                    setSyncStatus('live', 'কাস্টমার থেকে সর্বশেষ হিসাব');
+                }
+            } catch(err) {
+                console.warn("Live fetch notice in catering:", err);
+                const loaded = loadFromLocalCache();
+                if (!loaded && !isSilent) {
+                    renderDemoData();
+                }
+                if (!isSilent) setSyncStatus('cached', 'পেজ আবার রিফ্রেশ দিন');
+            } finally {
+                isFetchingCatering = false;
+                if (!isSilent) hideTopProgress();
+                if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+            }
+        }
+
+        // গুগল শিট থেকে ডাটা লোড (পেজ ওপেন হওয়া মাত্রই)
+        loadFromLocalCache();
+        fetchLiveCateringData(false);
+
+        // 🔄 ফুল অটো-লাইভ সিস্টেম (অন্য ট্যাব থেকে আসলে + পেজে ফিরে আসলে + নেট আসলে অটো আপডেট)
+        let lastCateringFetchTime = Date.now();
+
+        // ১. ইন্টারনেট সংযোগ ফিরে আসলে স্বয়ংক্রিয় লাইভ সিঙ্ক
+        window.addEventListener('online', () => {
+            fetchLiveCateringData(true);
+        });
+
+        // ২. ব্যবহারকারী অন্য পেজ/ট্যাব বা অ্যাপ থেকে এই পেজে এলেই ব্যাকগ্রাউন্ডে স্বয়ংক্রিয় লাইভ আপডেট
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                loadFromLocalCache();
+                if (Date.now() - lastCateringFetchTime > 4000) {
+                    lastCateringFetchTime = Date.now();
+                    fetchLiveCateringData(true);
+                }
+            }
+        });
+
+        window.addEventListener('focus', () => {
+            loadFromLocalCache();
+            if (Date.now() - lastCateringFetchTime > 4000) {
+                lastCateringFetchTime = Date.now();
+                fetchLiveCateringData(true);
+            }
+        });
+
+        // ৩. অন্য ট্যাবে (যেমন index.html এ) ডাটা পরিবর্তন হলে ইনস্ট্যান্ট এই পেজে রিয়েল-টাইম আপডেট
+        window.addEventListener('storage', (e) => {
+            if (e.key === CACHE_KEY_CATERING || e.key === CACHE_KEY_ADMIN) {
+                loadFromLocalCache();
+            }
+        });
+
+        // ৪. একই পেজে খুলে বসে থাকলেও প্রতি ২০ সেকেন্ড পর পর ব্যাকগ্রাউন্ডে স্বয়ংক্রিয় লাইভ আপডেট
+        setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                lastCateringFetchTime = Date.now();
+                fetchLiveCateringData(true);
+            }
+        }, 20000);
+    </script>
+
+</body>
+</html>

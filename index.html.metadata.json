@@ -1,0 +1,5 @@
+{
+  "summary":  "Updated custom meal input boxes to open completely empty without a default 0, eliminating the 50 problem when typing digits.",
+  "updatedAt":  "2026-10-02T15:09:02.330158100Z",
+  "userFacing":  true
+}

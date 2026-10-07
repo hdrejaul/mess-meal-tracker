@@ -1,0 +1,5 @@
+{
+  "summary":  "Updated Code.gs Apps Script to strictly fetch A2:F32 daily rows and calculate total meal sum dynamically in JavaScript to prevent any cell formula corruption.",
+  "updatedAt":  "2026-10-02T15:34:20.100314600Z",
+  "userFacing":  true
+}

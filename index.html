@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মেস মিল ম্যানেজমেন্ট সিস্টেম - নাবিলা ক্যাটারিং সার্ভিস</title>
+    <!-- WhatsApp, Facebook, Social Link Preview Thumbnail -->
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    <meta property="og:site_name" content="নাবিলা ক্যাটারিং সার্ভিস">
+    <meta property="og:title" content="মেস মিল ম্যানেজমেন্ট সিস্টেম - নাবিলা ক্যাটারিং সার্ভিস">
+    <meta property="og:description" content="মেস মিল ও জমা এন্ট্রি ড্যাশবোর্ড | লাইভ আপডেট">
+    <meta property="og:image" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
+    <meta property="og:image:secure_url" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://hdrejaul.github.io/mess-meal-tracker/index.html">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="মেস মিল ম্যানেজমেন্ট সিস্টেম - নাবিলা ক্যাটারিং সার্ভিস">
+    <meta name="twitter:description" content="মেস মিল ও জমা এন্ট্রি ড্যাশবোর্ড">
+    <meta name="twitter:image" content="https://hdrejaul.github.io/mess-meal-tracker/banner.jpg">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="p-2 sm:p-3 md:p-4 relative">
+
+
+
+    <!-- 🔒 Security PIN Protection Overlay Modal -->
+    <div id="pinModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-white w-full max-w-sm p-6 sm:p-8 rounded-3xl shadow-2xl border border-gray-100 text-center space-y-5">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-2xl mx-auto shadow-inner">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">অ্যাডমিন সিকিউরিটি পিন</h2>
+                <p class="text-xs text-gray-500 mt-1">মেস অ্যাডমিন ড্যাশবোর্ডে প্রবেশ করতে পিন দিন</p>
+            </div>
+
+            <form onsubmit="verifyPin(event)" class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="adminPinInput" placeholder="****" required maxlength="10"
+                           class="w-full text-center tracking-widest text-2xl font-bold py-3 border-2 border-indigo-200 rounded-2xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition">
+                </div>
+
+                <div id="pinErrorMsg" class="hidden text-xs text-red-600 font-bold bg-red-50 py-2 rounded-xl border border-red-200">
+                    ⚠️ ভুল পিন! আবার চেষ্টা করুন।
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-key"></i> ড্যাশবোর্ড আনলক করুন
+                </button>
+            </form>
+            
+            <p class="text-[11px] text-gray-400">ডিফল্ট সিকিউরিটি পিন: <strong class="text-indigo-600">1234</strong></p>
+        </div>
+    </div>
+
+    <!-- 📋 অফলাইন পেন্ডিং এন্ট্রি তালিকা প্রিভিউ মোডাল -->
+    <div id="pendingQueueModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4 z-50 transition-all duration-300">
+        <div class="bg-white w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[88vh] animate-in fade-in zoom-in-95">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 px-4 sm:px-6 py-3.5 text-white flex justify-between items-center shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center text-base shadow-inner">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-black flex items-center gap-2">
+                            <span>অফলাইন পেন্ডিং ডাটা তালিকা</span>
+                            <span id="modalQueueBadgeCount" class="bg-white/25 text-white text-[10px] font-black px-2 py-0.5 rounded-full border border-white/40">১</span>
+                        </h3>
+                        <p id="modalPendingSubtitle" class="text-[11px] text-amber-100 font-medium">ইন্টারনেট পেলে স্বয়ংক্রিয়ভাবে গুগল শিটে সেভ হবে</p>
+                    </div>
+                </div>
+                <button onclick="closePendingQueueModal()" class="w-8 h-8 bg-white/15 hover:bg-white/30 rounded-xl flex items-center justify-center text-white transition active:scale-90 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body: Pending Items List -->
+            <div id="pendingItemsContainer" class="p-3 sm:p-5 overflow-y-auto space-y-3 flex-1 bg-slate-50/50">
+                <!-- Populated via JS -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-3 sm:p-4 bg-white border-t border-gray-100 flex items-center justify-between gap-2.5">
+                <button onclick="closePendingQueueModal()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition active:scale-95 cursor-pointer">
+                    বন্ধ করুন
+                </button>
+                <button onclick="syncOfflineQueue(true)" id="modalSyncNowBtn" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-600 hover:brightness-105 active:scale-95 text-white font-black rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-md transition cursor-pointer">
+                    <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                    <span>এখনই গুগোল শিটে সিঙ্ক করুন</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto space-y-2.5 sm:space-y-3">
+        
+        <!-- Header -->
+        <header class="bg-indigo-700 text-white rounded-xl p-3 sm:p-3.5 shadow-md flex flex-col md:flex-row justify-between items-center gap-2.5">
+            <div>
+                <h1 class="text-lg md:text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-utensils text-amber-300"></i> মেস মিল ম্যানেজমেন্ট সিস্টেম
+                </h1>
+                <p class="text-indigo-200 text-xs">নাবিলা ক্যাটারিং সার্ভিস মিল ট্র্যাকার (মিল রেট: ৳৮০/মিল)</p>
+            </div>
+            <div class="flex items-center gap-2 w-full md:w-auto flex-wrap justify-end">
+                <a href="catering-view.html" class="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-extrabold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1.5 text-xs border border-amber-300 transition shrink-0">
+                    <i class="fa-solid fa-utensils text-slate-950 text-xs"></i>
+                    <span>নাবিলা ক্যাটারিং পেজ</span>
+                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                </a>
+                
+                <!-- 🌟 অফলাইন সেভ হিস্ট্রি বাটন (শুধুমাত্র অফলাইনে ডাটা সেভ হলে উপরে দেখাবে) -->
+                <button id="headerOfflineHistoryBtn" onclick="openPendingQueueModal()" class="hidden bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-black px-2.5 sm:px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 text-xs border border-amber-300 transition shrink-0 animate-pulse cursor-pointer" title="অফলাইনে সেভ হওয়া হিস্ট্রি দেখতে ক্লিক করুন">
+                    <i class="fa-solid fa-cloud-arrow-down text-slate-950 text-xs"></i>
+                    <span>অফলাইন সেভ: <strong id="headerOfflineCountBadge">১টি</strong></span>
+                    <span class="bg-slate-950 text-amber-300 text-[10px] px-1.5 py-0.5 rounded-md font-bold">হিস্ট্রি</span>
+                </button>
+                
+                <!-- Connectivity / Live Sync Status Pill -->
+                <div id="connStatusBadge" onclick="openPendingQueueModalIfAny()" class="bg-indigo-800/90 border border-indigo-500/60 px-2.5 py-1.5 rounded-lg text-xs font-bold text-emerald-300 flex items-center gap-1.5 shadow-xs cursor-pointer transition active:scale-95" title="কানেক্টিভিটি স্ট্যাটাস">
+                    <span id="connDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                    <span id="connStatusText" class="text-[11px]">লাইভ সিঙ্ক</span>
+                </div>
+
+                <div class="bg-indigo-800 px-3 py-1 rounded-lg text-center border border-indigo-500 flex-1 md:flex-initial">
+                    <span class="text-[10px] text-indigo-300 block uppercase font-semibold">আজকের তারিখ</span>
+                    <span id="currentDate" class="text-sm font-bold"></span>
+                </div>
+                <button onclick="fetchLiveSheetData()" id="refreshBtn" title="শিট রিফ্রেশ করুন" class="bg-indigo-800 hover:bg-indigo-900 text-indigo-200 hover:text-white p-2 rounded-lg border border-indigo-500 transition shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-arrows-rotate text-xs" id="refreshIcon"></i>
+                </button>
+                <button onclick="lockAdmin()" title="লক করুন" class="bg-indigo-800 hover:bg-indigo-900 text-indigo-200 hover:text-white p-2 rounded-lg border border-indigo-500 transition shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dynamic Summary Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+            <div class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-bowl-food"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-500 font-medium leading-none">মোট মিল সংখ্যা</p>
+                    <h3 id="cardTotalMeals" class="text-base font-bold text-gray-800 mt-1">
+                        <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-500 font-medium leading-none">মোট ক্যাটারিং খরচ</p>
+                    <h3 id="cardTotalCost" class="text-base font-bold text-gray-800 mt-1">
+                        <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-500 font-medium leading-none">মোট জমা টাকা</p>
+                    <h3 id="cardTotalDeposit" class="text-base font-bold text-gray-800 mt-1">
+                        <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-500 font-medium leading-none">স্টক ব্যালেন্স</p>
+                    <h3 id="cardStockBalance" class="text-base font-bold text-emerald-600 mt-1">
+                        <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-2.5 sm:gap-3">
+
+            <!-- Entry Form with 3 Tabs -->
+            <div class="lg:col-span-1 bg-white p-3 sm:p-3.5 rounded-xl shadow-xs border border-gray-100 space-y-2.5">
+                
+                <!-- 3 Tab Switching Buttons -->
+                <div class="flex bg-gray-100 p-0.5 rounded-lg gap-1 text-[11px] font-bold">
+                    <button id="tabMealBtn" onclick="switchTab('meal')" class="flex-1 py-1.5 rounded-md transition bg-white text-indigo-700 shadow-xs flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-utensils text-xs"></i> মিল এন্ট্রি
+                    </button>
+                    <button id="tabDepositBtn" onclick="switchTab('deposit')" class="flex-1 py-1.5 rounded-md transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-wallet text-xs"></i> মেস জমা
+                    </button>
+                    <button id="tabCateringBtn" onclick="switchTab('catering')" class="flex-1 py-1.5 rounded-md transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-hand-holding-dollar text-xs"></i> খাবার ওয়ালা
+                    </button>
+                </div>
+
+                <!-- ১. দৈনিক মিল এন্ট্রি ফর্ম (Auto Today Date + Custom Date Picker Option) -->
+                <form id="mealForm" onsubmit="submitMeals(event)" class="space-y-2">
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[11px] font-semibold text-gray-600">তারিখ (Date)</label>
+                            <span class="text-[9px] bg-indigo-50 text-indigo-600 font-bold px-1.5 py-0.5 rounded">অটো আজকের তারিখ</span>
+                        </div>
+                        <input type="date" id="entryDate" onchange="resetMealFormInputs()" required class="w-full px-2.5 py-1 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-xs text-gray-800 font-semibold bg-gray-50/50">
+                    </div>
+
+                    <!-- 📅 আজকের সেভ করা মিল স্ট্যাটাস (Today's Last Saved Meals) -->
+                    <div id="todayMealStatusCard" class="bg-gradient-to-br from-indigo-50/90 via-blue-50/50 to-indigo-50/90 border border-indigo-100 rounded-xl p-2 shadow-xs space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-indigo-950 flex items-center gap-1">
+                                <i class="fa-solid fa-calendar-check text-indigo-600 text-xs"></i>
+                                <span>আজকের সেভ করা মিল স্ট্যাটাস</span>
+                            </span>
+                            <span id="todayTotalBadge" class="text-[10px] font-extrabold bg-indigo-600 text-white px-2 py-0.5 rounded-full shadow-xs">
+                                মোট: 0 মিল
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-[11px]">
+                            <div class="bg-white/90 rounded-lg p-1 border border-indigo-100/70 flex items-center justify-between">
+                                <span class="font-semibold text-gray-600 text-[10px]">Rejaul:</span>
+                                <span id="today_rejaul" class="font-extrabold text-indigo-700 bg-indigo-50 px-1 py-0.2 rounded text-[11px]">0</span>
+                            </div>
+                            <div class="bg-white/90 rounded-lg p-1 border border-indigo-100/70 flex items-center justify-between">
+                                <span class="font-semibold text-gray-600 text-[10px]">Tafiqul:</span>
+                                <span id="today_tafiqul" class="font-extrabold text-indigo-700 bg-indigo-50 px-1 py-0.2 rounded text-[11px]">0</span>
+                            </div>
+                            <div class="bg-white/90 rounded-lg p-1 border border-indigo-100/70 flex items-center justify-between">
+                                <span class="font-semibold text-gray-600 text-[10px]">Rafiul:</span>
+                                <span id="today_rafiul" class="font-extrabold text-indigo-700 bg-indigo-50 px-1 py-0.2 rounded text-[11px]">0</span>
+                            </div>
+                            <div class="bg-white/90 rounded-lg p-1 border border-indigo-100/70 flex items-center justify-between">
+                                <span class="font-semibold text-gray-600 text-[10px]">Samiul:</span>
+                                <span id="today_samiul" class="font-extrabold text-indigo-700 bg-indigo-50 px-1 py-0.2 rounded text-[11px]">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 1: Rejaul -->
+                    <div class="bg-slate-50/90 hover:bg-white px-2.5 py-1.5 rounded-xl border border-gray-200/80 hover:border-indigo-200 shadow-xs transition-all duration-150">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white rounded-lg flex items-center justify-center text-[10px] font-black shadow-xs">R</div>
+                                <span class="font-extrabold text-gray-900 text-xs tracking-tight">Rejaul</span>
+                            </div>
+                            <div id="meal_select_wrap_Rejaul" class="relative">
+                                <select id="meal_Rejaul" onchange="toggleCustomMealInput('Rejaul')" class="bg-white border border-gray-200 text-gray-900 font-bold rounded-lg px-2 py-0.5 text-xs outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-100 shadow-xs transition">
+                                    <option value="0">0 Meal</option>
+                                    <option value="1">1 Meal</option>
+                                    <option value="2">2 Meal</option>
+                                    <option value="3">3 Meal</option>
+                                    <option value="custom">✨ Custom</option>
+                                </select>
+                            </div>
+                            <div id="custom_box_Rejaul" class="hidden relative flex items-center">
+                                <input type="number" id="custom_meal_Rejaul" placeholder="মিল" min="0" class="w-20 px-2 py-0.5 border border-indigo-500 rounded-lg text-xs font-bold text-gray-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-indigo-500">
+                                <button type="button" onclick="cancelCustomMeal('Rejaul')" class="absolute right-1.5 text-gray-400 hover:text-red-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 2: Tafiqul -->
+                    <div class="bg-slate-50/90 hover:bg-white px-2.5 py-1.5 rounded-xl border border-gray-200/80 hover:border-teal-200 shadow-xs transition-all duration-150">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-teal-600 to-emerald-500 text-white rounded-lg flex items-center justify-center text-[10px] font-black shadow-xs">T</div>
+                                <span class="font-extrabold text-gray-900 text-xs tracking-tight">Tafiqul</span>
+                            </div>
+                            <div id="meal_select_wrap_Tafiqul" class="relative">
+                                <select id="meal_Tafiqul" onchange="toggleCustomMealInput('Tafiqul')" class="bg-white border border-gray-200 text-gray-900 font-bold rounded-lg px-2 py-0.5 text-xs outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-100 shadow-xs transition">
+                                    <option value="0">0 Meal</option>
+                                    <option value="1">1 Meal</option>
+                                    <option value="2">2 Meal</option>
+                                    <option value="3">3 Meal</option>
+                                    <option value="custom">✨ Custom</option>
+                                </select>
+                            </div>
+                            <div id="custom_box_Tafiqul" class="hidden relative flex items-center">
+                                <input type="number" id="custom_meal_Tafiqul" placeholder="মিল" min="0" class="w-20 px-2 py-0.5 border border-teal-500 rounded-lg text-xs font-bold text-gray-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-teal-500">
+                                <button type="button" onclick="cancelCustomMeal('Tafiqul')" class="absolute right-1.5 text-gray-400 hover:text-red-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 3: Rafiul -->
+                    <div class="bg-slate-50/90 hover:bg-white px-2.5 py-1.5 rounded-xl border border-gray-200/80 hover:border-violet-200 shadow-xs transition-all duration-150">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-violet-600 to-purple-500 text-white rounded-lg flex items-center justify-center text-[10px] font-black shadow-xs">R</div>
+                                <span class="font-extrabold text-gray-900 text-xs tracking-tight">Rafiul</span>
+                            </div>
+                            <div id="meal_select_wrap_Rafiul" class="relative">
+                                <select id="meal_Rafiul" onchange="toggleCustomMealInput('Rafiul')" class="bg-white border border-gray-200 text-gray-900 font-bold rounded-lg px-2 py-0.5 text-xs outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-100 shadow-xs transition">
+                                    <option value="0">0 Meal</option>
+                                    <option value="1">1 Meal</option>
+                                    <option value="2">2 Meal</option>
+                                    <option value="3">3 Meal</option>
+                                    <option value="custom">✨ Custom</option>
+                                </select>
+                            </div>
+                            <div id="custom_box_Rafiul" class="hidden relative flex items-center">
+                                <input type="number" id="custom_meal_Rafiul" placeholder="মিল" min="0" class="w-20 px-2 py-0.5 border border-violet-500 rounded-lg text-xs font-bold text-gray-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-violet-500">
+                                <button type="button" onclick="cancelCustomMeal('Rafiul')" class="absolute right-1.5 text-gray-400 hover:text-red-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 4: Samiul -->
+                    <div class="bg-slate-50/90 hover:bg-white px-2.5 py-1.5 rounded-xl border border-gray-200/80 hover:border-amber-200 shadow-xs transition-all duration-150">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-amber-500 to-orange-500 text-white rounded-lg flex items-center justify-center text-[10px] font-black shadow-xs">S</div>
+                                <span class="font-extrabold text-gray-900 text-xs tracking-tight">Samiul</span>
+                            </div>
+                            <div id="meal_select_wrap_Samiul" class="relative">
+                                <select id="meal_Samiul" onchange="toggleCustomMealInput('Samiul')" class="bg-white border border-gray-200 text-gray-900 font-bold rounded-lg px-2 py-0.5 text-xs outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-100 shadow-xs transition">
+                                    <option value="0">0 Meal</option>
+                                    <option value="1">1 Meal</option>
+                                    <option value="2">2 Meal</option>
+                                    <option value="3">3 Meal</option>
+                                    <option value="custom">✨ Custom</option>
+                                </select>
+                            </div>
+                            <div id="custom_box_Samiul" class="hidden relative flex items-center">
+                                <input type="number" id="custom_meal_Samiul" placeholder="মিল" min="0" class="w-20 px-2 py-0.5 border border-amber-500 rounded-lg text-xs font-bold text-gray-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-amber-500">
+                                <button type="button" onclick="cancelCustomMeal('Samiul')" class="absolute right-1.5 text-gray-400 hover:text-red-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitMealBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                        <i class="fa-solid fa-paper-plane"></i> মিল সেভ করুন
+                    </button>
+                </form>
+
+                <!-- ২. মেম্বারদের টাকা জমা এন্ট্রি ফর্ম -->
+                <form id="depositForm" onsubmit="submitDeposit(event)" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">জমার তারিখ</label>
+                        <input type="date" id="depositDate" required class="w-full px-2.5 py-1.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-700 font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">মেম্বার সিলেক্ট করুন</label>
+                        <select id="depositMember" required class="w-full px-2.5 py-1.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-800 font-semibold">
+                            <option value="" disabled selected>-- মেম্বার নির্বাচন করুন --</option>
+                            <option value="Rejaul">Rejaul</option>
+                            <option value="Tafiqul">Tafiqul</option>
+                            <option value="Rafiul">Rafiul</option>
+                            <option value="Samiul">Samiul</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">জমা টাকার পরিমাণ (৳)</label>
+                        <div id="deposit_select_wrap" class="relative">
+                            <select id="depositSelect" onchange="toggleCustomDepositAmount()" required class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-800 font-bold bg-white shadow-xs">
+                                <option value="" disabled selected>-- টাকার পরিমাণ নির্বাচন করুন --</option>
+                                <option value="500">৳ 500</option>
+                                <option value="1000">৳ 1000</option>
+                                <option value="custom">✨ Custom (কাস্টম টাকা লিখুন)</option>
+                            </select>
+                        </div>
+                        <div id="deposit_custom_box" class="hidden relative flex items-center">
+                            <input type="number" id="depositAmount" placeholder="টাকার পরিমাণ লিখুন (যেমন: 1500)" min="1" class="w-full px-2.5 py-1.5 border border-emerald-500 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-900 font-bold bg-white pr-7 shadow-xs">
+                            <button type="button" onclick="cancelCustomDeposit()" class="absolute right-2 text-gray-400 hover:text-red-500 text-xs font-bold p-1 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitDepositBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 text-xs sm:text-sm cursor-pointer">
+                        <i class="fa-solid fa-piggy-bank"></i> মেস জমা সেভ করুন
+                    </button>
+                </form>
+
+                <!-- ৩. খাবার ওয়ালাকে পরিশোধের এন্ট্রি -->
+                <form id="cateringPayForm" onsubmit="submitCateringPay(event)" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">পরিশোধের তারিখ</label>
+                        <input type="date" id="cateringPayDate" required class="w-full px-2.5 py-1.5 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-700 font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">খাবার ওয়ালাকে দেওয়া টাকার পরিমাণ (৳)</label>
+                        <div id="catering_select_wrap" class="relative">
+                            <select id="cateringPaySelect" onchange="toggleCustomCateringAmount()" required class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-800 font-bold bg-white shadow-xs">
+                                <option value="" disabled selected>-- টাকার পরিমাণ নির্বাচন করুন --</option>
+                                <option value="500">৳ 500</option>
+                                <option value="1000">৳ 1000</option>
+                                <option value="custom">✨ Custom (কাস্টম টাকা লিখুন)</option>
+                            </select>
+                        </div>
+                        <div id="catering_custom_box" class="hidden relative flex items-center">
+                            <input type="number" id="cateringPayAmount" placeholder="টাকার পরিমাণ লিখুন (যেমন: 1500)" min="1" class="w-full px-2.5 py-1.5 border border-amber-500 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-900 font-bold bg-white pr-7 shadow-xs">
+                            <button type="button" onclick="cancelCustomCatering()" class="absolute right-2 text-gray-400 hover:text-red-500 text-xs font-bold p-1 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitCateringBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 text-xs sm:text-sm cursor-pointer">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা সেভ করুন
+                    </button>
+                </form>
+
+                <!-- Status Message Badge -->
+                <div id="statusMsg" class="hidden p-2.5 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2"></div>
+            </div>
+
+            <!-- Summary Table -->
+            <div class="lg:col-span-2 bg-white p-3 sm:p-3.5 rounded-xl shadow-xs border border-gray-100 space-y-2.5">
+                <div class="border-b pb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5">
+                    <div>
+                        <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fa-solid fa-table-list text-indigo-600"></i> সদস্যভিত্তিক সার্বিক হিসাব
+                        </h2>
+                        <p class="text-[11px] text-gray-500">গুগল শিট থেকে নিয়মিত লাইভ আপডেট</p>
+                    </div>
+                    <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2.5 py-0.5 rounded-full border border-indigo-100">
+                        মিল রেট: ৳৮০
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 border-b border-gray-200 text-xs">
+                                <th class="p-2 sm:p-2.5 font-semibold">Name (নাম)</th>
+                                <th class="p-2 sm:p-2.5 font-semibold text-center">Total Meal</th>
+                                <th class="p-2 sm:p-2.5 font-semibold text-right">Total Cost (৳)</th>
+                                <th class="p-2 sm:p-2.5 font-semibold text-right">Total Deposit (৳)</th>
+                                <th class="p-2 sm:p-2.5 font-semibold text-right">Stock Balance (৳)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody" class="divide-y divide-gray-100">
+                            <tr>
+                                <td colspan="5" class="p-6 text-center text-gray-500 font-medium text-xs">
+                                    <i class="fa-solid fa-spinner fa-spin text-indigo-600 text-base mr-2"></i> শিট থেকে লাইভ সার্বিক হিসাব লোড হচ্ছে...
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-indigo-50 text-indigo-900 font-bold border-t border-indigo-200 text-xs sm:text-sm">
+                                <td class="p-2 sm:p-2.5">Total (All)</td>
+                                <td id="tblTotalMeal" class="p-2 sm:p-2.5 text-center">...</td>
+                                <td id="tblTotalCost" class="p-2 sm:p-2.5 text-right">৳ ...</td>
+                                <td id="tblTotalDeposit" class="p-2 sm:p-2.5 text-right">৳ ...</td>
+                                <td id="tblStockBalance" class="p-2 sm:p-2.5 text-right text-emerald-700">৳ ...</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Live Sync Javascript -->
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywAafCK7BshPOKEduGquTBcR4g0JGE8JKUnOGxRR3LQttItOatkfrMfrF9gJCBUF2A/exec";
+        const ADMIN_PIN = "1122";
+
+        function checkPinAuth() {
+            if (sessionStorage.getItem('admin_authenticated') === 'true') {
+                document.getElementById('pinModal').classList.add('hidden');
+            } else {
+                document.getElementById('pinModal').classList.remove('hidden');
+            }
+        }
+
+        function verifyPin(e) {
+            e.preventDefault();
+            const inputVal = document.getElementById('adminPinInput').value;
+            const errorMsg = document.getElementById('pinErrorMsg');
+            
+            if (inputVal === ADMIN_PIN) {
+                sessionStorage.setItem('admin_authenticated', 'true');
+                document.getElementById('pinModal').classList.add('hidden');
+                errorMsg.classList.add('hidden');
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('adminPinInput').value = "";
+                document.getElementById('adminPinInput').focus();
+            }
+        }
+
+        function lockAdmin() {
+            sessionStorage.removeItem('admin_authenticated');
+            document.getElementById('adminPinInput').value = "";
+            checkPinAuth();
+        }
+
+        // 📌 AUTO TODAY DATE FUNCTION: Sets default value to Today, but remains fully editable!
+        function setTodayDates() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const todayStr = `${yyyy}-${mm}-${dd}`;
+
+            document.getElementById('entryDate').value = todayStr;
+            document.getElementById('depositDate').value = todayStr;
+            document.getElementById('cateringPayDate').value = todayStr;
+
+            const formattedDate = dd + '-' + mm + '-' + yyyy;
+            document.getElementById('currentDate').innerText = formattedDate;
+        }
+
+        function toggleCustomMealInput(memberName) {
+            const selectVal = document.getElementById('meal_' + memberName).value;
+            const selectWrap = document.getElementById('meal_select_wrap_' + memberName);
+            const customBox = document.getElementById('custom_box_' + memberName);
+            const customInput = document.getElementById('custom_meal_' + memberName);
+            
+            if (selectVal === 'custom') {
+                if (selectWrap) selectWrap.classList.add('hidden');
+                if (customBox) customBox.classList.remove('hidden');
+                if (customInput) {
+                    customInput.value = "";
+                    customInput.focus();
+                }
+            } else {
+                if (selectWrap) selectWrap.classList.remove('hidden');
+                if (customBox) customBox.classList.add('hidden');
+                if (customInput) customInput.value = "";
+            }
+        }
+
+        function cancelCustomMeal(memberName) {
+            const select = document.getElementById('meal_' + memberName);
+            if (select) select.value = '0';
+            toggleCustomMealInput(memberName);
+        }
+
+        function toggleCustomDepositAmount() {
+            const selectVal = document.getElementById('depositSelect').value;
+            const selectWrap = document.getElementById('deposit_select_wrap');
+            const customBox = document.getElementById('deposit_custom_box');
+            const customInput = document.getElementById('depositAmount');
+            
+            if (selectVal === 'custom') {
+                if (selectWrap) selectWrap.classList.add('hidden');
+                if (customBox) customBox.classList.remove('hidden');
+                if (customInput) {
+                    customInput.required = true;
+                    customInput.value = "";
+                    customInput.focus();
+                }
+            } else {
+                if (selectWrap) selectWrap.classList.remove('hidden');
+                if (customBox) customBox.classList.add('hidden');
+                if (customInput) {
+                    customInput.required = false;
+                    customInput.value = "";
+                }
+            }
+        }
+
+        function cancelCustomDeposit() {
+            const select = document.getElementById('depositSelect');
+            if (select) select.value = '';
+            toggleCustomDepositAmount();
+        }
+
+        function toggleCustomCateringAmount() {
+            const selectVal = document.getElementById('cateringPaySelect').value;
+            const selectWrap = document.getElementById('catering_select_wrap');
+            const customBox = document.getElementById('catering_custom_box');
+            const customInput = document.getElementById('cateringPayAmount');
+            
+            if (selectVal === 'custom') {
+                if (selectWrap) selectWrap.classList.add('hidden');
+                if (customBox) customBox.classList.remove('hidden');
+                if (customInput) {
+                    customInput.required = true;
+                    customInput.value = "";
+                    customInput.focus();
+                }
+            } else {
+                if (selectWrap) selectWrap.classList.remove('hidden');
+                if (customBox) customBox.classList.add('hidden');
+                if (customInput) {
+                    customInput.required = false;
+                    customInput.value = "";
+                }
+            }
+        }
+
+        function cancelCustomCatering() {
+            const select = document.getElementById('cateringPaySelect');
+            if (select) select.value = '';
+            toggleCustomCateringAmount();
+        }
+
+        function switchTab(tab) {
+            const mealForm = document.getElementById('mealForm');
+            const depositForm = document.getElementById('depositForm');
+            const cateringPayForm = document.getElementById('cateringPayForm');
+            
+            const tabMealBtn = document.getElementById('tabMealBtn');
+            const tabDepositBtn = document.getElementById('tabDepositBtn');
+            const tabCateringBtn = document.getElementById('tabCateringBtn');
+            
+            hideStatus();
+
+            mealForm.classList.add('hidden');
+            depositForm.classList.add('hidden');
+            cateringPayForm.classList.add('hidden');
+
+            tabMealBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1";
+            tabDepositBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1";
+            tabCateringBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1";
+
+            if(tab === 'meal') {
+                mealForm.classList.remove('hidden');
+                tabMealBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-indigo-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+            } else if(tab === 'deposit') {
+                depositForm.classList.remove('hidden');
+                tabDepositBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-emerald-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+            } else if(tab === 'catering') {
+                cateringPayForm.classList.remove('hidden');
+                tabCateringBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-amber-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+            }
+        }
+
+        function showStatus(msg, isSuccess = true) {
+            const statusMsg = document.getElementById('statusMsg');
+            if (!statusMsg) return;
+
+            if (isSuccess === 'offline' || isSuccess === 'amber') {
+                statusMsg.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-lg text-amber-700"></i> <span>${msg}</span>`;
+                statusMsg.className = "p-3 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 bg-amber-100 text-amber-950 border border-amber-300 shadow-xs";
+            } else if (isSuccess === true) {
+                statusMsg.innerHTML = `<i class="fa-solid fa-circle-check text-lg"></i> <span>${msg}</span>`;
+                statusMsg.className = "p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2 bg-emerald-100 text-emerald-800 border border-emerald-200";
+            } else {
+                statusMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-lg"></i> <span>${msg}</span>`;
+                statusMsg.className = "p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2 bg-red-100 text-red-800 border border-red-200";
+            }
+            statusMsg.classList.remove('hidden');
+            
+            if (window._statusMsgTimer) clearTimeout(window._statusMsgTimer);
+            window._statusMsgTimer = setTimeout(() => {
+                hideStatus();
+            }, 4000);
+        }
+
+        function hideStatus() {
+            document.getElementById('statusMsg').classList.add('hidden');
+        }
+
+        function renderAdminSummaryUI(data) {
+            if (!data || !data.summaryTable || data.summaryTable.length === 0) return;
+
+            const tbody = document.getElementById('memberTableBody');
+            tbody.innerHTML = '';
+
+            let totalMeals = 0;
+            let totalCost = 0;
+            let totalDeposit = 0;
+            let totalStock = 0;
+
+            data.summaryTable.forEach((row) => {
+                let name = row[0];
+                let meal = parseInt(row[1]) || 0;
+                let cost = parseFloat(row[2]) || 0;
+                let deposit = parseFloat(row[3]) || 0;
+                let stock = parseFloat(row[4]) || 0;
+
+                if (name.toString().toLowerCase().includes('total')) {
+                    document.getElementById('tblTotalMeal').innerText = meal;
+                    document.getElementById('tblTotalCost').innerText = '৳ ' + cost;
+                    document.getElementById('tblTotalDeposit').innerText = '৳ ' + deposit;
+                    document.getElementById('tblStockBalance').innerText = '৳ ' + stock;
+
+                    document.getElementById('cardTotalMeals').innerText = meal + ' টি';
+                    document.getElementById('cardTotalCost').innerText = '৳ ' + cost;
+                    document.getElementById('cardTotalDeposit').innerText = '৳ ' + deposit;
+                    document.getElementById('cardStockBalance').innerText = '৳ ' + stock;
+                } else {
+                    totalMeals += meal;
+                    totalCost += cost;
+                    totalDeposit += deposit;
+                    totalStock += stock;
+
+                    const stockClass = stock >= 0 ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold';
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3 font-medium text-gray-800 flex items-center gap-2">
+                            <div class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">${name.charAt(0)}</div>
+                            ${name}
+                        </td>
+                        <td class="p-3 text-center font-semibold">${meal}</td>
+                        <td class="p-3 text-right">৳ ${cost}</td>
+                        <td class="p-3 text-right text-indigo-600 font-medium">৳ ${deposit}</td>
+                        <td class="p-3 text-right ${stockClass}">৳ ${stock}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        let globalDailyMeals = [];
+
+        function setMemberMealInput(memberName, mealValue) {
+            const val = parseInt(mealValue, 10);
+            const select = document.getElementById('meal_' + memberName);
+            const selectWrap = document.getElementById('meal_select_wrap_' + memberName);
+            const customBox = document.getElementById('custom_box_' + memberName);
+            const customInp = document.getElementById('custom_meal_' + memberName);
+
+            if (isNaN(val) || val === "" || val === null || val === undefined || val === 0) {
+                if (select) select.value = "0";
+                if (selectWrap) selectWrap.classList.remove('hidden');
+                if (customBox) customBox.classList.add('hidden');
+                if (customInp) customInp.value = "";
+            } else if (val >= 1 && val <= 3) {
+                if (select) select.value = String(val);
+                if (selectWrap) selectWrap.classList.remove('hidden');
+                if (customBox) customBox.classList.add('hidden');
+                if (customInp) customInp.value = "";
+            } else {
+                if (select) select.value = "custom";
+                if (selectWrap) selectWrap.classList.add('hidden');
+                if (customBox) customBox.classList.remove('hidden');
+                if (customInp) customInp.value = String(val);
+            }
+        }
+
+        // 📌 তারিখের সেল থেকে নির্ভুল দিন সংখ্যা (Day number: 1-31) বের করা
+        function extractDayFromCell(cellValue) {
+            if (cellValue === null || cellValue === undefined || cellValue === "") return null;
+            
+            // ১. সরাসরি সংখ্যা হলে (যেমন ১, ২, ৩... ৩১)
+            if (typeof cellValue === 'number' && !isNaN(cellValue) && cellValue >= 1 && cellValue <= 31) {
+                return cellValue;
+            }
+
+            const s = String(cellValue).trim();
+            if (!s) return null;
+
+            // ২. সাধারণ স্ট্রিং ডিজিট (যেমন "1", "03", "3")
+            if (/^\d{1,2}$/.test(s)) {
+                const n = parseInt(s, 10);
+                if (n >= 1 && n <= 31) return n;
+            }
+
+            // ৩. DD-MM-YYYY বা DD/MM/YYYY ফরম্যাট (যেমন "03-10-2026")
+            const matchDMY = s.match(/^0?(\d{1,2})[-/. ]\d{1,2}[-/. ]\d{2,4}/);
+            if (matchDMY) {
+                const n = parseInt(matchDMY[1], 10);
+                if (n >= 1 && n <= 31) return n;
+            }
+
+            // ৪. YYYY-MM-DD ফরম্যাট (যেমন "2026-10-03")
+            const matchYMD = s.match(/^\d{4}[-/. ]\d{1,2}[-/. ]0?(\d{1,2})/);
+            if (matchYMD) {
+                const n = parseInt(matchYMD[1], 10);
+                if (n >= 1 && n <= 31) return n;
+            }
+
+            // ৫. ISO ডেট অবজেক্ট স্ট্রিং
+            const d = new Date(s);
+            if (!isNaN(d.getTime())) {
+                return d.getDate();
+            }
+
+            return null;
+        }
+
+        // 📌 দিন সংখ্যা অনুযায়ী মিলের রো খোঁজা
+        function findDailyMealRow(dayNum) {
+            if (!globalDailyMeals || globalDailyMeals.length === 0 || !dayNum) return null;
+
+            // ১. প্রথম প্রাধান্য: তারিখ কলাম মিলিয়ে বের করা
+            for (let i = 0; i < globalDailyMeals.length; i++) {
+                const row = globalDailyMeals[i];
+                if (row && row.length > 0) {
+                    const rowDay = extractDayFromCell(row[0]);
+                    if (rowDay === dayNum) {
+                        return row;
+                    }
+                }
+            }
+
+            // ২. দ্বিতীয় প্রাধান্য: ইনডেক্স ক্রম অনুযায়ী (১ তারিখ = ০ তম ইনডেক্স)
+            if (dayNum >= 1 && dayNum <= globalDailyMeals.length) {
+                return globalDailyMeals[dayNum - 1];
+            }
+
+            return null;
+        }
+
+        // 📌 ফর্মের মিল ড্রপডাউনগুলো ০-তে রিসেট করা
+        function resetMealFormInputs() {
+            setMemberMealInput('Rejaul', 0);
+            setMemberMealInput('Tafiqul', 0);
+            setMemberMealInput('Rafiul', 0);
+            setMemberMealInput('Samiul', 0);
+        }
+
+        // 📌 ব্যাজ স্টাইলিং হেল্পার (0 হলে স্পষ্ট লাল/রোজ কালার, 1+ হলে স্পষ্ট সবুজ কালার)
+        function updateMealBadgeStyle(elemId, val) {
+            const el = document.getElementById(elemId);
+            if (!el) return;
+            el.innerText = val;
+            if (val === 0) {
+                // ০ মিলের জন্য স্পষ্ট লাল/রোজ কালার ব্যাজ (যাতে কোনোভাবেই ডিজেবল মনে না হয় এবং দেখেই বোঝা যায় ০)
+                el.className = "font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-lg text-xs shadow-xs transition";
+            } else {
+                // ১ বা তার বেশি মিলের জন্য স্পষ্ট সবুজ/এমেরাল্ড কালার ব্যাজ
+                el.className = "font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-lg text-xs shadow-xs transition";
+            }
+        }
+
+        // 📌 আজকের সর্বশেষ সেভ করা মিল স্ট্যাটাস কার্ড রেন্ডার করা (সবসময় আজকের মিল দেখাবে)
+        function renderTodayMealStatus() {
+            const today = new Date();
+            const todayDay = today.getDate();
+
+            const foundRow = findDailyMealRow(todayDay);
+
+            const rVal = foundRow ? (parseInt(foundRow[1], 10) || 0) : 0;
+            const tVal = foundRow ? (parseInt(foundRow[2], 10) || 0) : 0;
+            const rfVal = foundRow ? (parseInt(foundRow[3], 10) || 0) : 0;
+            const sVal = foundRow ? (parseInt(foundRow[4], 10) || 0) : 0;
+            const total = rVal + tVal + rfVal + sVal;
+
+            updateMealBadgeStyle('today_rejaul', rVal);
+            updateMealBadgeStyle('today_tafiqul', tVal);
+            updateMealBadgeStyle('today_rafiul', rfVal);
+            updateMealBadgeStyle('today_samiul', sVal);
+
+            const elTotal = document.getElementById('todayTotalBadge');
+            if (elTotal) {
+                if (total === 0) {
+                    elTotal.className = "text-[11px] font-extrabold bg-slate-400 text-white px-2.5 py-0.5 rounded-full shadow-xs";
+                    elTotal.innerText = `মোট: 0 মিল`;
+                } else {
+                    elTotal.className = "text-[11px] font-extrabold bg-indigo-600 text-white px-2.5 py-0.5 rounded-full shadow-xs";
+                    elTotal.innerText = `মোট: ${total} মিল`;
+                }
+            }
+        }
+
+        const CACHE_KEY_INDEX = 'cached_admin_sheet_full';
+
+        function initFromCache() {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY_INDEX);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (data.dailyMealsList) {
+                        globalDailyMeals = data.dailyMealsList;
+                        renderTodayMealStatus();
+                    }
+                    if (data.summaryTable && data.summaryTable.length > 0) {
+                        renderAdminSummaryUI(data);
+                    }
+                }
+            } catch(e) {}
+        }
+
+        async function fetchLiveSheetData(isSilent = false) {
+            const refreshIcon = document.getElementById('refreshIcon');
+            if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                if (!localStorage.getItem(CACHE_KEY_INDEX)) renderDemoUI();
+                if (refreshIcon) setTimeout(() => refreshIcon.classList.remove('fa-spin'), 600);
+                return;
+            }
+
+            try {
+                // ⚡ ব্রাউজার ক্যাশ বাইপাস করতে টাইমস্ট্যাম্প প্যারামিটার
+                const fetchUrl = GOOGLE_SCRIPT_URL + (GOOGLE_SCRIPT_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
+                const res = await fetch(fetchUrl);
+                const data = await res.json();
+
+                if (data) {
+                    try { 
+                        localStorage.setItem(CACHE_KEY_INDEX, JSON.stringify(data)); 
+                        localStorage.setItem('cached_catering_live_full', JSON.stringify(data));
+                    } catch(e){}
+
+                    if (data.dailyMealsList) {
+                        globalDailyMeals = data.dailyMealsList;
+                        renderTodayMealStatus();
+                    }
+
+                    if (data.summaryTable && data.summaryTable.length > 0) {
+                        renderAdminSummaryUI(data);
+                    }
+                }
+            } catch(err) {
+                console.warn("Live fetch error in index:", err);
+                if (!localStorage.getItem(CACHE_KEY_INDEX)) {
+                    renderDemoUI();
+                }
+            } finally {
+                if (refreshIcon) setTimeout(() => refreshIcon.classList.remove('fa-spin'), 600);
+            }
+        }
+
+        function renderDemoUI() {
+            let demoData = [
+                { name: 'Rejaul', meal: 2, cost: 160, deposit: 430, stock: 270 },
+                { name: 'Tafiqul', meal: 0, cost: 0, deposit: 560, stock: 560 },
+                { name: 'Rafiul', meal: 4, cost: 320, deposit: -250, stock: -570 },
+                { name: 'Samiul', meal: 1, cost: 80, deposit: 410, stock: 330 }
+            ];
+
+            const tbody = document.getElementById('memberTableBody');
+            tbody.innerHTML = '';
+            let totalMeals = 0, totalCost = 0, totalDeposit = 0, totalStock = 0;
+
+            demoData.forEach(m => {
+                totalMeals += m.meal; totalCost += m.cost; totalDeposit += m.deposit; totalStock += m.stock;
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-medium text-gray-800 flex items-center gap-2">
+                        <div class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">${m.name.charAt(0)}</div>
+                        ${m.name}
+                    </td>
+                    <td class="p-3 text-center font-semibold">${m.meal}</td>
+                    <td class="p-3 text-right">৳ ${m.cost}</td>
+                    <td class="p-3 text-right text-indigo-600 font-medium">৳ ${m.deposit}</td>
+                    <td class="p-3 text-right ${m.stock >= 0 ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">৳ ${m.stock}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('tblTotalMeal').innerText = totalMeals;
+            document.getElementById('tblTotalCost').innerText = '৳ ' + totalCost;
+            document.getElementById('tblTotalDeposit').innerText = '৳ ' + totalDeposit;
+            document.getElementById('tblStockBalance').innerText = '৳ ' + totalStock;
+
+            document.getElementById('cardTotalMeals').innerText = totalMeals + ' টি';
+            document.getElementById('cardTotalCost').innerText = '৳ ' + totalCost;
+            document.getElementById('cardTotalDeposit').innerText = '৳ ' + totalDeposit;
+            document.getElementById('cardStockBalance').innerText = '৳ ' + totalStock;
+            
+            renderTodayMealStatus();
+        }
+
+        function getMemberMealValue(memberName) {
+            const selectWrap = document.getElementById('meal_select_wrap_' + memberName);
+            const isCustom = selectWrap && selectWrap.classList.contains('hidden');
+            if (isCustom) {
+                const customVal = document.getElementById('custom_meal_' + memberName).value;
+                return customVal === "" ? 0 : (parseInt(customVal, 10) || 0);
+            }
+            const selectVal = document.getElementById('meal_' + memberName).value;
+            if (selectVal === 'custom') {
+                const customVal = document.getElementById('custom_meal_' + memberName).value;
+                return customVal === "" ? 0 : (parseInt(customVal, 10) || 0);
+            }
+            return parseInt(selectVal, 10) || 0;
+        }
+
+        // -------------------------------------------------------------
+        // 💾 অফলাইন ডাটা সেভ ও অটো-সিঙ্ক ইঞ্জিন (Offline Storage & Auto-Sync)
+        // -------------------------------------------------------------
+        const OFFLINE_QUEUE_KEY = 'mess_offline_pending_queue';
+        let isSyncingOfflineQueue = false;
+
+        function getOfflineQueue() {
+            try {
+                const raw = localStorage.getItem(OFFLINE_QUEUE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function saveOfflineQueue(queue) {
+            try {
+                localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+            } catch(e) {}
+            updateOfflineQueueUI();
+        }
+
+        // 🌟 বাটন মর্ফিং অ্যানিমেশন (১.৫ সেকেন্ড)
+        function morphButtonSuccess(btnId, customText = '💾 অফলাইনে সেভ হয়েছে!') {
+            let btn = btnId ? document.getElementById(btnId) : null;
+            if (!btn) {
+                if (document.getElementById('mealForm') && !document.getElementById('mealForm').classList.contains('hidden')) {
+                    btn = document.getElementById('submitMealBtn');
+                } else if (document.getElementById('depositForm') && !document.getElementById('depositForm').classList.contains('hidden')) {
+                    btn = document.getElementById('submitDepositBtn');
+                } else if (document.getElementById('cateringPayForm') && !document.getElementById('cateringPayForm').classList.contains('hidden')) {
+                    btn = document.getElementById('submitCateringBtn');
+                }
+            }
+            if (!btn) return;
+
+            const originalHtml = btn.innerHTML;
+            const originalClass = btn.className;
+
+            btn.disabled = true;
+            btn.className = "w-full bg-emerald-600 text-white font-black py-2 rounded-xl transition-all duration-300 shadow-lg flex items-center justify-center gap-1.5 text-xs sm:text-sm scale-[1.02] ring-2 ring-emerald-400";
+            btn.innerHTML = `<i class="fa-solid fa-circle-check text-white text-sm"></i> <span>${customText}</span>`;
+
+            setTimeout(() => {
+                btn.className = originalClass;
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }, 1500); // ১.৫ সেকেন্ড
+        }
+
+        function addToOfflineQueue(item, btnId = null) {
+            const queue = getOfflineQueue();
+            queue.push({
+                id: Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                payload: item.payload,
+                description: item.description,
+                createdAt: new Date().toLocaleTimeString('bn-BD')
+            });
+            saveOfflineQueue(queue);
+
+            // বাটন মর্ফিং অ্যানিমেশন (১.৫ সেকেন্ড)
+            morphButtonSuccess(btnId, '💾 অফলাইনে সেভ হয়েছে!');
+            showStatus(`💾 ${item.description || 'ডাটা'} অফলাইনে সেভ রাখা হয়েছে!`, 'offline');
+        }
+
+        function updateOfflineQueueUI() {
+            const queue = getOfflineQueue();
+            const headerOfflineBtn = document.getElementById('headerOfflineHistoryBtn');
+            const headerOfflineCount = document.getElementById('headerOfflineCountBadge');
+            const connBadge = document.getElementById('connStatusBadge');
+            const connDot = document.getElementById('connDot');
+            const connStatusText = document.getElementById('connStatusText');
+
+            // ১. হেডার অফলাইন হিস্ট্রি বাটন (শুধুমাত্র অফলাইনে ডাটা সেভ থাকা অবস্থায় শো করবে)
+            if (headerOfflineBtn) {
+                if (queue.length > 0) {
+                    headerOfflineBtn.classList.remove('hidden');
+                    if (headerOfflineCount) headerOfflineCount.innerText = `${queue.length}টি`;
+                } else {
+                    headerOfflineBtn.classList.add('hidden');
+                }
+            }
+
+            // ২. হেডার কানেক্টিভিটি ও সিঙ্ক স্ট্যাটাস ব্যাজ আপডেট
+            if (connBadge && connDot && connStatusText) {
+                if (queue.length > 0) {
+                    connBadge.className = "bg-amber-500/20 border border-amber-400/80 px-2.5 py-1.5 rounded-lg text-xs font-bold text-amber-200 flex items-center gap-1.5 shadow-xs cursor-pointer transition hover:bg-amber-500/30 active:scale-95";
+                    connDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0";
+                    connStatusText.innerHTML = `<span class="text-amber-300 font-extrabold">${queue.length}টি পেন্ডিং</span> <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>`;
+                    connBadge.title = `${queue.length}টি এন্ট্রি অফলাইনে সেভ আছে (হিস্ট্রি দেখতে ক্লিক করুন)`;
+                } else if (!navigator.onLine) {
+                    connBadge.className = "bg-rose-500/20 border border-rose-400/80 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-200 flex items-center gap-1.5 shadow-xs cursor-pointer transition hover:bg-rose-500/30 active:scale-95";
+                    connDot.className = "w-2 h-2 rounded-full bg-rose-400 animate-pulse shrink-0";
+                    connStatusText.innerText = "অফলাইন মোড";
+                    connBadge.title = "ইন্টারনেট সংযোগ নেই (অফলাইন মোড সক্রিয়)";
+                } else {
+                    connBadge.className = "bg-indigo-800/90 border border-indigo-500/60 px-2.5 py-1.5 rounded-lg text-xs font-bold text-emerald-300 flex items-center gap-1.5 shadow-xs cursor-pointer transition hover:bg-indigo-700 active:scale-95";
+                    connDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0";
+                    connStatusText.innerText = "লাইভ সিঙ্ক";
+                    connBadge.title = "গুগোল শিট লাইভ কানেক্টেড";
+                }
+            }
+
+            // ৩. পেন্ডিং মোডাল খোলা থাকলে তালিকা রি-রেন্ডার করা
+            const modal = document.getElementById('pendingQueueModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                renderPendingItemsList();
+            }
+        }
+
+        // 📋 পেন্ডিং কিউ মোডাল কন্ট্রোল ও রেন্ডার
+        function openPendingQueueModal() {
+            const modal = document.getElementById('pendingQueueModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                renderPendingItemsList();
+            }
+        }
+
+        function closePendingQueueModal() {
+            const modal = document.getElementById('pendingQueueModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function openPendingQueueModalIfAny() {
+            const queue = getOfflineQueue();
+            if (queue.length > 0) {
+                openPendingQueueModal();
+            } else if (!navigator.onLine) {
+                showStatus("⚠️ আপনি অফলাইন মোডে আছেন। যেকোনো ডাটা এন্ট্রি করলে তা সুরক্ষিত থাকবে এবং নেট পাওয়া মাত্রই অটো শিটে সেভ হবে।", false);
+            } else {
+                showStatus("🟢 আপনি লাইভ অনলাইনেই আছেন এবং সকল ডাটা শিটের সাথে আপ-টু-ডেট আছে!", true);
+            }
+        }
+
+        function removeOfflineItem(itemId) {
+            let queue = getOfflineQueue();
+            queue = queue.filter(q => q.id !== itemId);
+            saveOfflineQueue(queue);
+            showStatus("পেন্ডিং এন্ট্রিটি তালিকা থেকে মুছে ফেলা হয়েছে", true);
+        }
+
+        function renderPendingItemsList() {
+            const container = document.getElementById('pendingItemsContainer');
+            const subTitle = document.getElementById('modalPendingSubtitle');
+            const badgeCount = document.getElementById('modalQueueBadgeCount');
+            if (!container) return;
+
+            const queue = getOfflineQueue();
+            if (badgeCount) {
+                badgeCount.innerText = queue.length;
+            }
+            if (subTitle) {
+                subTitle.innerText = queue.length > 0 
+                    ? `মোট ${queue.length}টি এন্ট্রি ইন্টারনেটের অপেক্ষায় আছে` 
+                    : `কোনো পেন্ডিং ডাটা নেই`;
+            }
+
+            if (queue.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center space-y-3">
+                        <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-800">কোনো পেন্ডিং ডাটা নেই!</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">সব এন্ট্রি সফলভাবে গুগল শিটে সিঙ্ক হয়ে গেছে।</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            queue.forEach((item, index) => {
+                if (item.payload && item.payload.type === 'meal') {
+                    const r = item.payload.Rejaul ?? 0;
+                    const t = item.payload.Tafiqul ?? 0;
+                    const rf = item.payload.Rafiul ?? 0;
+                    const s = item.payload.Samiul ?? 0;
+                    const totalM = r + t + rf + s;
+                    const totalCost = totalM * 80;
+
+                    html += `
+                        <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs space-y-3 transition hover:shadow-md">
+                            <!-- Card Header -->
+                            <div class="flex items-center justify-between gap-2 border-b border-gray-100 pb-2.5">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="bg-blue-600 text-white font-extrabold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 shadow-2xs">
+                                        <i class="fa-solid fa-bowl-food text-xs"></i>
+                                        <span>মিল এন্ট্রি</span>
+                                    </span>
+                                    <span class="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                        <i class="fa-regular fa-calendar text-[10px] text-gray-500"></i>
+                                        <span>${item.payload.date || 'আজ'}</span>
+                                    </span>
+                                    <span class="text-[11px] text-gray-400 flex items-center gap-1">
+                                        <i class="fa-regular fa-clock text-[10px]"></i>
+                                        <span>${item.createdAt || ''}</span>
+                                    </span>
+                                </div>
+                                <button onclick="removeOfflineItem('${item.id}')" title="এই এন্ট্রি মুছে ফেলুন" class="w-7 h-7 rounded-lg bg-gray-50 hover:bg-rose-100 text-gray-400 hover:text-rose-600 transition flex items-center justify-center shrink-0 cursor-pointer active:scale-90 border border-gray-200">
+                                    <i class="fa-regular fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+
+                            <!-- Member Meal List Grid -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <!-- Rejaul -->
+                                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-black text-[11px] flex items-center justify-center shrink-0">R</span>
+                                        <span class="text-xs font-bold text-gray-800 truncate">Rejaul</span>
+                                    </div>
+                                    <span class="text-xs font-black ${r > 0 ? 'text-blue-700 bg-blue-50 border-blue-200' : 'text-gray-400 bg-gray-100 border-gray-200'} px-2 py-0.5 rounded-lg border">
+                                        ${r}
+                                    </span>
+                                </div>
+
+                                <!-- Tafiqul -->
+                                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-black text-[11px] flex items-center justify-center shrink-0">T</span>
+                                        <span class="text-xs font-bold text-gray-800 truncate">Tafiqul</span>
+                                    </div>
+                                    <span class="text-xs font-black ${t > 0 ? 'text-indigo-700 bg-indigo-50 border-indigo-200' : 'text-gray-400 bg-gray-100 border-gray-200'} px-2 py-0.5 rounded-lg border">
+                                        ${t}
+                                    </span>
+                                </div>
+
+                                <!-- Rafiul -->
+                                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 font-black text-[11px] flex items-center justify-center shrink-0">R</span>
+                                        <span class="text-xs font-bold text-gray-800 truncate">Rafiul</span>
+                                    </div>
+                                    <span class="text-xs font-black ${rf > 0 ? 'text-purple-700 bg-purple-50 border-purple-200' : 'text-gray-400 bg-gray-100 border-gray-200'} px-2 py-0.5 rounded-lg border">
+                                        ${rf}
+                                    </span>
+                                </div>
+
+                                <!-- Samiul -->
+                                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="w-6 h-6 rounded-full bg-sky-100 text-sky-700 font-black text-[11px] flex items-center justify-center shrink-0">S</span>
+                                        <span class="text-xs font-bold text-gray-800 truncate">Samiul</span>
+                                    </div>
+                                    <span class="text-xs font-black ${s > 0 ? 'text-sky-700 bg-sky-50 border-sky-200' : 'text-gray-400 bg-gray-100 border-gray-200'} px-2 py-0.5 rounded-lg border">
+                                        ${s}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Total Equation Footer -->
+                            <div class="flex items-center justify-between bg-amber-50/80 px-3 py-2 rounded-xl border border-amber-200/80 text-xs">
+                                <div class="flex items-center gap-1.5 text-amber-900 font-bold">
+                                    <i class="fa-solid fa-calculator text-amber-600"></i>
+                                    <span>মোট মিল: <strong class="text-amber-950 font-black text-sm">${totalM} টি</strong></span>
+                                </div>
+                                <div class="text-amber-900 font-bold">
+                                    খরচ (৳৮০): <strong class="text-amber-950 font-black text-sm">৳${totalCost}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (item.payload && item.payload.type === 'deposit') {
+                    html += `
+                        <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs space-y-3 transition hover:shadow-md">
+                            <!-- Card Header -->
+                            <div class="flex items-center justify-between gap-2 border-b border-gray-100 pb-2.5">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="bg-emerald-600 text-white font-extrabold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 shadow-2xs">
+                                        <i class="fa-solid fa-piggy-bank text-xs"></i>
+                                        <span>মেস জমা</span>
+                                    </span>
+                                    <span class="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                        <i class="fa-regular fa-calendar text-[10px] text-gray-500"></i>
+                                        <span>${item.payload.date || 'আজ'}</span>
+                                    </span>
+                                    <span class="text-[11px] text-gray-400 flex items-center gap-1">
+                                        <i class="fa-regular fa-clock text-[10px]"></i>
+                                        <span>${item.createdAt || ''}</span>
+                                    </span>
+                                </div>
+                                <button onclick="removeOfflineItem('${item.id}')" title="এই এন্ট্রি মুছে ফেলুন" class="w-7 h-7 rounded-lg bg-gray-50 hover:bg-rose-100 text-gray-400 hover:text-rose-600 transition flex items-center justify-center shrink-0 cursor-pointer active:scale-90 border border-gray-200">
+                                    <i class="fa-regular fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+
+                            <!-- Deposit Detail Row -->
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-50/80 border border-emerald-200/80">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-black shadow-inner">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[11px] text-emerald-700 font-semibold uppercase block leading-none">জমা দানকারী সদস্য</span>
+                                        <h4 class="text-sm font-black text-emerald-950 mt-1">${item.payload.member}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[11px] text-emerald-700 font-semibold block leading-none">টাকার পরিমাণ</span>
+                                    <h3 class="text-base sm:text-lg font-black text-emerald-700 mt-1">+ ৳${item.payload.amount}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (item.payload && item.payload.type === 'catering_pay') {
+                    html += `
+                        <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs space-y-3 transition hover:shadow-md">
+                            <!-- Card Header -->
+                            <div class="flex items-center justify-between gap-2 border-b border-gray-100 pb-2.5">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="bg-amber-600 text-white font-extrabold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 shadow-2xs">
+                                        <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
+                                        <span>ক্যাটারিং পেমেন্ট</span>
+                                    </span>
+                                    <span class="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                        <i class="fa-regular fa-calendar text-[10px] text-gray-500"></i>
+                                        <span>${item.payload.date || 'আজ'}</span>
+                                    </span>
+                                    <span class="text-[11px] text-gray-400 flex items-center gap-1">
+                                        <i class="fa-regular fa-clock text-[10px]"></i>
+                                        <span>${item.createdAt || ''}</span>
+                                    </span>
+                                </div>
+                                <button onclick="removeOfflineItem('${item.id}')" title="এই এন্ট্রি মুছে ফেলুন" class="w-7 h-7 rounded-lg bg-gray-50 hover:bg-rose-100 text-gray-400 hover:text-rose-600 transition flex items-center justify-center shrink-0 cursor-pointer active:scale-90 border border-gray-200">
+                                    <i class="fa-regular fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+
+                            <!-- Catering Detail Row -->
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-amber-50/80 border border-amber-200/80">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-black shadow-inner">
+                                        <i class="fa-solid fa-utensils"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[11px] text-amber-700 font-semibold uppercase block leading-none">পরিশোধের খাত</span>
+                                        <h4 class="text-sm font-black text-amber-950 mt-1">নাবিলা ক্যাটারিং সার্ভিস বিল</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[11px] text-amber-700 font-semibold block leading-none">পরিশোধের পরিমাণ</span>
+                                    <h3 class="text-base sm:text-lg font-black text-amber-700 mt-1">৳${item.payload.amount}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 🔄 অফলাইনের পেন্ডিং ডাটা গুগোল শিটে অটো সিঙ্ক করার ফাংশন
+        async function syncOfflineQueue(isManual = false) {
+            if (isSyncingOfflineQueue) return;
+            const queue = getOfflineQueue();
+            if (!queue || queue.length === 0) {
+                if (isManual) showStatus("কোনো পেন্ডিং অফলাইন ডাটা নেই!", true);
+                return;
+            }
+
+            if (!navigator.onLine) {
+                if (isManual) showStatus("ইন্টারনেট সংযোগ নেই! ইন্টারনেট আসলে অটো সিঙ্ক হবে।", false);
+                return;
+            }
+
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) return;
+
+            isSyncingOfflineQueue = true;
+            const syncBtn = document.getElementById('offlineManualSyncBtn');
+            const modalSyncBtn = document.getElementById('modalSyncNowBtn');
+
+            if (syncBtn) {
+                syncBtn.disabled = true;
+                syncBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সিঙ্ক হচ্ছে...`;
+            }
+            if (modalSyncBtn) {
+                modalSyncBtn.disabled = true;
+                modalSyncBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> গুগোল শিটে সিঙ্ক হচ্ছে...`;
+            }
+
+            let successCount = 0;
+            let currentQueue = [...queue];
+
+            for (let i = 0; i < queue.length; i++) {
+                const item = queue[i];
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item.payload),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    successCount++;
+                    currentQueue = currentQueue.filter(q => q.id !== item.id);
+                    saveOfflineQueue(currentQueue);
+                } catch (err) {
+                    console.warn("Offline sync item error:", err);
+                    break;
+                }
+            }
+
+            isSyncingOfflineQueue = false;
+            if (syncBtn) {
+                syncBtn.disabled = false;
+                syncBtn.innerHTML = `<i class="fa-solid fa-arrows-rotate text-[11px]"></i> <span>এখনই সিঙ্ক</span>`;
+            }
+            if (modalSyncBtn) {
+                modalSyncBtn.disabled = false;
+                modalSyncBtn.innerHTML = `<i class="fa-solid fa-arrows-rotate text-xs"></i> <span>এখনই গুগোল শিটে সিঙ্ক করুন</span>`;
+            }
+
+            if (successCount > 0) {
+                showStatus(`✅ অফলাইনের ${successCount}টি এন্ট্রি গুগোল শিটে সফলভাবে সেভ হয়েছে!`, true);
+                fetchLiveSheetData(false);
+            }
+        }
+
+        async function submitMeals(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitMealBtn');
+            const selectedDate = document.getElementById('entryDate').value;
+            const rejaulVal = getMemberMealValue('Rejaul');
+            const tafiqulVal = getMemberMealValue('Tafiqul');
+            const rafiulVal = getMemberMealValue('Rafiul');
+            const samiulVal = getMemberMealValue('Samiul');
+
+            const payload = {
+                type: 'meal',
+                date: selectedDate,
+                Rejaul: rejaulVal,
+                Tafiqul: tafiqulVal,
+                Rafiul: rafiulVal,
+                Samiul: samiulVal
+            };
+
+            // ১. তৎক্ষণাৎ মেমোরি ও UI-তে লোকাল আপডেট
+            const dayNum = parseInt(selectedDate.split('-')[2], 10);
+            if (globalDailyMeals && dayNum >= 1 && dayNum <= globalDailyMeals.length) {
+                globalDailyMeals[dayNum - 1] = [dayNum, rejaulVal, tafiqulVal, rafiulVal, samiulVal];
+            }
+            renderTodayMealStatus();
+            resetMealFormInputs();
+            try {
+                let cacheData = JSON.parse(localStorage.getItem(CACHE_KEY_INDEX) || '{}');
+                cacheData.dailyMealsList = globalDailyMeals;
+                localStorage.setItem(CACHE_KEY_INDEX, JSON.stringify(cacheData));
+                localStorage.setItem('cached_catering_live_full', JSON.stringify(cacheData));
+            } catch(e) {}
+
+            // ২. অফলাইনে থাকলে কোনো লোডিং ছাড়াই সাথে সাথে (০ মিলিসেকেন্ডে) সেভ
+            if (!navigator.onLine || !GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                addToOfflineQueue({
+                    payload: payload,
+                    description: `${selectedDate} তারিখের মিল এন্ট্রি`
+                }, 'submitMealBtn');
+                return;
+            }
+
+            // ৩. অনলাইনে থাকলে গুগোল শিটে সেভ করার চেষ্টা (ম্যাক্সিমাম ৮ সেকেন্ড)
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
+
+            let isOnlineSuccess = false;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                isOnlineSuccess = true;
+                showStatus("✅ মিল সফলভাবে গুগোল শিটে সেভ হয়েছে!", true);
+                setTimeout(() => fetchLiveSheetData(true), 1000);
+            } catch(err) {
+                console.warn("Online meal save failed or timed out, saving to offline queue:", err);
+                isOnlineSuccess = false;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> মিল সেভ করুন`;
+
+            if (!isOnlineSuccess) {
+                addToOfflineQueue({
+                    payload: payload,
+                    description: `${selectedDate} তারিখের মিল এন্ট্রি`
+                }, 'submitMealBtn');
+            }
+        }
+
+        async function submitDeposit(event) {
+            event.preventDefault();
+            const memberSelect = document.getElementById('depositMember');
+            const member = memberSelect.value;
+            const selectVal = document.getElementById('depositSelect').value;
+            let amount = 0;
+            if (selectVal === 'custom') {
+                amount = parseInt(document.getElementById('depositAmount').value, 10);
+            } else if (selectVal) {
+                amount = parseInt(selectVal, 10);
+            }
+            const dateVal = document.getElementById('depositDate').value;
+            const btn = document.getElementById('submitDepositBtn');
+
+            if (!member || !selectVal || isNaN(amount) || amount <= 0) {
+                showStatus("⚠️ মেম্বার ও সঠিক টাকার পরিমাণ নির্বাচন করুন", false);
+                return;
+            }
+
+            const payload = {
+                type: 'deposit',
+                date: dateVal,
+                member: member,
+                amount: amount
+            };
+
+            memberSelect.selectedIndex = 0;
+            document.getElementById('depositSelect').value = '';
+            toggleCustomDepositAmount();
+
+            // ১. অফলাইনে থাকলে কোনো লোডিং ছাড়াই তৎক্ষণাৎ সেভ
+            if (!navigator.onLine || !GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                addToOfflineQueue({
+                    payload: payload,
+                    description: `${member} এর ৳${amount} টাকা জমা`
+                }, 'submitDepositBtn');
+                return;
+            }
+
+            // ২. অনলাইনে গুগোল শিটে সেভ করার চেষ্টা (ম্যাক্সিমাম ৮ সেকেন্ড)
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
+
+            let isOnlineSuccess = false;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                isOnlineSuccess = true;
+                showStatus(`✅ ${member} এর ৳${amount} টাকা গুগোল শিটে সেভ হয়েছে!`, true);
+                setTimeout(() => fetchLiveSheetData(true), 1200);
+            } catch(err) {
+                console.warn("Online deposit save failed or timed out, saving to offline queue:", err);
+                isOnlineSuccess = false;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-piggy-bank"></i> মেস জমা সেভ করুন`;
+
+            if (!isOnlineSuccess) {
+                addToOfflineQueue({
+                    payload: payload,
+                    description: `${member} এর ৳${amount} টাকা জমা`
+                }, 'submitDepositBtn');
+            }
+        }
+
+        async function submitCateringPay(event) {
+            event.preventDefault();
+            const dateVal = document.getElementById('cateringPayDate').value;
+            const selectVal = document.getElementById('cateringPaySelect').value;
+            let amount = 0;
+            if (selectVal === 'custom') {
+                amount = parseInt(document.getElementById('cateringPayAmount').value, 10);
+            } else if (selectVal) {
+                amount = parseInt(selectVal, 10);
+            }
+            const btn = document.getElementById('submitCateringBtn');
+
+            if (!selectVal || isNaN(amount) || amount <= 0) {
+                showStatus("⚠️ সঠিক টাকার পরিমাণ নির্বাচন করুন", false);
+                return;
+            }
+
+            const payload = {
+                type: 'catering_pay',
+                date: dateVal,
+                amount: amount
+            };
+
+            // রিসেট: ড্রপডাউন খালি রাখা এবং কাস্টম বক্স লুকিয়ে দেওয়া
+            document.getElementById('cateringPaySelect').value = '';
+            toggleCustomCateringAmount();
+
+            // ১. অফলাইনে থাকলে কোনো লোডিং ছাড়াই তৎক্ষণাৎ সেভ
+            if (!navigator.onLine || !GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                addToOfflineQueue({
+                    payload: payload,
+                    description: `খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধ`
+                }, 'submitCateringBtn');
+                return;
+            }
+
+            // ২. অনলাইনে গুগোল শিটে সেভ করার চেষ্টা (ম্যাক্সিমাম ৮ সেকেন্ড)
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
+
+            let isOnlineSuccess = false;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                isOnlineSuccess = true;
+                showStatus(`✅ খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধের এন্ট্রি গুগোল শিটে সেভ হয়েছে!`, true);
+                setTimeout(() => fetchLiveSheetData(true), 1200);
+            } catch(err) {
+                console.warn("Online catering save failed or timed out, saving to offline queue:", err);
+                isOnlineSuccess = false;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা সেভ করুন`;
+
+            if (!isOnlineSuccess) {
+                addToOfflineQueue({
+                    payload: payload,
+                    description: `খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধ`
+                }, 'submitCateringBtn');
+            }
+        }
+
+        // Initialize Page (Instant Cache First + Background Sync)
+        checkPinAuth();
+        setTodayDates();
+        initFromCache();
+        updateOfflineQueueUI();
+        fetchLiveSheetData(false);
+
+        // 🔄 ফুল অটো-লাইভ ও অফলাইন অটো-সিঙ্ক সিস্টেম
+        let lastIndexFetchTime = Date.now();
+
+        // ১. ইন্টারনেট সংযোগ পরিবর্তিত হলে লাইভ স্ট্যাটাস আপডেট ও অটো সিঙ্ক
+        window.addEventListener('online', () => {
+            updateOfflineQueueUI();
+            syncOfflineQueue();
+            fetchLiveSheetData(false);
+        });
+
+        window.addEventListener('offline', () => {
+            updateOfflineQueueUI();
+        });
+
+        // ২. অন্য ট্যাব থেকে এই পেজে এলেই অটোমেটিক রিফ্রেশ ও পেন্ডিং কিউ সিঙ্ক
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                setTodayDates();
+                syncOfflineQueue();
+                if (Date.now() - lastIndexFetchTime > 8000) {
+                    lastIndexFetchTime = Date.now();
+                    fetchLiveSheetData(false);
+                }
+            }
+        });
+
+        window.addEventListener('focus', () => {
+            setTodayDates();
+            syncOfflineQueue();
+            if (Date.now() - lastIndexFetchTime > 8000) {
+                lastIndexFetchTime = Date.now();
+                fetchLiveSheetData(false);
+            }
+        });
+
+        // ৩. একই পেজে থাকলেও প্রতি ৩০ সেকেন্ড পর পর অটোমেটিক রিফ্রেশ ও কিউ সিঙ্ক
+        setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                setTodayDates();
+                syncOfflineQueue();
+                lastIndexFetchTime = Date.now();
+                fetchLiveSheetData(false);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
