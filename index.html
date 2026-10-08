@@ -2235,85 +2235,36 @@
                     const pctOfFund = totalFundDeposit > 0 ? Math.round((st.deposit / totalFundDeposit) * 100) : 0;
                     const isPositive = st.stock >= 0;
 
-                    // এই সদস্যের সব জমার তালিকা
-                    const selDeposits = masterTransactionList.filter(d => getNormalizedMemberName(d.member) === sel);
-
                     insightCard.innerHTML = `
-                        <div class="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200 shadow-sm space-y-3 animate-in fade-in zoom-in-95">
-                            
-                            <!-- Header: Member Name, Share & Due / Balance Status -->
-                            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs font-black shadow-xs">
-                                        ${sel.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <h4 class="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-1.5">
-                                            <span>${sel} এর সম্পূর্ণ আর্থিক হিসাব</span>
-                                            <span class="bg-indigo-50 text-indigo-700 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md border border-indigo-100">${pctOfFund}% ফান্ড শেয়ার</span>
-                                        </h4>
-                                        <p class="text-[10px] text-slate-500 font-medium">মিল রেট: ৳৮০/মিল • মোট জমার কিস্তি: ${selDeposits.length}টি</p>
-                                    </div>
+                        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-2.5 sm:p-3 border border-indigo-800/40 shadow-sm flex items-center justify-between gap-2.5 animate-in fade-in zoom-in-95">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs font-black shrink-0 shadow-xs">
+                                    ${sel.charAt(0)}
                                 </div>
-                                <div class="text-right">
-                                    <span class="text-[9px] uppercase font-bold tracking-wider block text-slate-400">ব্যালেন্স / ডিউ অবস্থা</span>
-                                    <span class="inline-flex items-center gap-1 text-[11px] font-black px-2 py-0.5 rounded-lg border ${isPositive ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-2xs' : 'bg-rose-50 text-rose-700 border-rose-200 shadow-2xs'}">
-                                        <i class="fa-solid ${isPositive ? 'fa-circle-check text-emerald-600' : 'fa-circle-exclamation text-rose-600'} text-[10px]"></i>
-                                        <span>${isPositive ? '+ ৳' + st.stock + ' পাবে' : '- ৳' + Math.abs(st.stock) + ' বকেয়া'}</span>
-                                    </span>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h4 class="text-xs sm:text-sm font-black text-white truncate">${sel}</h4>
+                                        <span class="bg-indigo-500/30 text-indigo-200 text-[10px] font-bold px-1.5 py-0.2 rounded border border-indigo-400/30">${pctOfFund}% ফান্ড</span>
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-1.5 py-0.2 rounded ${isPositive ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">
+                                            ${isPositive ? '+ ৳' + st.stock + ' পাবে' : '- ৳' + Math.abs(st.stock) + ' বকেয়া'}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2.5 text-[10px] text-slate-300 font-semibold mt-0.5 flex-wrap">
+                                        <span>জমা: <strong class="text-emerald-300 font-black">৳${st.deposit}</strong></span>
+                                        <span class="opacity-40">•</span>
+                                        <span>মিল: <strong class="text-blue-300 font-black">${st.meals}টি</strong></span>
+                                        <span class="opacity-40">•</span>
+                                        <span>খরচ: <strong class="text-amber-300 font-black">৳${st.cost}</strong></span>
+                                    </div>
                                 </div>
                             </div>
-
-                            <!-- 4 Core Financial Stat Pillars -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
-                                <div class="bg-emerald-50/80 p-2 sm:p-2.5 rounded-xl border border-emerald-200/80 text-center">
-                                    <span class="text-[9px] sm:text-[10px] font-extrabold text-emerald-800 uppercase tracking-tight block">মোট জমা দিয়েছেন</span>
-                                    <strong class="text-xs sm:text-sm font-black text-emerald-950 block mt-0.5">৳ ${st.deposit}</strong>
-                                </div>
-                                <div class="bg-blue-50/80 p-2 sm:p-2.5 rounded-xl border border-blue-200/80 text-center">
-                                    <span class="text-[9px] sm:text-[10px] font-extrabold text-blue-800 uppercase tracking-tight block">মোট খাওয়া মিল</span>
-                                    <strong class="text-xs sm:text-sm font-black text-blue-950 block mt-0.5">${st.meals} টি</strong>
-                                </div>
-                                <div class="bg-amber-50/80 p-2 sm:p-2.5 rounded-xl border border-amber-200/80 text-center">
-                                    <span class="text-[9px] sm:text-[10px] font-extrabold text-amber-800 uppercase tracking-tight block">খাবারের মোট খরচ</span>
-                                    <strong class="text-xs sm:text-sm font-black text-amber-950 block mt-0.5">৳ ${st.cost}</strong>
-                                </div>
-                                <div class="${isPositive ? 'bg-teal-50/80 border-teal-200/80 text-teal-800' : 'bg-rose-50/80 border-rose-200/80 text-rose-800'} p-2 sm:p-2.5 rounded-xl border text-center">
-                                    <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-tight block">অবশিষ্ট স্থিতি (ডিউ)</span>
-                                    <strong class="text-xs sm:text-sm font-black block mt-0.5 ${isPositive ? 'text-teal-950' : 'text-rose-950'}">${isPositive ? '+ ৳' + st.stock : '- ৳' + Math.abs(st.stock)}</strong>
-                                </div>
-                            </div>
-
+                            <button type="button" onclick="filterDepositMember('all')" class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition active:scale-95 cursor-pointer shrink-0" title="সব সদস্যে ফিরে যান">
+                                ✕ সব সদস্য
+                            </button>
                         </div>
                     `;
                 } else {
-                    // সব সদস্য সিলেক্টেড থাকলে একটি নিটোল সার্বিক খতিয়ান কার্ড প্রদর্শন
-                    insightCard.innerHTML = `
-                        <div class="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200 shadow-2xs space-y-2.5">
-                            <div class="flex items-center justify-between text-xs font-extrabold text-slate-800 border-b border-slate-100 pb-2">
-                                <span class="flex items-center gap-1.5">
-                                    <i class="fa-solid fa-users text-indigo-600"></i>
-                                    <span>সদস্যভিত্তিক সংক্ষিপ্ত হিসাব খতিয়ান</span>
-                                </span>
-                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-bold">মিল রেট: ৳৮০</span>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                                ${members.map(m => {
-                                    const st = memberStats[m];
-                                    const isPos = st.stock >= 0;
-                                    return `
-                                        <div onclick="filterDepositMember('${m}')" class="p-2 bg-slate-50 hover:bg-indigo-50/50 rounded-xl border border-slate-200/80 cursor-pointer transition text-center space-y-0.5">
-                                            <span class="text-[11px] font-black text-slate-900 block truncate">${m}</span>
-                                            <span class="text-[10px] text-slate-500 block">জমা: <strong>৳${st.deposit}</strong></span>
-                                            <span class="text-[10px] font-bold ${isPos ? 'text-emerald-700' : 'text-rose-600'} block">
-                                                ${isPos ? '+৳' + st.stock + ' পাবে' : '-৳' + Math.abs(st.stock) + ' বাকি'}
-                                            </span>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
+                    insightCard.innerHTML = ``;
                 }
             }
 
