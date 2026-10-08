@@ -20,19 +20,31 @@ function getOrCreateSheet(ss, targetMonthName) {
   var sheet = ss.getSheetByName(monthName);
   if (sheet) return sheet;
   
-  // নতুন মাস এলে প্রথম শিটটিকে টেমপ্লেট হিসেবে কপি করে স্বয়ংক্রিয়ভাবে ফ্রেশ শিট তৈরি করা
+  // নতুন মাস শুরু হলে আগের মাসের শিটটিকে হুবহু ক্লোন করে সব ফর্মুলাসহ ফ্রেশ নতুন শিট তৈরি করা
   var sheets = ss.getSheets();
-  var templateSheet = sheets[0];
+  var templateSheet = null;
+  
+  // DepositLogs ছাড়া যেকোনো মূল মাসিক শিট খুঁজে নেওয়া
+  for (var i = 0; i < sheets.length; i++) {
+    var sName = sheets[i].getName();
+    if (!sName.toLowerCase().includes("log") && !sName.toLowerCase().includes("deposit")) {
+      templateSheet = sheets[i];
+      break;
+    }
+  }
+  if (!templateSheet) templateSheet = sheets[0];
+  
+  // হুবহু ফরম্যাট, রঙ ও সমস্ত ফর্মুলা অক্ষত রেখে নতুন শিট তৈরি
   var newSheet = templateSheet.copyTo(ss).setName(monthName);
   
   try {
-    newSheet.getRange("B2:E32").clearContent(); // মিল রিসেট
-    newSheet.getRange("K2:K5").setValue(0);      // মেম্বার জমা ০ করা
+    newSheet.getRange("B2:E32").clearContent(); // শুধুমাত্র মিলের ঘর রিসেট (ফর্মুলা অক্ষত)
+    newSheet.getRange("K2:K5").setValue(0);      // মেম্বার জমার ঘর ০ করা (ফর্মুলা অক্ষত)
     newSheet.getRange("H10:I23").clearContent(); // ক্যাটারিং পেমেন্ট ক্লিয়ার
   } catch(e) {}
   
   ss.setActiveSheet(newSheet);
-  ss.moveActiveSheet(1);
+  ss.moveActiveSheet(1); // চলতি মাসের শিটটিকে সবার শুরুতে নিয়ে আসা
   return newSheet;
 }
 
