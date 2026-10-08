@@ -3,7 +3,8 @@
 // ⚡ FUTURE-PROOF & ZERO-EDIT ARCHITECTURE:
 //    - Dynamic Month Switching & All-Months Discovery
 //    - Auto New Month Sheet Creation (Format-Preserving Template Clone)
-//    - Person-wise Deposit Transaction Logging (N:P Columns)
+//    - Main Sheet Only Stores Member Total Deposit (K2:K5) - 100% Clean Sheet
+//    - Detailed Deposit History & Transactions Stored in db.json / Client Database
 //    - Safe Month Deletion / Reset with Admin Controls
 //    - Universal Action Router (Extendable without touching the script again!)
 // =====================================================================================
@@ -116,7 +117,7 @@ function doPost(e) {
   var sheet = getOrCreateSheet(ss, targetMonth);
   
   // -------------------------------------------------------------
-  // অ্যাকশন ১: মেস জমা এন্ট্রি (K কলামে যোগ + N:P তে বিস্তারিত হিস্ট্রি লগ)
+  // অ্যাকশন ১: মেস জমা এন্ট্রি (শুধুমাত্র K কলামে মোট যোগফল আপডেট)
   // -------------------------------------------------------------
   if (data.type === 'deposit') {
     var memberNames = sheet.getRange("H2:H5").getValues();
