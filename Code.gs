@@ -1,12 +1,11 @@
 // =====================================================================================
 // 🚀 MESS MEAL MANAGEMENT SYSTEM - UNIVERSAL MASTER GOOGLE APPS SCRIPT (Code.gs)
-// ⚡ FUTURE-PROOF & ZERO-EDIT ARCHITECTURE:
+// ⚡ 100% CLEAN MAIN SHEETS + CLOUD DEPOSIT LOGS (MAX LAST 2 MONTHS AUTO-RETENTION):
+//    - Main monthly sheets (Jan..Dec) have 0 extra rows/columns (100% Clean Sheet)
+//    - Automated "DepositLogs" tab records deposit receipts across all devices
+//    - Auto-Prunes deposit history older than last 2 months automatically
 //    - Dynamic Month Switching & All-Months Discovery
-//    - Auto New Month Sheet Creation (Format-Preserving Template Clone)
-//    - Main Sheet Only Stores Member Total Deposit (K2:K5) - 100% Clean Sheet
-//    - Detailed Deposit History & Transactions Stored in db.json / Client Database
-//    - Safe Month Deletion / Reset with Admin Controls
-//    - Universal Action Router (Extendable without touching the script again!)
+//    - Real-Time Live Sync with Web App
 // =====================================================================================
 
 var MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -43,20 +42,83 @@ function getAllAvailableMonths(ss) {
   var list = [];
   for (var i = 0; i < sheets.length; i++) {
     var name = sheets[i].getName();
-    // শুধুমাত্র মাসের নামের শিটগুলো নেওয়া (Jan..Dec বা অন্য যেকোনো শিট)
-    if (!name.toLowerCase().includes("copy") && !name.toLowerCase().includes("template")) {
+    // DepositLogs বা টেমপ্লেট শিট বাদ দিয়ে শুধুমাত্র মাসের নামের শিটগুলো নেওয়া
+    if (!name.toLowerCase().includes("copy") && 
+        !name.toLowerCase().includes("template") && 
+        !name.toLowerCase().includes("depositlog") && 
+        !name.toLowerCase().includes("log")) {
       list.push(name);
     }
   }
   return list;
 }
 
-// 📌 ৩. রিয়েল-টাইম অপটিমাইজড রিড হ্যান্ডলার (doGet)
+// 📌 ৩. ক্লাউড ডিপোজিট লগ শিট তৈরি করা বা খুঁজে নেওয়া
+function getOrCreateDepositLogsSheet(ss) {
+  var logSheet = ss.getSheetByName("DepositLogs");
+  if (!logSheet) {
+    logSheet = ss.insertSheet("DepositLogs");
+    logSheet.appendRow(["Timestamp", "Month", "Date", "Member", "Amount", "Note"]);
+    logSheet.setFrozenRows(1);
+    try {
+      logSheet.getRange("A1:F1").setFontWeight("bold").setBackground("#e0f2fe");
+    } catch(e){}
+  }
+  return logSheet;
+}
+
+// 📌 ৪. সর্বোচ্চ বিগত ২ মাসের ডাটা রেখে বাকি পুরোনো ডাটা স্বয়ংক্রিয়ভাবে মুছে ফেলা (Auto-Prune)
+function pruneDepositLogs(logSheet) {
+  try {
+    var lastRow = logSheet.getLastRow();
+    if (lastRow <= 1) return;
+    
+    var now = new Date();
+    var curMonthIdx = now.getMonth();
+    var prevMonthIdx = (curMonthIdx - 1 + 12) % 12;
+    var allowedMonths = [MONTH_NAMES[curMonthIdx], MONTH_NAMES[prevMonthIdx]];
+    
+    var values = logSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    var rowsToKeep = [];
+    
+    for (var i = 0; i < values.length; i++) {
+      var row = values[i];
+      var rowMonth = String(row[1] || "").trim();
+      var rowDateVal = row[2];
+      
+      var isRecent = false;
+      // চলতি বা আগের মাসের নাম থাকলে
+      if (rowMonth && allowedMonths.indexOf(rowMonth) !== -1) {
+        isRecent = true;
+      } else if (rowDateVal) {
+        var d = new Date(rowDateVal);
+        if (!isNaN(d.getTime())) {
+          var diffDays = (now.getTime() - d.getTime()) / (1000 * 3600 * 24);
+          if (diffDays <= 65) isRecent = true; // সর্বোচ্চ ৬৫ দিন (২ মাস)
+        }
+      }
+      
+      if (isRecent) {
+        rowsToKeep.push(row);
+      }
+    }
+    
+    if (rowsToKeep.length !== values.length) {
+      logSheet.getRange(2, 1, Math.max(values.length, 1), 6).clearContent();
+      if (rowsToKeep.length > 0) {
+        logSheet.getRange(2, 1, rowsToKeep.length, 6).setValues(rowsToKeep);
+      }
+    }
+  } catch(err) {
+    Logger.log("Prune error: " + err);
+  }
+}
+
+// 📌 ৫. রিয়েল-টাইম অপটিমাইজড রিড হ্যান্ডলার (doGet)
 function doGet(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var params = e && e.parameter ? e.parameter : {};
   
-  // ইউজার কোনো নির্দিষ্ট মাস রিকোয়েস্ট করলে সেই মাস পড়বে, অন্যথায় চলতি মাস
   var reqMonth = params.month || "current";
   var sheet = getOrCreateSheet(ss, reqMonth);
   
@@ -92,8 +154,43 @@ function doGet(e) {
     }
   }
   
-  // বকেয়া টাকা (J12 -> Row index 11, Col index 9)
+  // বকেয়া টাকা (J12)
   var dueAmount = (allValues[11] && allValues[11][9] !== undefined) ? allValues[11][9] : 0;
+  
+  // 📜 DepositLogs শিট থেকে বিগত ২ মাসের জমার হিস্ট্রি রিড করা
+  var depositHistory = [];
+  try {
+    var logSheet = ss.getSheetByName("DepositLogs");
+    if (logSheet) {
+      pruneDepositLogs(logSheet);
+      var lastLogRow = logSheet.getLastRow();
+      if (lastLogRow > 1) {
+        var logValues = logSheet.getRange(2, 1, lastLogRow - 1, 6).getValues();
+        for (var i = logValues.length - 1; i >= 0; i--) {
+          var row = logValues[i];
+          if (row[3] && row[4] !== "") {
+            var rawDate = row[2];
+            var formattedDate = "";
+            if (rawDate instanceof Date) {
+              formattedDate = Utilities.formatDate(rawDate, "Asia/Dhaka", "yyyy-MM-dd");
+            } else {
+              formattedDate = String(rawDate || "");
+            }
+            depositHistory.push({
+              "timestamp": row[0] ? String(row[0]) : "",
+              "month": row[1] ? String(row[1]) : "",
+              "date": formattedDate,
+              "member": String(row[3]),
+              "amount": parseFloat(row[4]) || 0,
+              "note": row[5] ? String(row[5]) : "মেস জমা"
+            });
+          }
+        }
+      }
+    }
+  } catch(err) {
+    Logger.log("doGet depositHistory error: " + err);
+  }
   
   var result = {
     "currentMonth": sheet.getName(),
@@ -102,14 +199,15 @@ function doGet(e) {
     "dueAmount": dueAmount,
     "paidAmount": paidAmount,
     "cateringPayments": cateringPayments,
-    "dailyMealsList": dailyMealsList
+    "dailyMealsList": dailyMealsList,
+    "depositHistory": depositHistory
   };
   
   return ContentService.createTextOutput(JSON.stringify(result))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// 📌 ৪. ইউনিভার্সাল অ্যাকশন রাউটার (doPost) - যেকোনো নতুন ফিচারের জন্য প্রস্তুত
+// 📌 ৬. ইউনিভার্সাল অ্যাকশন রাউটার (doPost)
 function doPost(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var data = JSON.parse(e.postData.contents);
@@ -117,7 +215,7 @@ function doPost(e) {
   var sheet = getOrCreateSheet(ss, targetMonth);
   
   // -------------------------------------------------------------
-  // অ্যাকশন ১: মেস জমা এন্ট্রি (শুধুমাত্র K কলামে মোট যোগফল আপডেট)
+  // অ্যাকশন ১: মেস জমা এন্ট্রি (K কলাম আপডেট + DepositLogs এ ক্লাউড হিস্ট্রি)
   // -------------------------------------------------------------
   if (data.type === 'deposit') {
     var memberNames = sheet.getRange("H2:H5").getValues();
@@ -142,6 +240,22 @@ function doPost(e) {
       currentDepositCell.setValue(newTotalDeposit);
     }
     
+    // DepositLogs ট্যাবে স্বয়ংক্রিয়ভাবে লেনদেন সেভ করা (সর্বোচ্চ ২ মাস সংরক্ষিত থাকবে)
+    try {
+      var logSheet = getOrCreateDepositLogsSheet(ss);
+      logSheet.appendRow([
+        Utilities.formatDate(new Date(), "Asia/Dhaka", "yyyy-MM-dd HH:mm:ss"),
+        sheet.getName(),
+        depositDate,
+        selectedMember,
+        depositVal,
+        "মেস জমা"
+      ]);
+      pruneDepositLogs(logSheet);
+    } catch(err) {
+      Logger.log("Deposit log error: " + err);
+    }
+    
     return ContentService.createTextOutput(JSON.stringify({
       "result": "success", 
       "member": selectedMember,
@@ -152,7 +266,49 @@ function doPost(e) {
   }
   
   // -------------------------------------------------------------
-  // অ্যাকশন ২: খাবার ওয়ালাকে পেমেন্ট এন্ট্রি (H10:I23)
+  // অ্যাকশন ২: নির্দিষ্ট জমার রেকর্ড ডিলিট করা (Delete Single Transaction)
+  // -------------------------------------------------------------
+  else if (data.type === 'delete_deposit_txn') {
+    try {
+      var logSheet = ss.getSheetByName("DepositLogs");
+      if (logSheet) {
+        var lastLogRow = logSheet.getLastRow();
+        if (lastLogRow > 1) {
+          var logValues = logSheet.getRange(2, 1, lastLogRow - 1, 6).getValues();
+          for (var i = logValues.length - 1; i >= 0; i--) {
+            var row = logValues[i];
+            var mName = String(row[3] || '').trim();
+            var dAmt = parseFloat(row[4]) || 0;
+            if (mName.toLowerCase().indexOf(data.member.toLowerCase()) !== -1 && dAmt === parseFloat(data.amount)) {
+              logSheet.deleteRow(2 + i);
+              break;
+            }
+          }
+        }
+      }
+      
+      // অপশনাল: শিটের K কলাম থেকেও বাদ দেওয়া
+      if (data.deductFromSheet) {
+        var memberNames = sheet.getRange("H2:H5").getValues();
+        for (var m = 0; m < memberNames.length; m++) {
+          var nameInSheet = memberNames[m][0].toString().trim();
+          if (nameInSheet.toLowerCase().indexOf(data.member.toLowerCase()) !== -1 || data.member.toLowerCase().indexOf(nameInSheet.toLowerCase()) !== -1) {
+            var cellK = sheet.getRange("K" + (2 + m));
+            var curK = parseFloat(cellK.getValue()) || 0;
+            var updatedK = Math.max(0, curK - parseFloat(data.amount));
+            cellK.setValue(updatedK);
+            break;
+          }
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({"result": "success"})).setMimeType(ContentService.MimeType.JSON);
+    } catch(err) {
+      return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": err.toString()})).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  
+  // -------------------------------------------------------------
+  // অ্যাকশন ৩: খাবার ওয়ালাকে পেমেন্ট এন্ট্রি (H10:I23)
   // -------------------------------------------------------------
   else if (data.type === 'catering_pay') {
     var rangeH = sheet.getRange("H10:H23").getValues();
@@ -174,7 +330,7 @@ function doPost(e) {
   }
   
   // -------------------------------------------------------------
-  // অ্যাকশন ৩: নির্দিষ্ট মাসের ডাটা রিসেট বা শিট ডিলিট করা
+  // অ্যাকশন ৪: নির্দিষ্ট মাসের ডাটা রিসেট বা শিট ডিলিট করা
   // -------------------------------------------------------------
   else if (data.type === 'delete_month') {
     var monthToDelete = data.targetMonth;
@@ -187,7 +343,6 @@ function doPost(e) {
       ss.deleteSheet(targetSheet);
       return ContentService.createTextOutput(JSON.stringify({"result": "success", "deletedMonth": monthToDelete})).setMimeType(ContentService.MimeType.JSON);
     } else {
-      // শেষ শিট হলে ডাটা রিসেট করবে
       targetSheet.getRange("B2:E32").clearContent();
       targetSheet.getRange("K2:K5").setValue(0);
       targetSheet.getRange("H10:I23").clearContent();
@@ -196,7 +351,7 @@ function doPost(e) {
   }
   
   // -------------------------------------------------------------
-  // অ্যাকশন ৪: নতুন মাসের শিট তৈরি করা (Create Month)
+  // অ্যাকশন ৫: নতুন মাসের শিট তৈরি করা (Create Month)
   // -------------------------------------------------------------
   else if (data.type === 'create_month') {
     var newMonthName = data.targetMonth;
@@ -209,17 +364,7 @@ function doPost(e) {
   }
   
   // -------------------------------------------------------------
-  // অ্যাকশন ৫: ইউনিভার্সাল সেল/রেঞ্জ রাইটার (ভবিষ্যতের যেকোনো নতুন ফিচারের জন্য)
-  // -------------------------------------------------------------
-  else if (data.type === 'custom_write') {
-    if (data.cell && data.value !== undefined) {
-      sheet.getRange(data.cell).setValue(data.value);
-      return ContentService.createTextOutput(JSON.stringify({"result": "success"})).setMimeType(ContentService.MimeType.JSON);
-    }
-  }
-  
-  // -------------------------------------------------------------
-  // অ্যাকশন ৬: দৈনিক মিল এন্ট্রি (Default Fallback)
+  // অ্যাকশন ৬: দৈনিক মিল এন্ট্রি
   // -------------------------------------------------------------
   else {
     var datesRange = sheet.getRange("A2:A32").getDisplayValues();
@@ -256,7 +401,7 @@ function doPost(e) {
   }
 }
 
-// 📌 ৫. প্রতি মাসের শুরুতে স্বয়ংক্রিয়ভাবে নতুন মাসের শিট তৈরি করার ট্রিগার ফাংশন
+// 📌 ৭. প্রতি মাসের শুরুতে স্বয়ংক্রিয়ভাবে নতুন মাসের শিট তৈরি করার ট্রিগার ফাংশন
 function autoCreateMonthlySheetTrigger() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var currentMonth = MONTH_NAMES[new Date().getMonth()];

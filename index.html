@@ -2032,6 +2032,21 @@
 
             renderDepositHistoryUI();
             showStatus(`🗑️ ${memberName} এর ৳${amount} টাকা জমার রেকর্ড মুছে ফেলা হয়েছে!`, true);
+
+            // ব্যাকগ্রাউন্ডে গুগল শিটের DepositLogs থেকেও মুছে ফেলা
+            if (navigator.onLine && GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'delete_deposit_txn',
+                        member: memberName,
+                        amount: amount,
+                        date: dateStr
+                    })
+                }).catch(e => console.warn("Cloud delete failed:", e));
+            }
         }
 
         function clearDepositHistory() {
