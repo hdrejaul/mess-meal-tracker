@@ -2006,7 +2006,7 @@
         }
 
         function deleteDepositTransaction(dateStr, memberName, amount) {
-            if (!confirm(`⚠️ আপনি কি [${memberName} এর ৳${amount} (${dateStr})] জমার রেকর্ডটি হিস্ট্রি থেকে মুছে ফেলতে চান?`)) {
+            if (!confirm(`⚠️ আপনি কি [${memberName} এর ৳${amount} (${dateStr})] জমার রেকর্ডটি হিস্ট্রি ও মূল হিসাব থেকে মুছে ফেলতে চান?`)) {
                 return;
             }
 
@@ -2030,10 +2030,13 @@
                 localStorage.setItem('mess_github_db_deposits', JSON.stringify(globalDepositHistory));
             } catch(e){}
 
-            renderDepositHistoryUI();
-            showStatus(`🗑️ ${memberName} এর ৳${amount} টাকা জমার রেকর্ড মুছে ফেলা হয়েছে!`, true);
+            // ⚡ অপ্টিমিস্টিক মোট জমা ও ব্যালেন্স হ্রাস (স্বয়ংক্রিয়ভাবে মোট জমা থেকে বাদ দেওয়া)
+            updateDepositOptimistically(memberName, -amount);
 
-            // ব্যাকগ্রাউন্ডে গুগল শিটের DepositLogs থেকেও মুছে ফেলা
+            renderDepositHistoryUI();
+            showStatus(`🗑️ ${memberName} এর ৳${amount} টাকা সফলভাবে মুছে ফেলা হয়েছে!`, true);
+
+            // ব্যাকগ্রাউন্ডে গুগল শিটের K কলাম ও DepositLogs থেকেও বাদ দেওয়া
             if (navigator.onLine && GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
@@ -2043,8 +2046,11 @@
                         type: 'delete_deposit_txn',
                         member: memberName,
                         amount: amount,
-                        date: dateStr
+                        date: dateStr,
+                        deductFromSheet: true
                     })
+                }).then(() => {
+                    setTimeout(() => fetchLiveSheetData(true), 2500);
                 }).catch(e => console.warn("Cloud delete failed:", e));
             }
         }
@@ -2386,11 +2392,9 @@
                                     <i class="fa-solid fa-arrow-down-left text-[10px] text-emerald-600"></i>
                                     + ৳${amt}
                                 </span>
-                                ${!tx.isBaseRecord ? `
-                                    <button onclick="event.stopPropagation(); deleteDepositTransaction('${dateStr}', '${m}', ${amt})" title="এই জমার রেকর্ড মুছুন" class="w-8 h-8 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-xl flex items-center justify-center transition active:scale-90 cursor-pointer border border-slate-200/80 hover:border-rose-300 shadow-2xs">
-                                        <i class="fa-regular fa-trash-can text-xs text-rose-500"></i>
-                                    </button>
-                                ` : ''}
+                                <button onclick="event.stopPropagation(); deleteDepositTransaction('${dateStr}', '${m}', ${amt})" title="এই জমার রেকর্ড মুছুন" class="w-8 h-8 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-xl flex items-center justify-center transition active:scale-90 cursor-pointer border border-slate-200/80 hover:border-rose-300 shadow-2xs">
+                                    <i class="fa-regular fa-trash-can text-xs text-rose-500"></i>
+                                </button>
                             </div>
                         </div>
                     `;
