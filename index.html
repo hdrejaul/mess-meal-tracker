@@ -114,73 +114,56 @@
     <div id="depositHistoryModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-2.5 sm:p-4 z-50 transition-all duration-300">
         <div class="bg-white w-full max-w-lg sm:max-w-2xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[92vh] animate-in fade-in zoom-in-95">
             
-            <!-- Smart Header with Ambient Gradient -->
-            <div class="relative bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-4 sm:px-6 py-4 text-white shrink-0 overflow-hidden border-b border-white/10">
-                <!-- Background Ambient Glow -->
-                <div class="absolute -right-10 -top-10 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-10 -bottom-10 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-
-                <div class="relative flex justify-between items-start gap-2">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 shadow-lg shadow-emerald-500/20 shrink-0">
-                            <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-emerald-400 text-base">
-                                <i class="fa-solid fa-receipt"></i>
-                            </div>
+            <!-- Smart Compact Header -->
+            <div class="relative bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 px-3 sm:px-4 py-2.5 text-white shrink-0 border-b border-white/10">
+                <div class="flex justify-between items-center gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 text-xs font-black shrink-0 shadow-xs">
+                            <i class="fa-solid fa-receipt"></i>
                         </div>
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <h3 class="text-base sm:text-lg font-black tracking-tight text-white truncate">মেস জমা পাসবুক ও লেজার</h3>
-                                <div class="flex items-center gap-1">
-                                    <select id="depMonthSelector" onchange="changeSelectedMonth(this.value)" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 text-[11px] font-bold rounded-lg px-2 py-0.5 outline-none transition cursor-pointer">
-                                        <option value="current" class="text-slate-900">চলতি মাস</option>
-                                    </select>
-                                    <button onclick="promptCreateNewMonth()" title="নতুন মাসের শিট তৈরি করুন" class="w-6 h-6 bg-emerald-500/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 rounded-lg flex items-center justify-center transition active:scale-90 cursor-pointer">
-                                        <i class="fa-solid fa-plus text-[10px]"></i>
-                                    </button>
-                                    <button onclick="promptDeleteMonth()" title="এই মাসের শিট মুছুন / রিসেট করুন" class="w-6 h-6 bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 rounded-lg flex items-center justify-center transition active:scale-90 cursor-pointer">
-                                        <i class="fa-regular fa-trash-can text-[10px]"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-[11px] text-slate-300 font-medium">সদস্যভিত্তিক জমা, মোট মিল, খরচ ও ব্যালেন্সের পূর্ণাঙ্গ বিবরণী</p>
+                        <h3 class="text-xs sm:text-sm font-black tracking-tight text-white truncate">মেস জমা ও লেজার</h3>
+                        <div class="flex items-center gap-1">
+                            <select id="depMonthSelector" onchange="changeSelectedMonth(this.value)" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 text-[10px] font-bold rounded-md px-1.5 py-0.5 outline-none transition cursor-pointer">
+                                <option value="current" class="text-slate-900">চলতি মাস</option>
+                            </select>
+                            <button onclick="promptCreateNewMonth()" title="নতুন মাসের শিট তৈরি করুন" class="w-5 h-5 bg-emerald-500/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 rounded-md flex items-center justify-center transition active:scale-90 cursor-pointer">
+                                <i class="fa-solid fa-plus text-[9px]"></i>
+                            </button>
+                            <button onclick="promptDeleteMonth()" title="এই মাসের শিট মুছুন / রিসেট করুন" class="w-5 h-5 bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 rounded-md flex items-center justify-center transition active:scale-90 cursor-pointer">
+                                <i class="fa-regular fa-trash-can text-[9px]"></i>
+                            </button>
                         </div>
                     </div>
-                    <button onclick="closeDepositHistoryModal()" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-slate-300 hover:text-white transition active:scale-90 cursor-pointer shrink-0">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                    <button onclick="closeDepositHistoryModal()" class="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center text-slate-300 hover:text-white transition active:scale-90 cursor-pointer shrink-0">
+                        <i class="fa-solid fa-xmark text-xs"></i>
                     </button>
                 </div>
 
-                <!-- 📊 Comprehensive Top Financial Bar (3-Column Dashboard) -->
-                <div class="mt-3.5 grid grid-cols-3 gap-2 bg-white/10 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 border border-white/10">
-                    <div class="text-center sm:text-left border-r border-white/10 pr-1">
-                        <span class="text-[9px] sm:text-[10px] text-emerald-200 uppercase font-extrabold tracking-wider block">মোট ফান্ড জমা</span>
-                        <h2 id="depModalTotalDeposit" class="text-sm sm:text-lg font-black text-emerald-300 mt-0.5 tracking-tight">৳ 0</h2>
+                <!-- 📊 Ultra Slim Financial Summary Strip -->
+                <div class="mt-2 flex items-center justify-between bg-white/10 backdrop-blur-md rounded-xl px-2.5 py-1 text-[10px] sm:text-xs font-bold border border-white/10">
+                    <div class="flex items-center gap-1">
+                        <span class="text-emerald-200">জমা:</span>
+                        <strong id="depModalTotalDeposit" class="text-emerald-300 font-black">৳ 0</strong>
                     </div>
-                    <div class="text-center border-r border-white/10 px-1">
-                        <span class="text-[9px] sm:text-[10px] text-amber-200 uppercase font-extrabold tracking-wider block">ক্যাটারিং খরচ</span>
-                        <h2 id="depModalTotalExpense" class="text-sm sm:text-lg font-black text-amber-300 mt-0.5 tracking-tight">৳ 0</h2>
+                    <div class="h-3 w-px bg-white/20"></div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-amber-200">খরচ:</span>
+                        <strong id="depModalTotalExpense" class="text-amber-300 font-black">৳ 0</strong>
                     </div>
-                    <div class="text-center sm:text-right pl-1">
-                        <span class="text-[9px] sm:text-[10px] text-indigo-200 uppercase font-extrabold tracking-wider block">ফান্ড ব্যালেন্স</span>
-                        <h2 id="depModalNetFundBalance" class="text-sm sm:text-lg font-black text-white mt-0.5 tracking-tight">৳ 0</h2>
+                    <div class="h-3 w-px bg-white/20"></div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-indigo-200">ব্যালেন্স:</span>
+                        <strong id="depModalNetFundBalance" class="text-white font-black">৳ 0</strong>
                     </div>
                 </div>
             </div>
 
             <!-- Modal Body (Scrollable Stream) -->
-            <div class="p-3.5 sm:p-5 space-y-3.5 overflow-y-auto flex-1 bg-slate-50/70">
+            <div class="p-2.5 sm:p-3.5 space-y-2 overflow-y-auto flex-1 bg-slate-50/70">
                 
                 <!-- Smart Member Filter Chips -->
-                <div>
-                    <div class="flex items-center justify-between mb-1 px-0.5">
-                        <span class="text-[10px] sm:text-[11px] font-extrabold text-slate-600 flex items-center gap-1.5">
-                            <i class="fa-solid fa-user-group text-indigo-600 text-xs"></i> মেম্বার সিলেক্ট করুন
-                        </span>
-                        <span id="depActiveFilterBadge" class="text-[9px] sm:text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md border border-emerald-200/60">সব সদস্য</span>
-                    </div>
-                    <div id="depMemberSummaryGrid" class="grid grid-cols-5 gap-1 sm:gap-1.5">
-                        <!-- Dynamic member pills injected via JS -->
-                    </div>
+                <div id="depMemberSummaryGrid" class="grid grid-cols-5 gap-1">
+                    <!-- Dynamic member pills injected via JS -->
                 </div>
 
                 <!-- 🌟 Active Selected Member Detailed Financial Profile Card -->
@@ -198,10 +181,10 @@
                 <!-- Transaction Log Stream -->
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between px-1">
-                        <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">জমার লেনদেন হিস্ট্রি</span>
+                        <span class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">জমার লেনদেন হিস্ট্রি</span>
                         <span id="depShowingCountText" class="text-[10px] text-slate-400 font-semibold">০টি এন্ট্রি</span>
                     </div>
-                    <div id="depTransactionsList" class="space-y-2">
+                    <div id="depTransactionsList" class="space-y-1.5">
                         <!-- Dynamic logs injected via JS -->
                     </div>
                 </div>
@@ -2159,37 +2142,36 @@
             const summaryGrid = document.getElementById('depMemberSummaryGrid');
             if (summaryGrid) {
                 const memberColors = {
-                    'Rejaul': { ring: 'ring-2 ring-indigo-500 bg-indigo-50 border-indigo-300', dot: 'bg-indigo-600', text: 'text-indigo-900', badge: 'bg-indigo-100 text-indigo-800' },
-                    'Tafiqul': { ring: 'ring-2 ring-teal-500 bg-teal-50 border-teal-300', dot: 'bg-teal-600', text: 'text-teal-900', badge: 'bg-teal-100 text-teal-800' },
-                    'Rafiul': { ring: 'ring-2 ring-violet-500 bg-violet-50 border-violet-300', dot: 'bg-violet-600', text: 'text-violet-900', badge: 'bg-violet-100 text-violet-800' },
-                    'Samiul': { ring: 'ring-2 ring-amber-500 bg-amber-50 border-amber-300', dot: 'bg-amber-600', text: 'text-amber-900', badge: 'bg-amber-100 text-amber-800' }
+                    'Rejaul': { ring: 'ring-1 ring-indigo-500 bg-indigo-50 border-indigo-300', dot: 'bg-indigo-600', text: 'text-indigo-950' },
+                    'Tafiqul': { ring: 'ring-1 ring-teal-500 bg-teal-50 border-teal-300', dot: 'bg-teal-600', text: 'text-teal-950' },
+                    'Rafiul': { ring: 'ring-1 ring-violet-500 bg-violet-50 border-violet-300', dot: 'bg-violet-600', text: 'text-violet-950' },
+                    'Samiul': { ring: 'ring-1 ring-amber-500 bg-amber-50 border-amber-300', dot: 'bg-amber-600', text: 'text-amber-950' }
                 };
 
                 const isAllActive = currentMemberFilter === 'all';
                 let memberGridHtml = `
-                    <button type="button" onclick="filterDepositMember('all')" class="p-1 sm:p-1.5 rounded-xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center ${isAllActive ? 'bg-indigo-950 text-white border-indigo-900 shadow-md ring-2 ring-indigo-400 scale-[1.02]' : 'bg-white hover:bg-slate-100/80 text-slate-700 border-slate-200 shadow-2xs'}">
-                        <span class="text-[9px] sm:text-[10px] font-extrabold block leading-tight ${isAllActive ? 'text-indigo-200' : 'text-slate-600'}">সব সদস্য</span>
-                        <span class="text-[11px] sm:text-xs font-black mt-0.5">৳${totalFundDeposit}</span>
-                        <span class="text-[8px] sm:text-[9px] font-bold ${isAllActive ? 'text-indigo-300' : 'text-slate-400'}">${totalMessMeals} মিল</span>
+                    <button type="button" onclick="filterDepositMember('all')" class="py-1 px-1 rounded-xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center ${isAllActive ? 'bg-indigo-950 text-white border-indigo-900 shadow-sm ring-1 ring-indigo-400 scale-[1.01]' : 'bg-white hover:bg-slate-100/80 text-slate-700 border-slate-200 shadow-2xs'}">
+                        <span class="text-[9px] font-extrabold leading-tight ${isAllActive ? 'text-indigo-200' : 'text-slate-600'}">সব সদস্য</span>
+                        <span class="text-[10px] font-black leading-tight mt-0.5">৳${totalFundDeposit}</span>
                     </button>
                 `;
 
                 members.forEach(m => {
                     const st = memberStats[m];
-                    const col = memberColors[m] || { ring: 'ring-2 ring-slate-400', dot: 'bg-slate-500', text: 'text-slate-900', badge: 'bg-slate-100 text-slate-800' };
+                    const col = memberColors[m] || { ring: 'ring-1 ring-slate-400', dot: 'bg-slate-500', text: 'text-slate-900' };
                     const isActive = currentMemberFilter.toLowerCase() === m.toLowerCase();
                     const stockTag = st.stock >= 0 
-                        ? `<span class="text-[8px] sm:text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1 rounded">+৳${st.stock}</span>`
-                        : `<span class="text-[8px] sm:text-[9px] font-bold text-rose-600 bg-rose-50 px-1 rounded">-৳${Math.abs(st.stock)}</span>`;
+                        ? `<span class="text-[8px] font-bold text-emerald-600">+৳${st.stock}</span>`
+                        : `<span class="text-[8px] font-bold text-rose-600">-৳${Math.abs(st.stock)}</span>`;
 
                     memberGridHtml += `
-                        <button type="button" onclick="filterDepositMember('${m}')" class="p-1 sm:p-1.5 rounded-xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center ${isActive ? col.ring + ' shadow-md scale-[1.02]' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/80 shadow-2xs'}">
-                            <span class="text-[9px] sm:text-[10px] font-extrabold ${isActive ? col.text : 'text-slate-700'} block leading-tight truncate w-full flex items-center justify-center gap-1">
+                        <button type="button" onclick="filterDepositMember('${m}')" class="py-1 px-1 rounded-xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center ${isActive ? col.ring + ' bg-indigo-50/80 border-indigo-300 shadow-sm scale-[1.01]' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/80 shadow-2xs'}">
+                            <span class="text-[9px] font-extrabold ${isActive ? 'text-indigo-950 font-black' : 'text-slate-700'} leading-tight truncate w-full flex items-center justify-center gap-0.5">
                                 <span class="w-1.5 h-1.5 rounded-full ${col.dot} shrink-0"></span>
                                 <span class="truncate">${m}</span>
                             </span>
-                            <span class="text-[11px] sm:text-xs font-black text-slate-900 mt-0.5">৳${st.deposit}</span>
-                            <div class="mt-0.5">${stockTag}</div>
+                            <span class="text-[10px] font-black text-slate-900 leading-tight mt-0.5">৳${st.deposit}</span>
+                            <div class="leading-none mt-0.5">${stockTag}</div>
                         </button>
                     `;
                 });
@@ -2236,30 +2218,19 @@
                     const isPositive = st.stock >= 0;
 
                     insightCard.innerHTML = `
-                        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-2.5 sm:p-3 border border-indigo-800/40 shadow-sm flex items-center justify-between gap-2.5 animate-in fade-in zoom-in-95">
-                            <div class="flex items-center gap-2.5 min-w-0">
-                                <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs font-black shrink-0 shadow-xs">
-                                    ${sel.charAt(0)}
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <h4 class="text-xs sm:text-sm font-black text-white truncate">${sel}</h4>
-                                        <span class="bg-indigo-500/30 text-indigo-200 text-[10px] font-bold px-1.5 py-0.2 rounded border border-indigo-400/30">${pctOfFund}% ফান্ড</span>
-                                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-1.5 py-0.2 rounded ${isPositive ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">
-                                            ${isPositive ? '+ ৳' + st.stock + ' পাবে' : '- ৳' + Math.abs(st.stock) + ' বকেয়া'}
-                                        </span>
-                                    </div>
-                                    <div class="flex items-center gap-2.5 text-[10px] text-slate-300 font-semibold mt-0.5 flex-wrap">
-                                        <span>জমা: <strong class="text-emerald-300 font-black">৳${st.deposit}</strong></span>
-                                        <span class="opacity-40">•</span>
-                                        <span>মিল: <strong class="text-blue-300 font-black">${st.meals}টি</strong></span>
-                                        <span class="opacity-40">•</span>
-                                        <span>খরচ: <strong class="text-amber-300 font-black">৳${st.cost}</strong></span>
-                                    </div>
+                        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-xl px-2.5 py-1.5 border border-indigo-800/40 shadow-2xs flex items-center justify-between gap-2 animate-in fade-in">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[11px] font-black shrink-0">${sel.charAt(0)}</span>
+                                <div class="flex items-center gap-2 flex-wrap text-[11px] font-bold">
+                                    <span class="text-white">${sel}</span>
+                                    <span class="text-emerald-300">জমা: ৳${st.deposit}</span>
+                                    <span class="text-blue-300">মিল: ${st.meals}টি</span>
+                                    <span class="text-amber-300">খরচ: ৳${st.cost}</span>
+                                    <span class="${isPositive ? 'text-emerald-300' : 'text-rose-300'} font-black">${isPositive ? '+৳' + st.stock + ' পাবে' : '-৳' + Math.abs(st.stock) + ' বাকি'}</span>
                                 </div>
                             </div>
-                            <button type="button" onclick="filterDepositMember('all')" class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition active:scale-95 cursor-pointer shrink-0" title="সব সদস্যে ফিরে যান">
-                                ✕ সব সদস্য
+                            <button type="button" onclick="filterDepositMember('all')" class="text-[9px] font-bold bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white px-2 py-0.5 rounded-md border border-white/10 transition active:scale-95 cursor-pointer shrink-0">
+                                ✕ সব
                             </button>
                         </div>
                     `;
