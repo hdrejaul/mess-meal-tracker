@@ -2284,33 +2284,6 @@
                                 </div>
                             </div>
 
-                            <!-- কবে কবে কত টাকা জমা দিলো (Deposit History Breakdown) -->
-                            <div class="bg-slate-50/90 p-2.5 sm:p-3 rounded-xl border border-slate-200/80 space-y-1.5">
-                                <div class="flex items-center justify-between text-xs font-bold text-slate-700 border-b border-slate-200 pb-1">
-                                    <span class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i>
-                                        <span>কবে কবে কত টাকা জমা দিলো (${selDeposits.length}টি কিস্তি)</span>
-                                    </span>
-                                    <span class="text-emerald-700 font-black">সর্বমোট: ৳${st.deposit}</span>
-                                </div>
-                                <div class="space-y-1.5 max-h-40 overflow-y-auto">
-                                    ${selDeposits.map((d, i) => `
-                                        <div class="bg-white p-2 sm:p-2.5 rounded-lg border border-slate-200 flex items-center justify-between text-xs shadow-2xs">
-                                            <div class="flex items-center gap-2">
-                                                <span class="w-5 h-5 bg-indigo-50 text-indigo-700 font-bold rounded flex items-center justify-center text-[10px]">#${i+1}</span>
-                                                <div>
-                                                    <span class="font-bold text-slate-800 block leading-tight">${d.isBaseRecord ? 'অক্টোবর মূল জমা' : (d.date || 'আজ')}</span>
-                                                    <span class="text-[10px] text-slate-400 font-medium">${d.isPendingOffline ? 'অফলাইনে সংরক্ষিত' : 'ভেরিফাইড জমা'}</span>
-                                                </div>
-                                            </div>
-                                            <span class="font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
-                                                + ৳${d.amount}
-                                            </span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-
                         </div>
                     `;
                 } else {
