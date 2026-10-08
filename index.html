@@ -1143,8 +1143,8 @@
                 if (raw) {
                     let parsed = JSON.parse(raw);
                     if (Array.isArray(parsed)) {
-                        // ডামি ২০০০ টাকার স্যাম্পল থাকলে তা ফিল্টার করে ফেলা
-                        parsed = parsed.filter(item => !(item.date === '2026-10-01' && parseFloat(item.amount) === 2000 && item.note === 'অক্টোবর ডিপোজিট'));
+                        // ২০০০ টাকার ডামি স্যাম্পল থাকলে তা স্থায়ীভাবে ক্লিয়ার করা
+                        parsed = parsed.filter(item => !(parseFloat(item.amount) === 2000 && (item.note === 'অক্টোবর ডিপোজিট' || item.date === '2026-10-01')));
                         globalDepositHistory = parsed;
                         localStorage.setItem('mess_github_db_deposits', JSON.stringify(parsed));
                     }
@@ -1157,7 +1157,7 @@
                     const data = await res.json();
                     let txs = data.transactions || (Array.isArray(data) ? data : []);
                     if (txs && txs.length > 0) {
-                        txs = txs.filter(item => !(item.date === '2026-10-01' && parseFloat(item.amount) === 2000 && item.note === 'অক্টোবর ডিপোজিট'));
+                        txs = txs.filter(item => !(parseFloat(item.amount) === 2000 && (item.note === 'অক্টোবর ডিপোজিট' || item.date === '2026-10-01')));
                         const existingMap = new Map();
                         txs.forEach(item => {
                             const key = `${item.date}_${item.member}_${item.amount}`;
