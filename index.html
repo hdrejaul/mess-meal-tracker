@@ -1757,6 +1757,64 @@
             }
         }
 
+        function recalculateSummaryOptimistically() {
+            const memberNames = ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'];
+            let memberMeals = { 'Rejaul': 0, 'Tafiqul': 0, 'Rafiul': 0, 'Samiul': 0 };
+            
+            if (globalDailyMeals && Array.isArray(globalDailyMeals)) {
+                globalDailyMeals.forEach(row => {
+                    if (row && row.length >= 5) {
+                        memberMeals['Rejaul'] += (parseInt(row[1], 10) || 0);
+                        memberMeals['Tafiqul'] += (parseInt(row[2], 10) || 0);
+                        memberMeals['Rafiul'] += (parseInt(row[3], 10) || 0);
+                        memberMeals['Samiul'] += (parseInt(row[4], 10) || 0);
+                    }
+                });
+            }
+
+            // বিদ্যমান ডিপোজিট ডাটা সংরক্ষণ
+            let memberDeposits = { 'Rejaul': 0, 'Tafiqul': 0, 'Rafiul': 0, 'Samiul': 0 };
+            if (globalSummaryTable && globalSummaryTable.length > 0) {
+                globalSummaryTable.forEach(row => {
+                    const rawName = String(row[0] || '').trim();
+                    const norm = getNormalizedMemberName(rawName);
+                    if (norm && norm !== 'all' && memberDeposits[norm] !== undefined) {
+                        memberDeposits[norm] = parseFloat(row[3]) || 0;
+                    }
+                });
+            }
+
+            let newSummaryTable = [];
+            let totMeal = 0, totCost = 0, totDep = 0, totStock = 0;
+
+            memberNames.forEach(name => {
+                const meal = memberMeals[name] || 0;
+                const cost = meal * 80;
+                const dep = memberDeposits[name] || 0;
+                const stock = dep - cost;
+
+                totMeal += meal;
+                totCost += cost;
+                totDep += dep;
+                totStock += stock;
+
+                newSummaryTable.push([name, meal, cost, dep, stock]);
+            });
+
+            newSummaryTable.push(['Total', totMeal, totCost, totDep, totStock]);
+            globalSummaryTable = newSummaryTable;
+
+            renderAdminSummaryUI({ summaryTable: globalSummaryTable });
+
+            try {
+                let cacheData = JSON.parse(localStorage.getItem(CACHE_KEY_INDEX) || '{}');
+                cacheData.dailyMealsList = globalDailyMeals;
+                cacheData.summaryTable = globalSummaryTable;
+                localStorage.setItem(CACHE_KEY_INDEX, JSON.stringify(cacheData));
+                localStorage.setItem('cached_catering_live_full', JSON.stringify(cacheData));
+            } catch(e) {}
+        }
+
         async function submitMeals(event) {
             event.preventDefault();
             const btn = document.getElementById('submitMealBtn');
@@ -1775,7 +1833,7 @@
                 Samiul: samiulVal
             };
 
-            // ১. তৎক্ষণাৎ মেমোরি ও UI-তে লোকাল আপডেট
+            // ১. তৎক্ষণাৎ মেমোরি ও UI-তে লোকাল আপডেট (০ মিলিসেকেন্ডে!)
             const dayNum = parseInt(selectedDate.split('-')[2], 10);
             if (globalDailyMeals && dayNum >= 1 && dayNum <= globalDailyMeals.length) {
                 globalDailyMeals[dayNum - 1] = [dayNum, rejaulVal, tafiqulVal, rafiulVal, samiulVal];
@@ -1783,14 +1841,11 @@
             isUserEditingMealForm = false;
             isMealFormInSavedState = true;
             syncMealFormWithSelectedDate(true);
-            try {
-                let cacheData = JSON.parse(localStorage.getItem(CACHE_KEY_INDEX) || '{}');
-                cacheData.dailyMealsList = globalDailyMeals;
-                localStorage.setItem(CACHE_KEY_INDEX, JSON.stringify(cacheData));
-                localStorage.setItem('cached_catering_live_full', JSON.stringify(cacheData));
-            } catch(e) {}
+            
+            // তাৎক্ষণিক সামারি টেবিল ও ড্যাশবোর্ড কার্ড রিক্যালকুলেশন
+            recalculateSummaryOptimistically();
 
-            // ২. অফলাইনে থাকলে কোনো লোডিং ছাড়াই সাথে সাথে (০ মিলিসেকেন্ডে) সেভ
+            // ২. ইন্টারনেট সংযোগ না থাকলে তৎক্ষণাৎ অফলাইন কিউতে রাখা
             if (!navigator.onLine || !GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
                 addToOfflineQueue({
                     payload: payload,
@@ -1799,40 +1854,27 @@
                 return;
             }
 
-            // ৩. অনলাইনে থাকলে গুগোল শিটে সেভ করার চেষ্টা (ম্যাক্সিমাম ৮ সেকেন্ড)
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
-
-            let isOnlineSuccess = false;
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                isOnlineSuccess = true;
-                showStatus("✅ মিল সফলভাবে গুগোল শিটে সেভ হয়েছে!", true);
-                setTimeout(() => fetchLiveSheetData(true), 1000);
-            } catch(err) {
-                console.warn("Online meal save failed or timed out, saving to offline queue:", err);
-                isOnlineSuccess = false;
-            }
-
-            btn.disabled = false;
+            // ৩. অনলাইনে সাথে সাথে স্ট্যাটাস দেওয়া ও কোনো ল্যাগ ছাড়া ব্যাকগ্রাউন্ডে গুগল শিটে পুশ
+            showStatus("✅ মিল সফলভাবে সেভ হয়েছে!", true);
             updateLiveMealSubmitButton();
 
-            if (!isOnlineSuccess) {
-                addToOfflineQueue({
-                    payload: payload,
-                    description: `${selectedDate} তারিখের মিল এন্ট্রি`
-                }, 'submitMealBtn');
-            }
+            // ব্যাকগ্রাউন্ড গুগল শিট সিঙ্ক
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                setTimeout(() => fetchLiveSheetData(true), 2500);
+            }).catch(err => {
+                console.warn("Online meal save background sync failed:", err);
+                if (!navigator.onLine) {
+                    addToOfflineQueue({
+                        payload: payload,
+                        description: `${selectedDate} তারিখের মিল এন্ট্রি`
+                    }, 'submitMealBtn');
+                }
+            });
         }
 
         // -------------------------------------------------------------
@@ -2466,6 +2508,36 @@
             showStatus("📥 GitHub db.json ফাইল সফলভাবে ডাউনলোড হয়েছে!", true);
         }
 
+        function updateDepositOptimistically(member, amount) {
+            if (!globalSummaryTable || globalSummaryTable.length === 0) return;
+            const normTarget = getNormalizedMemberName(member);
+            let totDep = 0, totStock = 0;
+            globalSummaryTable.forEach(row => {
+                const rawName = String(row[0] || '').trim();
+                const normName = getNormalizedMemberName(rawName);
+                if (normName === normTarget) {
+                    row[3] = (parseFloat(row[3]) || 0) + amount;
+                    row[4] = (parseFloat(row[4]) || 0) + amount;
+                }
+                if (!rawName.toLowerCase().includes('total')) {
+                    totDep += (parseFloat(row[3]) || 0);
+                    totStock += (parseFloat(row[4]) || 0);
+                }
+            });
+            const totalRow = globalSummaryTable.find(r => String(r[0] || '').toLowerCase().includes('total'));
+            if (totalRow) {
+                totalRow[3] = totDep;
+                totalRow[4] = totStock;
+            }
+            renderAdminSummaryUI({ summaryTable: globalSummaryTable });
+            try {
+                let cacheData = JSON.parse(localStorage.getItem(CACHE_KEY_INDEX) || '{}');
+                cacheData.summaryTable = globalSummaryTable;
+                localStorage.setItem(CACHE_KEY_INDEX, JSON.stringify(cacheData));
+                localStorage.setItem('cached_catering_live_full', JSON.stringify(cacheData));
+            } catch(e) {}
+        }
+
         async function submitDeposit(event) {
             event.preventDefault();
             const memberSelect = document.getElementById('depositMember');
@@ -2503,6 +2575,9 @@
                 localStorage.setItem('mess_github_db_deposits', JSON.stringify(globalDepositHistory));
             } catch(e){}
 
+            // অপ্টিমিস্টিক ব্যালেন্স ও সামারি আপডেট
+            updateDepositOptimistically(member, amount);
+
             const modal = document.getElementById('depositHistoryModal');
             if (modal && !modal.classList.contains('hidden')) {
                 renderDepositHistoryUI();
@@ -2521,40 +2596,27 @@
                 return;
             }
 
-            // ২. অনলাইনে গুগোল শিটে সেভ করার চেষ্টা (ম্যাক্সিমাম ৮ সেকেন্ড)
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
-
-            let isOnlineSuccess = false;
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                isOnlineSuccess = true;
-                showStatus(`✅ ${member} এর ৳${amount} টাকা গুগোল শিটে সেভ হয়েছে!`, true);
-                setTimeout(() => fetchLiveSheetData(true), 1200);
-            } catch(err) {
-                console.warn("Online deposit save failed or timed out, saving to offline queue:", err);
-                isOnlineSuccess = false;
-            }
-
+            // ২. অনলাইনে সাথে সাথে স্ট্যাটাস দেওয়া ও ব্যাকগ্রাউন্ডে গুগল শিটে পুশ
+            showStatus(`✅ ${member} এর ৳${amount} টাকা সফলভাবে সেভ হয়েছে!`, true);
             btn.disabled = false;
             btn.innerHTML = `<i class="fa-solid fa-piggy-bank"></i> মেস জমা সেভ করুন`;
 
-            if (!isOnlineSuccess) {
-                addToOfflineQueue({
-                    payload: payload,
-                    description: `${member} এর ৳${amount} টাকা জমা`
-                }, 'submitDepositBtn');
-            }
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                setTimeout(() => fetchLiveSheetData(true), 2500);
+            }).catch(err => {
+                console.warn("Online deposit background save error:", err);
+                if (!navigator.onLine) {
+                    addToOfflineQueue({
+                        payload: payload,
+                        description: `${member} এর ৳${amount} টাকা জমা`
+                    }, 'submitDepositBtn');
+                }
+            });
         }
 
         async function submitCateringPay(event) {
@@ -2593,40 +2655,27 @@
                 return;
             }
 
-            // ২. অনলাইনে গুগোল শিটে সেভ করার চেষ্টা (ম্যাক্সিমাম ৮ সেকেন্ড)
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
-
-            let isOnlineSuccess = false;
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                isOnlineSuccess = true;
-                showStatus(`✅ খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধের এন্ট্রি গুগোল শিটে সেভ হয়েছে!`, true);
-                setTimeout(() => fetchLiveSheetData(true), 1200);
-            } catch(err) {
-                console.warn("Online catering save failed or timed out, saving to offline queue:", err);
-                isOnlineSuccess = false;
-            }
-
+            // ২. অনলাইনে সাথে সাথে স্ট্যাটাস দেওয়া ও ব্যাকগ্রাউন্ডে গুগল শিটে পুশ
+            showStatus(`✅ খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধ সফলভাবে সেভ হয়েছে!`, true);
             btn.disabled = false;
             btn.innerHTML = `<i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা সেভ করুন`;
 
-            if (!isOnlineSuccess) {
-                addToOfflineQueue({
-                    payload: payload,
-                    description: `খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধ`
-                }, 'submitCateringBtn');
-            }
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                setTimeout(() => fetchLiveSheetData(true), 2500);
+            }).catch(err => {
+                console.warn("Online catering pay background save error:", err);
+                if (!navigator.onLine) {
+                    addToOfflineQueue({
+                        payload: payload,
+                        description: `খাবার ওয়ালাকে ৳${amount} টাকা পরিশোধ`
+                    }, 'submitCateringBtn');
+                }
+            });
         }
 
         // Initialize Page (Instant Cache First + Background Sync)
