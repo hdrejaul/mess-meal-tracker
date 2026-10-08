@@ -1,0 +1,42 @@
+{
+  "project": "Mess Meal Management System",
+  "version": "2.0.0",
+  "month": "Oct",
+  "lastUpdated": "2026-10-08T00:36:00.000Z",
+  "members": [
+    "Rejaul",
+    "Tafiqul",
+    "Rafiul",
+    "Samiul"
+  ],
+  "transactions": [
+    {
+      "id": "dep-1",
+      "date": "2026-10-01",
+      "member": "Rejaul",
+      "amount": 2000,
+      "note": "অক্টোবর ডিপোজিট"
+    },
+    {
+      "id": "dep-2",
+      "date": "2026-10-01",
+      "member": "Tafiqul",
+      "amount": 2000,
+      "note": "অক্টোবর ডিপোজিট"
+    },
+    {
+      "id": "dep-3",
+      "date": "2026-10-01",
+      "member": "Rafiul",
+      "amount": 2000,
+      "note": "অক্টোবর ডিপোজিট"
+    },
+    {
+      "id": "dep-4",
+      "date": "2026-10-01",
+      "member": "Samiul",
+      "amount": 2000,
+      "note": "অক্টোবর ডিপোজিট"
+    }
+  ]
+}
