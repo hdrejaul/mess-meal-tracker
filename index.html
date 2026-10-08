@@ -2006,10 +2006,7 @@
         }
 
         function deleteDepositTransaction(dateStr, memberName, amount) {
-            const userPin = prompt(`⚠️ [${memberName} এর ৳${amount} (${dateStr})] জমার রেকর্ডটি ডিলিট করতে চান?\nনিশ্চিত করতে অ্যাডমিন পিন (1122) লিখুন:`);
-            if (userPin === null) return;
-            if (userPin !== ADMIN_PIN) {
-                alert("❌ ভুল পিন! ডিলিট বাতিল করা হয়েছে।");
+            if (!confirm(`⚠️ আপনি কি [${memberName} এর ৳${amount} (${dateStr})] জমার রেকর্ডটি হিস্ট্রি থেকে মুছে ফেলতে চান?`)) {
                 return;
             }
 
@@ -2375,8 +2372,8 @@
                                     + ৳${amt}
                                 </span>
                                 ${!tx.isBaseRecord ? `
-                                    <button onclick="event.stopPropagation(); deleteDepositTransaction('${dateStr}', '${m}', ${amt})" title="এই জমার রেকর্ড মুছুন" class="w-7 h-7 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-lg flex items-center justify-center transition active:scale-90 cursor-pointer border border-transparent hover:border-rose-200">
-                                        <i class="fa-regular fa-trash-can text-xs"></i>
+                                    <button onclick="event.stopPropagation(); deleteDepositTransaction('${dateStr}', '${m}', ${amt})" title="এই জমার রেকর্ড মুছুন" class="w-8 h-8 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-xl flex items-center justify-center transition active:scale-90 cursor-pointer border border-slate-200/80 hover:border-rose-300 shadow-2xs">
+                                        <i class="fa-regular fa-trash-can text-xs text-rose-500"></i>
                                     </button>
                                 ` : ''}
                             </div>
