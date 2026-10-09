@@ -852,31 +852,31 @@
             if (rfVal > 0) activeCount++;
             if (sVal > 0) activeCount++;
 
-            // 📊 উপরের সারসংক্ষেপ বার আপডেট করা
+            // 📊 উপরের সারসংক্ষেপ বার আপডেট করা (সিম্বল ছাড়া স্পষ্ট বাংলায়)
             const liveSummaryTxt = document.getElementById('liveDayTotalTxt');
             if (liveSummaryTxt) {
                 if (grandDailyTotal > 0) {
-                    liveSummaryTxt.innerHTML = `<span class="text-indigo-900 font-black">${grandDailyTotal} টি</span> <span class="text-slate-500 font-medium text-[11px]">(☀️ ${curLunch} + 🌙 ${curDinner})</span> • <span class="text-emerald-700 font-extrabold">৳ ${totalCost}</span>`;
+                    liveSummaryTxt.innerHTML = `<span class="text-indigo-900 font-black">${grandDailyTotal} টি</span> <span class="text-slate-600 font-bold text-[11px]">(দুপুর: ${curLunch} + রাত: ${curDinner})</span> • <span class="text-emerald-700 font-black">৳ ${totalCost}</span>`;
                 } else {
                     liveSummaryTxt.innerHTML = `০ টি (৳ ০)`;
                 }
             }
 
             if (isMealFormInSavedState) {
-                // ✅ সেভ করা থাকলে
+                // ✅ সেভ করা থাকলে (ক্লিন ও পরিষ্কার বাটন)
                 btn.className = "w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-105 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer border border-emerald-500/40";
                 if (currentMealShift === 'lunch') {
-                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>☀️ দুপুরের মিল সেভ করা আছে (${currentInputTotal} মিল)</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>☀️ দুপুরের মিল সেভ করা আছে</span>`;
                 } else {
-                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>🌙 রাতের মিল সেভ করা আছে (সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>🌙 রাতের মিল সেভ করা আছে</span>`;
                 }
             } else {
-                // ✏️ এডিটিং বা নতুন এন্ট্রির সময়
+                // ✏️ এডিটিং বা নতুন এন্ট্রির সময় (ক্লিন ও সংক্ষিপ্ত বাটন)
                 btn.className = "w-full bg-gradient-to-r from-indigo-600 via-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer";
                 if (currentMealShift === 'lunch') {
-                    btn.innerHTML = `<i class="fa-solid fa-sun text-xs text-amber-300"></i> <span>☀️ দুপুরের মিল সেভ করুন (${activeCount} জনের • ${currentInputTotal} মিল)</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-sun text-xs text-amber-300"></i> <span>☀️ দুপুরের মিল সেভ করুন</span>`;
                 } else {
-                    btn.innerHTML = `<i class="fa-solid fa-moon text-xs text-indigo-200"></i> <span>🌙 রাতের মিল সেভ করুন (${activeCount} জনের • সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-moon text-xs text-indigo-200"></i> <span>🌙 রাতের মিল সেভ করুন</span>`;
                 }
             }
         }
