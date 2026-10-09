@@ -1234,37 +1234,39 @@
             const foundRow = findDailyMealRow(dayNum);
             const isEnteredInSheet = isMealRowEntered(foundRow);
 
-            // শিটের মোট ডাটার সাথে লোকাল শিফট সিঙ্ক করা
-            if (foundRow && isEnteredInSheet) {
-                const memberIndices = { 'Rejaul': 1, 'Tafiqul': 2, 'Rafiul': 3, 'Samiul': 4 };
-                members.forEach(m => {
-                    const idx = memberIndices[m];
-                    const rawVal = foundRow[idx];
-                    const sheetTot = (rawVal === "" || rawVal === null || rawVal === undefined) ? 0 : (parseInt(rawVal, 10) || 0);
-                    const currentSum = (dayShift.lunch[m] || 0) + (dayShift.dinner[m] || 0);
-                    if (sheetTot === 0) {
+            // শিটের মোট ডাটার সাথে লোকাল শিফট সিঙ্ক করা (শুধুমাত্র শিট ডাটা লোড হওয়া সাপেক্ষে)
+            if (globalDailyMeals && globalDailyMeals.length > 0) {
+                if (foundRow && isEnteredInSheet) {
+                    const memberIndices = { 'Rejaul': 1, 'Tafiqul': 2, 'Rafiul': 3, 'Samiul': 4 };
+                    members.forEach(m => {
+                        const idx = memberIndices[m];
+                        const rawVal = foundRow[idx];
+                        const sheetTot = (rawVal === "" || rawVal === null || rawVal === undefined) ? 0 : (parseInt(rawVal, 10) || 0);
+                        const currentSum = (dayShift.lunch[m] || 0) + (dayShift.dinner[m] || 0);
+                        if (sheetTot === 0) {
+                            dayShift.lunch[m] = 0;
+                            dayShift.dinner[m] = 0;
+                        } else if (currentSum !== sheetTot) {
+                            if (dayShift.lunch[m] > 0 && sheetTot >= dayShift.lunch[m]) {
+                                dayShift.dinner[m] = sheetTot - dayShift.lunch[m];
+                            } else {
+                                dayShift.dinner[m] = sheetTot;
+                                dayShift.lunch[m] = 0;
+                            }
+                        }
+                    });
+                } else if (foundRow && !isEnteredInSheet) {
+                    // গুগল শিটের রো পাওয়া গেছে কিন্তু এন্ট্রি খালি বা ০ (মুছে ফেলা হয়েছে), তাই লোকাল শিফটও ০ হবে
+                    members.forEach(m => {
                         dayShift.lunch[m] = 0;
                         dayShift.dinner[m] = 0;
-                    } else if (currentSum !== sheetTot) {
-                        if (dayShift.lunch[m] > 0 && sheetTot >= dayShift.lunch[m]) {
-                            dayShift.dinner[m] = sheetTot - dayShift.lunch[m];
-                        } else {
-                            dayShift.dinner[m] = sheetTot;
-                            dayShift.lunch[m] = 0;
-                        }
-                    }
-                });
-            } else {
-                // গুগল শিট থেকে যদি এন্ট্রি মুছে দেওয়া হয় বা সব ০ থাকে, তবে লোকাল শিফটও তৎক্ষণাৎ ০ হবে!
-                members.forEach(m => {
-                    dayShift.lunch[m] = 0;
-                    dayShift.dinner[m] = 0;
-                });
-            }
+                    });
+                }
 
-            const allShifts = getAllMealShiftsData();
-            allShifts[dateVal] = dayShift;
-            saveAllMealShiftsData(allShifts);
+                const allShifts = getAllMealShiftsData();
+                allShifts[dateVal] = dayShift;
+                saveAllMealShiftsData(allShifts);
+            }
 
             members.forEach(m => {
                 const lVal = dayShift.lunch[m] || 0;
@@ -1384,6 +1386,12 @@
                     if (data.depositHistory && (!globalDepositHistory || globalDepositHistory.length === 0)) {
                         globalDepositHistory = data.depositHistory;
                     }
+                    // ☀️🌙 ক্যাশ থেকে শিফট মিল ডাটা সবার আগে রিস্টোর করা (০ মিলিসেকেন্ডে!)
+                    if (data.mealShifts && typeof data.mealShifts === 'object') {
+                        const localShifts = getAllMealShiftsData();
+                        const merged = Object.assign({}, data.mealShifts, localShifts);
+                        saveAllMealShiftsData(merged);
+                    }
                     if (data.dailyMealsList) {
                         globalDailyMeals = data.dailyMealsList;
                         renderTodayMealStatus();
@@ -1440,23 +1448,20 @@
                         renderDepositHistoryUI();
                     }
 
-                    if (data.dailyMealsList) {
-                        globalDailyMeals = data.dailyMealsList;
-                        if (!isUserEditingMealForm) {
-                            renderTodayMealStatus();
-                        }
-                    }
-
-                    // ☀️🌙 ক্লাউড শিফট মিল ডাটা সিঙ্ক করা
+                    // ☀️🌙 ক্লাউড শিফট মিল ডাটা সবার আগে রিস্টোর করা
                     if (data.mealShifts && typeof data.mealShifts === 'object') {
                         try {
                             const localShifts = getAllMealShiftsData();
                             const merged = Object.assign({}, localShifts, data.mealShifts);
                             saveAllMealShiftsData(merged);
-                            if (!isUserEditingMealForm) {
-                                syncMealFormWithSelectedDate(false);
-                            }
                         } catch(e){}
+                    }
+
+                    if (data.dailyMealsList) {
+                        globalDailyMeals = data.dailyMealsList;
+                        if (!isUserEditingMealForm) {
+                            renderTodayMealStatus();
+                        }
                     }
                 }
             } catch(err) {
@@ -2008,6 +2013,7 @@
                 let cacheData = JSON.parse(localStorage.getItem(CACHE_KEY_INDEX) || '{}');
                 cacheData.dailyMealsList = globalDailyMeals;
                 cacheData.summaryTable = globalSummaryTable;
+                cacheData.mealShifts = getAllMealShiftsData();
                 localStorage.setItem(CACHE_KEY_INDEX, JSON.stringify(cacheData));
                 localStorage.setItem('cached_catering_live_full', JSON.stringify(cacheData));
             } catch(e) {}
@@ -2047,6 +2053,13 @@
             const allShifts = getAllMealShiftsData();
             allShifts[selectedDate] = dayShift;
             saveAllMealShiftsData(allShifts);
+
+            try {
+                let cacheData = JSON.parse(localStorage.getItem(CACHE_KEY_INDEX) || '{}');
+                cacheData.mealShifts = allShifts;
+                localStorage.setItem(CACHE_KEY_INDEX, JSON.stringify(cacheData));
+                localStorage.setItem('cached_catering_live_full', JSON.stringify(cacheData));
+            } catch(e) {}
 
             // সারাদিনের মোট মিল ক্যালকুলেশন (দুপুর + রাত)
             const totalRejaul = (dayShift.lunch['Rejaul'] || 0) + (dayShift.dinner['Rejaul'] || 0);
