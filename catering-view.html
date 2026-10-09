@@ -460,6 +460,20 @@
             if (!banner) return;
 
             if (mealCount > 0) {
+                const now = new Date();
+                const dayOfWeek = now.getDay();
+                const hour = now.getHours();
+                let shiftTitle = "আজকের অর্ডার";
+                let shiftMealText = `আজকে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${mealCount}</span> টা মিল দিবেন`;
+
+                if ((dayOfWeek === 5 || dayOfWeek === 6) && hour < 16) {
+                    shiftTitle = "☀️ দুপুরের অর্ডার";
+                    shiftMealText = `দুপুরে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${mealCount}</span> টা মিল দিবেন`;
+                } else if (hour >= 16) {
+                    shiftTitle = "🌙 রাতের অর্ডার";
+                    shiftMealText = `রাতে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${mealCount}</span> টা মিল দিবেন`;
+                }
+
                 banner.className = "p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/80 bg-gradient-to-br from-emerald-950/90 via-slate-900 to-emerald-950/90 shadow-xl emerald-glow transition-all duration-300";
                 banner.classList.remove('hidden');
                 banner.innerHTML = `
@@ -467,7 +481,7 @@
                         <!-- Top Bar: Two Corners (Larger & Bold) -->
                         <div class="flex items-center justify-between gap-2">
                             <span class="bg-emerald-400 text-slate-950 text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
-                                <i class="fa-solid fa-utensils text-xs"></i> আজকের অর্ডার
+                                <i class="fa-solid fa-utensils text-xs"></i> ${shiftTitle}
                             </span>
                             <span class="text-slate-200 text-xs sm:text-sm font-extrabold bg-slate-950/90 px-3.5 py-1 rounded-full border border-slate-700 shadow-md flex items-center gap-1.5">
                                 <i class="fa-solid fa-calendar-days text-emerald-400"></i> ${dateStr}
@@ -480,7 +494,7 @@
                                 <i class="fa-solid fa-utensils"></i>
                             </div>
                             <h3 class="text-xl sm:text-2xl font-black text-amber-300 tracking-tight leading-snug">
-                                আজকে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${mealCount}</span> টা মিল দিবেন
+                                ${shiftMealText}
                             </h3>
                         </div>
 

@@ -336,115 +336,160 @@
                     </button>
                 </div>
 
-                <!-- ১. দৈনিক মিল এন্ট্রি ফর্ম (Auto Today Date + Custom Date Picker Option) -->
+                <!-- ১. দৈনিক মিল এন্ট্রি ফর্ম (দুপুর ও রাতের আলাদা এন্ট্রি + ছুটির দিন স্মার্ট ডিটেকশন) -->
                 <form id="mealForm" onsubmit="submitMeals(event)" class="space-y-2.5">
-                    <div class="bg-slate-50/80 p-2.5 rounded-2xl border border-slate-200/70 space-y-1">
+                    <div class="bg-slate-50/80 p-2.5 rounded-2xl border border-slate-200/70 space-y-1.5">
                         <div class="flex justify-between items-center">
                             <label class="block text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
                                 <i class="fa-regular fa-calendar text-indigo-600 text-xs"></i>
                                 <span>তারিখ (Date)</span>
                             </label>
-                            <span class="text-[9px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-lg border border-indigo-100">সিলেক্টেড তারিখের মিল</span>
+                            <span id="dayTypeBadge" class="text-[9px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-lg border border-amber-300 flex items-center gap-1">
+                                🏖️ ছুটির দিন (দুপুর + রাত)
+                            </span>
                         </div>
                         <input type="date" id="entryDate" onchange="isUserEditingMealForm = false; syncMealFormWithSelectedDate()" required class="w-full px-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none text-xs text-slate-800 font-bold bg-white shadow-2xs transition">
+
+                        <!-- শিফট সিলেক্টর (দুপুর / রাত / সারাদিন) -->
+                        <div class="pt-1">
+                            <div class="bg-slate-200/70 p-1 rounded-xl flex items-center gap-1">
+                                <button type="button" id="shiftLunchBtn" onclick="setMealShift('lunch')" class="flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer">
+                                    <span>☀️ দুপুর</span>
+                                </button>
+                                <button type="button" id="shiftDinnerBtn" onclick="setMealShift('dinner')" class="flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-200 cursor-pointer">
+                                    <span>🌙 রাত</span>
+                                </button>
+                                <button type="button" id="shiftFullBtn" onclick="setMealShift('full')" class="flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer">
+                                    <span>📊 সারাদিন</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Member 1: Rejaul -->
                     <div id="meal_row_Rejaul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shadow-xs">R</div>
-                                <span class="font-extrabold text-slate-800 text-xs tracking-tight">Rejaul</span>
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-7 h-7 bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">R</div>
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Rejaul</span>
+                                    <div id="meal_shift_info_Rejaul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                        ☀️ দুপুরে: 0 মিল
+                                    </div>
+                                </div>
                             </div>
-                            <div id="meal_select_wrap_Rejaul" class="relative">
-                                <select id="meal_Rejaul" onchange="handleMealDropdownChange('Rejaul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
-                                    <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
-                                    <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
-                                    <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
-                                    <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
-                                    <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
-                                </select>
-                            </div>
-                            <div id="custom_box_Rejaul" class="hidden relative flex items-center">
-                                <input type="number" id="custom_meal_Rejaul" oninput="updateMealInputColor('Rejaul')" placeholder="মিল" min="0" class="w-20 px-2.5 py-1 border border-indigo-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-indigo-400">
-                                <button type="button" onclick="cancelCustomMeal('Rejaul')" class="absolute right-1.5 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <div id="meal_select_wrap_Rejaul" class="relative">
+                                    <select id="meal_Rejaul" onchange="handleMealDropdownChange('Rejaul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                        <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
+                                        <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
+                                        <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
+                                        <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
+                                        <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
+                                    </select>
+                                </div>
+                                <div id="custom_box_Rejaul" class="hidden relative flex items-center">
+                                    <input type="number" id="custom_meal_Rejaul" oninput="updateMealInputColor('Rejaul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-indigo-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-indigo-400">
+                                    <button type="button" onclick="cancelCustomMeal('Rejaul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Member 2: Tafiqul -->
                     <div id="meal_row_Tafiqul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-teal-600 to-emerald-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shadow-xs">T</div>
-                                <span class="font-extrabold text-slate-800 text-xs tracking-tight">Tafiqul</span>
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-7 h-7 bg-gradient-to-tr from-teal-600 to-emerald-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">T</div>
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Tafiqul</span>
+                                    <div id="meal_shift_info_Tafiqul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                        ☀️ দুপুরে: 0 মিল
+                                    </div>
+                                </div>
                             </div>
-                            <div id="meal_select_wrap_Tafiqul" class="relative">
-                                <select id="meal_Tafiqul" onchange="handleMealDropdownChange('Tafiqul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
-                                    <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
-                                    <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
-                                    <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
-                                    <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
-                                    <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
-                                </select>
-                            </div>
-                            <div id="custom_box_Tafiqul" class="hidden relative flex items-center">
-                                <input type="number" id="custom_meal_Tafiqul" oninput="updateMealInputColor('Tafiqul')" placeholder="মিল" min="0" class="w-20 px-2.5 py-1 border border-teal-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-teal-400">
-                                <button type="button" onclick="cancelCustomMeal('Tafiqul')" class="absolute right-1.5 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <div id="meal_select_wrap_Tafiqul" class="relative">
+                                    <select id="meal_Tafiqul" onchange="handleMealDropdownChange('Tafiqul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                        <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
+                                        <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
+                                        <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
+                                        <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
+                                        <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
+                                    </select>
+                                </div>
+                                <div id="custom_box_Tafiqul" class="hidden relative flex items-center">
+                                    <input type="number" id="custom_meal_Tafiqul" oninput="updateMealInputColor('Tafiqul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-teal-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-teal-400">
+                                    <button type="button" onclick="cancelCustomMeal('Tafiqul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Member 3: Rafiul -->
                     <div id="meal_row_Rafiul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-violet-600 to-purple-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shadow-xs">R</div>
-                                <span class="font-extrabold text-slate-800 text-xs tracking-tight">Rafiul</span>
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-7 h-7 bg-gradient-to-tr from-violet-600 to-purple-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">R</div>
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Rafiul</span>
+                                    <div id="meal_shift_info_Rafiul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                        ☀️ দুপুরে: 0 মিল
+                                    </div>
+                                </div>
                             </div>
-                            <div id="meal_select_wrap_Rafiul" class="relative">
-                                <select id="meal_Rafiul" onchange="handleMealDropdownChange('Rafiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
-                                    <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
-                                    <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
-                                    <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
-                                    <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
-                                    <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
-                                </select>
-                            </div>
-                            <div id="custom_box_Rafiul" class="hidden relative flex items-center">
-                                <input type="number" id="custom_meal_Rafiul" oninput="updateMealInputColor('Rafiul')" placeholder="মিল" min="0" class="w-20 px-2.5 py-1 border border-violet-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-violet-400">
-                                <button type="button" onclick="cancelCustomMeal('Rafiul')" class="absolute right-1.5 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <div id="meal_select_wrap_Rafiul" class="relative">
+                                    <select id="meal_Rafiul" onchange="handleMealDropdownChange('Rafiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                        <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
+                                        <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
+                                        <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
+                                        <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
+                                        <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
+                                    </select>
+                                </div>
+                                <div id="custom_box_Rafiul" class="hidden relative flex items-center">
+                                    <input type="number" id="custom_meal_Rafiul" oninput="updateMealInputColor('Rafiul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-violet-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-violet-400">
+                                    <button type="button" onclick="cancelCustomMeal('Rafiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Member 4: Samiul -->
                     <div id="meal_row_Samiul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-amber-500 to-orange-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shadow-xs">S</div>
-                                <span class="font-extrabold text-slate-800 text-xs tracking-tight">Samiul</span>
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-7 h-7 bg-gradient-to-tr from-amber-500 to-orange-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">S</div>
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Samiul</span>
+                                    <div id="meal_shift_info_Samiul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                        ☀️ দুপুরে: 0 মিল
+                                    </div>
+                                </div>
                             </div>
-                            <div id="meal_select_wrap_Samiul" class="relative">
-                                <select id="meal_Samiul" onchange="handleMealDropdownChange('Samiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
-                                    <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
-                                    <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
-                                    <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
-                                    <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
-                                    <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
-                                </select>
-                            </div>
-                            <div id="custom_box_Samiul" class="hidden relative flex items-center">
-                                <input type="number" id="custom_meal_Samiul" oninput="updateMealInputColor('Samiul')" placeholder="মিল" min="0" class="w-20 px-2.5 py-1 border border-amber-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-6 shadow-xs outline-none focus:ring-1 focus:ring-amber-400">
-                                <button type="button" onclick="cancelCustomMeal('Samiul')" class="absolute right-1.5 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <div id="meal_select_wrap_Samiul" class="relative">
+                                    <select id="meal_Samiul" onchange="handleMealDropdownChange('Samiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                        <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
+                                        <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
+                                        <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
+                                        <option value="3" class="text-slate-900 bg-white font-bold">3 Meal</option>
+                                        <option value="custom" class="text-slate-900 bg-white font-bold">✨ Custom</option>
+                                    </select>
+                                </div>
+                                <div id="custom_box_Samiul" class="hidden relative flex items-center">
+                                    <input type="number" id="custom_meal_Samiul" oninput="updateMealInputColor('Samiul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-amber-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-amber-400">
+                                    <button type="button" onclick="cancelCustomMeal('Samiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -624,7 +669,57 @@
             checkPinAuth();
         }
 
-        // 📌 AUTO TODAY DATE FUNCTION: Sets default value to Today, but remains fully editable!
+        // -------------------------------------------------------------
+        // 🍱 স্মার্ট মিল শিফট ইঞ্জিন (দুপুর / রাত / সারাদিন)
+        // -------------------------------------------------------------
+        let currentMealShift = 'dinner'; // 'lunch', 'dinner', 'full'
+        const MEAL_SHIFTS_KEY = 'mess_meal_shift_records_v1';
+
+        function getAllMealShiftsData() {
+            try {
+                const raw = localStorage.getItem(MEAL_SHIFTS_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch(e) {
+                return {};
+            }
+        }
+
+        function saveAllMealShiftsData(data) {
+            try {
+                localStorage.setItem(MEAL_SHIFTS_KEY, JSON.stringify(data));
+            } catch(e) {}
+        }
+
+        function getDayMealShiftData(dateStr) {
+            const allData = getAllMealShiftsData();
+            if (!allData[dateStr]) {
+                allData[dateStr] = {
+                    lunch: { 'Rejaul': 0, 'Tafiqul': 0, 'Rafiul': 0, 'Samiul': 0 },
+                    dinner: { 'Rejaul': 0, 'Tafiqul': 0, 'Rafiul': 0, 'Samiul': 0 }
+                };
+            }
+            return allData[dateStr];
+        }
+
+        function setMealShift(shiftName) {
+            currentMealShift = shiftName;
+            isUserEditingMealForm = false;
+
+            const btnLunch = document.getElementById('shiftLunchBtn');
+            const btnDinner = document.getElementById('shiftDinnerBtn');
+            const btnFull = document.getElementById('shiftFullBtn');
+
+            const activeClass = "flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-200 cursor-pointer";
+            const inactiveClass = "flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer";
+
+            if (btnLunch) btnLunch.className = (shiftName === 'lunch') ? activeClass : inactiveClass;
+            if (btnDinner) btnDinner.className = (shiftName === 'dinner') ? activeClass : inactiveClass;
+            if (btnFull) btnFull.className = (shiftName === 'full') ? activeClass : inactiveClass;
+
+            syncMealFormWithSelectedDate();
+        }
+
+        // 📌 AUTO TODAY DATE FUNCTION: Sets default value to Today & smart weekend auto-shift!
         function setTodayDates() {
             const today = new Date();
             const yyyy = today.getFullYear();
@@ -638,7 +733,15 @@
 
             const formattedDate = dd + '-' + mm + '-' + yyyy;
             document.getElementById('currentDate').innerText = formattedDate;
-            syncMealFormWithSelectedDate();
+
+            // ছুটির দিন ও সময় অনুযায়ী অটো ডিফল্ট শিফট নির্ধারণ
+            const dayOfWeek = today.getDay(); // 5 = Friday, 6 = Saturday
+            const hour = today.getHours();
+            if ((dayOfWeek === 5 || dayOfWeek === 6) && hour < 16) {
+                setMealShift('lunch');
+            } else {
+                setMealShift('dinner');
+            }
         }
 
         let isMealFormInSavedState = false;
@@ -685,35 +788,32 @@
                 if (isMealFormInSavedState) {
                     // ✅ সেভ দেওয়ার পর (Saved State):
                     if (val > 0) {
-                        // যাদের মিল আছে: উজ্জ্বল হাইলাইটেড কার্ড + আকর্ষণীয় ইন্ডিগো বর্ডার
                         if (rowCard) {
                             rowCard.className = "bg-white px-3 py-2 rounded-2xl border-2 border-indigo-500/80 shadow-xs transition-all duration-200 opacity-100";
                         }
                         select.className = "bg-white border-2 border-indigo-600 text-slate-950 font-black rounded-xl px-2.5 py-1 text-xs outline-none shadow-xs transition cursor-pointer";
-                        if (customInp) customInp.className = "w-20 px-2.5 py-1 border-2 border-indigo-600 rounded-xl text-xs font-black text-slate-950 bg-white pr-6 shadow-xs outline-none";
+                        if (customInp) customInp.className = "w-16 px-2 py-1 border-2 border-indigo-600 rounded-xl text-xs font-black text-slate-950 bg-white pr-5 shadow-xs outline-none";
                     } else {
-                        // যাদের মিল নেই (০ মিল): হালকা ও ফেইডেড (সবার ০ হলেও সেভ হওয়ার পর সবাই হালকা হবে)
                         if (rowCard) {
                             rowCard.className = "bg-slate-50/50 hover:bg-white px-3 py-2 rounded-2xl border border-dashed border-slate-200/90 opacity-40 hover:opacity-100 transition-all duration-200";
                         }
                         select.className = "bg-white border border-slate-200 text-slate-500 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer";
-                        if (customInp) customInp.className = "w-20 px-2.5 py-1 border border-slate-300 rounded-xl text-xs font-bold text-slate-500 bg-white pr-6 shadow-2xs outline-none";
+                        if (customInp) customInp.className = "w-16 px-2 py-1 border border-slate-300 rounded-xl text-xs font-bold text-slate-500 bg-white pr-5 shadow-2xs outline-none";
                     }
                 } else {
-                    // ✏️ সেভ দেওয়ার আগে / সিলেক্ট করার সময় (Editing & Normal State):
-                    // কোনো মেম্বারই ফেইড বা হালকা হবে না! সবাই ১০০% পরিষ্কার থাকবে যাতে অন্য ড্রপডাউন সিলেক্ট করতে অসুবিধা না হয়
+                    // ✏️ সেভ দেওয়ার আগে / সিলেক্ট করার সময়:
                     if (val > 0) {
                         if (rowCard) {
                             rowCard.className = "bg-white hover:bg-slate-50/90 px-3 py-2 rounded-2xl border-2 border-indigo-500/80 shadow-2xs transition-all duration-200 opacity-100";
                         }
                         select.className = "bg-white border-2 border-indigo-600 text-slate-950 font-black rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer";
-                        if (customInp) customInp.className = "w-20 px-2.5 py-1 border-2 border-indigo-600 rounded-xl text-xs font-black text-slate-950 bg-white pr-6 shadow-2xs outline-none";
+                        if (customInp) customInp.className = "w-16 px-2 py-1 border-2 border-indigo-600 rounded-xl text-xs font-black text-slate-950 bg-white pr-5 shadow-2xs outline-none";
                     } else {
                         if (rowCard) {
                             rowCard.className = "bg-white hover:bg-slate-50/90 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200 opacity-100";
                         }
                         select.className = "bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer";
-                        if (customInp) customInp.className = "w-20 px-2.5 py-1 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 bg-white pr-6 shadow-2xs outline-none";
+                        if (customInp) customInp.className = "w-16 px-2 py-1 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 bg-white pr-5 shadow-2xs outline-none";
                     }
                 }
             });
@@ -733,9 +833,26 @@
                 sVal = getMemberMealValue('Samiul');
             } catch(e){}
 
-            const totalMeals = rVal + tVal + rfVal + sVal;
-            const totalCost = totalMeals * 80;
+            const currentInputTotal = rVal + tVal + rfVal + sVal;
+            const dateInput = document.getElementById('entryDate');
+            const dateVal = dateInput ? dateInput.value : '';
+            const dayShift = getDayMealShiftData(dateVal);
 
+            let grandDailyTotal = 0;
+            const members = ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'];
+            const vals = { 'Rejaul': rVal, 'Tafiqul': tVal, 'Rafiul': rfVal, 'Samiul': sVal };
+
+            members.forEach(m => {
+                if (currentMealShift === 'lunch') {
+                    grandDailyTotal += (vals[m] || 0) + (dayShift.dinner[m] || 0);
+                } else if (currentMealShift === 'dinner') {
+                    grandDailyTotal += (dayShift.lunch[m] || 0) + (vals[m] || 0);
+                } else {
+                    grandDailyTotal += (vals[m] || 0);
+                }
+            });
+
+            const totalCost = grandDailyTotal * 80;
             let activeCount = 0;
             if (rVal > 0) activeCount++;
             if (tVal > 0) activeCount++;
@@ -743,21 +860,24 @@
             if (sVal > 0) activeCount++;
 
             if (isMealFormInSavedState) {
-                // ✅ সেভ করা থাকলে (Saved State):
-                if (totalMeals > 0) {
-                    btn.className = "w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-105 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer border border-emerald-500/40";
-                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>সেভ করা আছে (${activeCount} জনের • ${totalMeals} মিল • ৳${totalCost})</span>`;
+                // ✅ সেভ করা থাকলে
+                btn.className = "w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-105 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer border border-emerald-500/40";
+                if (currentMealShift === 'lunch') {
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>☀️ দুপুরের মিল সেভ করা আছে (${currentInputTotal} মিল)</span>`;
+                } else if (currentMealShift === 'dinner') {
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>🌙 রাতের মিল সেভ করা আছে (সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 } else {
-                    btn.className = "w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-2xl transition-all shadow-2xs border border-slate-300/80 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer";
-                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-slate-400 text-xs"></i> <span>সেভ করা আছে (আজ কারো মিল নেই)</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>📊 মিল সেভ করা আছে (মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 }
             } else {
-                // ✏️ নতুন সিলেক্ট বা এডিট করার সময় (Editing State):
+                // ✏️ এডিটিং বা নতুন এন্ট্রির সময়
                 btn.className = "w-full bg-gradient-to-r from-indigo-600 via-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer";
-                if (totalMeals === 0) {
-                    btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> <span>মিল সেভ করুন (আজ কারো মিল নেই)</span>`;
+                if (currentMealShift === 'lunch') {
+                    btn.innerHTML = `<i class="fa-solid fa-sun text-xs text-amber-300"></i> <span>☀️ দুপুরের মিল সেভ করুন (${activeCount} জনের • ${currentInputTotal} মিল)</span>`;
+                } else if (currentMealShift === 'dinner') {
+                    btn.innerHTML = `<i class="fa-solid fa-moon text-xs text-indigo-200"></i> <span>🌙 রাতের মিল সেভ করুন (${activeCount} জনের • সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 } else {
-                    btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> <span>${activeCount} জনের মিল সেভ করুন (${totalMeals} মিল • ৳${totalCost})</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> <span>📊 সারাদিনের মিল সেভ করুন (${activeCount} জনের • ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 }
             }
         }
@@ -1083,38 +1203,88 @@
             return false;
         }
 
-        // 📌 নির্বাচিত তারিখ অনুযায়ী মিল ড্রপডাউনগুলোর মান স্বয়ংক্রিয়ভাবে লোড করা
+        // 📌 নির্বাচিত তারিখ অনুযায়ী মিল ড্রপডাউন ও শিফট ডাটা স্বয়ংক্রিয়ভাবে লোড করা
         function syncMealFormWithSelectedDate(isExplicitSave = false) {
             const dateInput = document.getElementById('entryDate');
             if (!dateInput || !dateInput.value) return;
 
-            const dateVal = dateInput.value; // যেমন: '2026-10-08'
+            const dateVal = dateInput.value; // যেমন: '2026-10-09'
             const parts = dateVal.split('-');
             const dayNum = parseInt(parts[2], 10);
 
+            // ছুটির দিন (শুক্রবার ও শনিবার) স্মার্ট ডিটেকশন
+            const dateObj = new Date(dateVal + 'T12:00:00');
+            const dayOfWeek = dateObj.getDay();
+            const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6);
+            const dayBadge = document.getElementById('dayTypeBadge');
+            if (dayBadge) {
+                if (isWeekend) {
+                    dayBadge.className = "text-[9px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-lg border border-amber-300 flex items-center gap-1";
+                    dayBadge.innerHTML = `🏖️ ছুটির দিন (${dayOfWeek === 5 ? 'শুক্রবার' : 'শনিবার'}: দুপুর + রাত)`;
+                } else {
+                    dayBadge.className = "text-[9px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-lg border border-slate-200 flex items-center gap-1";
+                    dayBadge.innerHTML = `📅 সাধারণ দিন (ডিফল্ট: রাত)`;
+                }
+            }
+
+            const members = ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'];
+            const dayShift = getDayMealShiftData(dateVal);
             const foundRow = findDailyMealRow(dayNum);
             const isEnteredInSheet = isMealRowEntered(foundRow);
 
-            if (foundRow && (isEnteredInSheet || isExplicitSave)) {
-                const r = (foundRow[1] === "" || foundRow[1] === null || foundRow[1] === undefined) ? 0 : (parseInt(foundRow[1], 10) || 0);
-                const t = (foundRow[2] === "" || foundRow[2] === null || foundRow[2] === undefined) ? 0 : (parseInt(foundRow[2], 10) || 0);
-                const rf = (foundRow[3] === "" || foundRow[3] === null || foundRow[3] === undefined) ? 0 : (parseInt(foundRow[3], 10) || 0);
-                const s = (foundRow[4] === "" || foundRow[4] === null || foundRow[4] === undefined) ? 0 : (parseInt(foundRow[4], 10) || 0);
-
-                isMealFormInSavedState = true;
-
-                setMemberMealInput('Rejaul', r);
-                setMemberMealInput('Tafiqul', t);
-                setMemberMealInput('Rafiul', rf);
-                setMemberMealInput('Samiul', s);
-            } else {
-                // কোনো এন্ট্রি নেই (ফাঁকা দিন বা শিট থেকে ক্লিয়ার করা দিন): ১০০% স্বাভাবিক ও উজ্জ্বল সাদা কার্ড
-                isMealFormInSavedState = false;
-                setMemberMealInput('Rejaul', 0);
-                setMemberMealInput('Tafiqul', 0);
-                setMemberMealInput('Rafiul', 0);
-                setMemberMealInput('Samiul', 0);
+            // শিটের মোট ডাটার সাথে লোকাল শিফট সিঙ্ক করা
+            if (foundRow && isEnteredInSheet) {
+                const memberIndices = { 'Rejaul': 1, 'Tafiqul': 2, 'Rafiul': 3, 'Samiul': 4 };
+                members.forEach(m => {
+                    const idx = memberIndices[m];
+                    const sheetTot = (foundRow[idx] === "" || foundRow[idx] === null || foundRow[idx] === undefined) ? 0 : (parseInt(foundRow[idx], 10) || 0);
+                    const currentSum = (dayShift.lunch[m] || 0) + (dayShift.dinner[m] || 0);
+                    if (currentSum !== sheetTot) {
+                        if (dayShift.lunch[m] > 0 && sheetTot >= dayShift.lunch[m]) {
+                            dayShift.dinner[m] = sheetTot - dayShift.lunch[m];
+                        } else {
+                            dayShift.dinner[m] = sheetTot;
+                            dayShift.lunch[m] = 0;
+                        }
+                    }
+                });
             }
+
+            const allShifts = getAllMealShiftsData();
+            allShifts[dateVal] = dayShift;
+            saveAllMealShiftsData(allShifts);
+
+            members.forEach(m => {
+                const lVal = dayShift.lunch[m] || 0;
+                const dVal = dayShift.dinner[m] || 0;
+                const totVal = lVal + dVal;
+                const infoEl = document.getElementById('meal_shift_info_' + m);
+
+                if (currentMealShift === 'lunch') {
+                    setMemberMealInput(m, lVal);
+                    if (infoEl) {
+                        infoEl.innerHTML = lVal > 0 
+                            ? `<span class="text-amber-700 font-extrabold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">☀️ দুপুরে: ${lVal} মিল</span>`
+                            : `<span class="text-slate-400 font-medium">☀️ দুপুরের মিল নির্বাচন</span>`;
+                    }
+                } else if (currentMealShift === 'dinner') {
+                    setMemberMealInput(m, dVal);
+                    if (infoEl) {
+                        const lunchBadge = lVal > 0
+                            ? `<span class="text-amber-800 font-black bg-amber-100/90 px-1.5 py-0.2 rounded border border-amber-300">☀️ দুপুরে ছিল: ${lVal}</span>`
+                            : `<span class="text-slate-400 font-medium">☀️ দুপুরে ছিল না</span>`;
+                        const totalBadge = `<span class="text-indigo-700 font-black ml-1">📊 মোট: ${totVal} মিল</span>`;
+                        infoEl.innerHTML = `${lunchBadge} ${totalBadge}`;
+                    }
+                } else {
+                    setMemberMealInput(m, totVal);
+                    if (infoEl) {
+                        infoEl.innerHTML = `<span class="text-slate-600 font-bold">☀️ দুপুর ${lVal} + 🌙 রাত ${dVal} = <strong class="text-indigo-700 font-black">${totVal} মিল</strong></span>`;
+                    }
+                }
+            });
+
+            isMealFormInSavedState = isEnteredInSheet || isExplicitSave;
             refreshAllMealCardsVisuals();
         }
 
@@ -1819,24 +1989,47 @@
             event.preventDefault();
             const btn = document.getElementById('submitMealBtn');
             const selectedDate = document.getElementById('entryDate').value;
-            const rejaulVal = getMemberMealValue('Rejaul');
-            const tafiqulVal = getMemberMealValue('Tafiqul');
-            const rafiulVal = getMemberMealValue('Rafiul');
-            const samiulVal = getMemberMealValue('Samiul');
+            const rejaulInp = getMemberMealValue('Rejaul');
+            const tafiqulInp = getMemberMealValue('Tafiqul');
+            const rafiulInp = getMemberMealValue('Rafiul');
+            const samiulInp = getMemberMealValue('Samiul');
 
-            const payload = {
-                type: 'meal',
-                date: selectedDate,
-                Rejaul: rejaulVal,
-                Tafiqul: tafiqulVal,
-                Rafiul: rafiulVal,
-                Samiul: samiulVal
-            };
+            const members = ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'];
+            const inps = { 'Rejaul': rejaulInp, 'Tafiqul': tafiqulInp, 'Rafiul': rafiulInp, 'Samiul': samiulInp };
+            const dayShift = getDayMealShiftData(selectedDate);
+
+            // শিফট অনুযায়ী লোকাল ডাটা আপডেট
+            members.forEach(m => {
+                if (currentMealShift === 'lunch') {
+                    dayShift.lunch[m] = inps[m] || 0;
+                } else if (currentMealShift === 'dinner') {
+                    dayShift.dinner[m] = inps[m] || 0;
+                } else {
+                    const prevLunch = dayShift.lunch[m] || 0;
+                    if (inps[m] >= prevLunch) {
+                        dayShift.dinner[m] = inps[m] - prevLunch;
+                    } else {
+                        dayShift.lunch[m] = inps[m];
+                        dayShift.dinner[m] = 0;
+                    }
+                }
+            });
+
+            // লোকাল শিফট ডাটা সংরক্ষণ
+            const allShifts = getAllMealShiftsData();
+            allShifts[selectedDate] = dayShift;
+            saveAllMealShiftsData(allShifts);
+
+            // সারাদিনের মোট মিল ক্যালকুলেশন (দুপুর + রাত)
+            const totalRejaul = (dayShift.lunch['Rejaul'] || 0) + (dayShift.dinner['Rejaul'] || 0);
+            const totalTafiqul = (dayShift.lunch['Tafiqul'] || 0) + (dayShift.dinner['Tafiqul'] || 0);
+            const totalRafiul = (dayShift.lunch['Rafiul'] || 0) + (dayShift.dinner['Rafiul'] || 0);
+            const totalSamiul = (dayShift.lunch['Samiul'] || 0) + (dayShift.dinner['Samiul'] || 0);
 
             // ১. তৎক্ষণাৎ মেমোরি ও UI-তে লোকাল আপডেট (০ মিলিসেকেন্ডে!)
             const dayNum = parseInt(selectedDate.split('-')[2], 10);
             if (globalDailyMeals && dayNum >= 1 && dayNum <= globalDailyMeals.length) {
-                globalDailyMeals[dayNum - 1] = [dayNum, rejaulVal, tafiqulVal, rafiulVal, samiulVal];
+                globalDailyMeals[dayNum - 1] = [dayNum, totalRejaul, totalTafiqul, totalRafiul, totalSamiul];
             }
             isUserEditingMealForm = false;
             isMealFormInSavedState = true;
@@ -1845,17 +2038,32 @@
             // তাৎক্ষণিক সামারি টেবিল ও ড্যাশবোর্ড কার্ড রিক্যালকুলেশন
             recalculateSummaryOptimistically();
 
+            const payload = {
+                type: 'meal',
+                date: selectedDate,
+                Rejaul: totalRejaul,
+                Tafiqul: totalTafiqul,
+                Rafiul: totalRafiul,
+                Samiul: totalSamiul
+            };
+
             // ২. ইন্টারনেট সংযোগ না থাকলে তৎক্ষণাৎ অফলাইন কিউতে রাখা
             if (!navigator.onLine || !GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
                 addToOfflineQueue({
                     payload: payload,
-                    description: `${selectedDate} তারিখের মিল এন্ট্রি`
+                    description: `${selectedDate} তারিখের মিল (${currentMealShift === 'lunch' ? 'দুপুর' : (currentMealShift === 'dinner' ? 'রাত' : 'সারাদিন')})`
                 }, 'submitMealBtn');
                 return;
             }
 
-            // ৩. অনলাইনে সাথে সাথে স্ট্যাটাস দেওয়া ও কোনো ল্যাগ ছাড়া ব্যাকগ্রাউন্ডে গুগল শিটে পুশ
-            showStatus("✅ মিল সফলভাবে সেভ হয়েছে!", true);
+            // ৩. অনলাইনে সাফল্য প্রদর্শন ও ব্যাকগ্রাউন্ডে গুগল শিটে মোট মিল পাঠানো
+            if (currentMealShift === 'lunch') {
+                showStatus("✅ দুপুরের মিল সফলভাবে সেভ হয়েছে!", true);
+            } else if (currentMealShift === 'dinner') {
+                showStatus("✅ রাতের মিল সফলভাবে সেভ হয়েছে! (সারাদিনের মোট মিল শিটে আপডেট হয়েছে)", true);
+            } else {
+                showStatus("✅ মিল সফলভাবে সেভ হয়েছে!", true);
+            }
             updateLiveMealSubmitButton();
 
             // ব্যাকগ্রাউন্ড গুগল শিট সিঙ্ক
