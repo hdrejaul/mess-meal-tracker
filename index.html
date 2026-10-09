@@ -1167,7 +1167,7 @@
         }
 
         // -------------------------------------------------------------
-        // 🍲 আজকের শিফটভিত্তিক মিলের বিবরণী (দুপুর ও রাত)
+        // 🍲 আজকের শিফটভিত্তিক মিলের বিবরণী (শুধুমাত্র যাদের মিল হয়েছে)
         // -------------------------------------------------------------
         function renderTodayMemberBreakdown() {
             const container = document.getElementById('todayMemberMealBreakdownList');
@@ -1183,7 +1183,8 @@
             let totalDinner = 0;
             let totalGrandMeals = 0;
 
-            let memberCardsHtml = '';
+            let activeEaters = [];
+
             members.forEach(m => {
                 let lVal = dayShift.lunch[m] || 0;
                 let dVal = dayShift.dinner[m] || 0;
@@ -1207,62 +1208,69 @@
                 totalDinner += dVal;
                 totalGrandMeals += tot;
 
-                const isEating = tot > 0;
-
-                if (isEating) {
-                    memberCardsHtml += `
-                        <div class="flex items-center justify-between p-1.5 rounded-lg bg-indigo-50/70 border border-indigo-200/80 transition hover:bg-indigo-50">
-                            <div class="flex items-center gap-1.5 min-w-0">
-                                <div class="w-6 h-6 rounded-md bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-2xs">
-                                    ${m.charAt(0)}
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-1">
-                                        <strong class="text-xs font-black text-indigo-950 truncate">${m}</strong>
-                                        <span class="text-[9px] font-bold text-indigo-800 bg-indigo-100 px-1 py-0.2 rounded">${tot} মিল</span>
-                                    </div>
-                                    <div class="text-[9px] text-slate-600 flex items-center gap-1.5 leading-tight mt-0.5">
-                                        <span class="${lVal > 0 ? 'text-amber-800 font-bold' : 'text-slate-400'}">☀️ দুপুর: ${lVal}</span>
-                                        <span class="text-slate-300">|</span>
-                                        <span class="${dVal > 0 ? 'text-indigo-800 font-bold' : 'text-slate-400'}">🌙 রাত: ${dVal}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-right shrink-0">
-                                <span class="text-xs font-black text-indigo-950 block leading-none">৳ ${totTk}</span>
-                                <span class="text-[8px] text-emerald-700 font-bold">অ্যাক্টিভ</span>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    memberCardsHtml += `
-                        <div class="flex items-center justify-between p-1.5 rounded-lg bg-white border border-slate-200/60 opacity-60 hover:opacity-100 transition">
-                            <div class="flex items-center gap-1.5 min-w-0">
-                                <div class="w-6 h-6 rounded-md bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-black shrink-0">
-                                    ${m.charAt(0)}
-                                </div>
-                                <div class="min-w-0">
-                                    <strong class="text-xs font-bold text-slate-700 truncate">${m}</strong>
-                                    <span class="text-[9px] text-slate-400 block leading-tight">আজ কোনো মিল নেই (০)</span>
-                                </div>
-                            </div>
-                            <div class="text-right shrink-0">
-                                <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">মিল বন্ধ</span>
-                            </div>
-                        </div>
-                    `;
+                if (tot > 0) {
+                    activeEaters.push({
+                        name: m,
+                        lunch: lVal,
+                        dinner: dVal,
+                        total: tot,
+                        tk: totTk
+                    });
                 }
             });
 
             if (badge) {
-                badge.innerText = `মোট: ${totalGrandMeals} মিল (☀️${totalLunch} + 🌙${totalDinner}) • ৳${totalGrandMeals * 80}`;
+                if (totalGrandMeals > 0) {
+                    badge.className = "text-[9px] font-black text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded-md border border-indigo-100";
+                    badge.innerText = `মোট: ${totalGrandMeals} মিল (☀️${totalLunch} + 🌙${totalDinner}) • ৳${totalGrandMeals * 80}`;
+                } else {
+                    badge.className = "text-[9px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md border border-slate-200";
+                    badge.innerText = `আজ কোনো মিল নেই (০)`;
+                }
             }
+
+            if (activeEaters.length === 0) {
+                container.innerHTML = `
+                    <div class="py-2.5 px-2 text-center text-slate-400 bg-white/80 rounded-xl border border-slate-200/60 text-[10px] font-semibold">
+                        <i class="fa-solid fa-ban text-slate-300 mr-1"></i> আজ কারো কোনো মিল এন্ট্রি নেই (মিল বন্ধ)
+                    </div>
+                `;
+                return;
+            }
+
+            let memberCardsHtml = '';
+            activeEaters.forEach(m => {
+                memberCardsHtml += `
+                    <div class="flex items-center justify-between p-1.5 rounded-lg bg-indigo-50/70 border border-indigo-200/80 transition hover:bg-indigo-50">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <div class="w-6 h-6 rounded-md bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-2xs">
+                                ${m.name.charAt(0)}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1">
+                                    <strong class="text-xs font-black text-indigo-950 truncate">${m.name}</strong>
+                                    <span class="text-[9px] font-bold text-indigo-800 bg-indigo-100 px-1 py-0.2 rounded">${m.total} মিল</span>
+                                </div>
+                                <div class="text-[9px] text-slate-600 flex items-center gap-1.5 leading-tight mt-0.5">
+                                    <span class="${m.lunch > 0 ? 'text-amber-800 font-bold' : 'text-slate-400'}">☀️ দুপুর: ${m.lunch}</span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="${m.dinner > 0 ? 'text-indigo-800 font-bold' : 'text-slate-400'}">🌙 রাত: ${m.dinner}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-xs font-black text-indigo-950 block leading-none">৳ ${m.tk}</span>
+                            <span class="text-[8px] text-emerald-700 font-bold">খাবার চালু</span>
+                        </div>
+                    </div>
+                `;
+            });
 
             container.innerHTML = memberCardsHtml;
         }
 
         // -------------------------------------------------------------
-        // ⚠️ স্মার্ট বকেয়া (Due) ও ব্যালেন্স ওয়ার্নিং সিস্টেম
+        // ⚠️ স্মার্ট বকেয়া (Due) ওয়ার্নিং সিস্টেম (শুধুমাত্র যাদের বকেয়া আছে)
         // -------------------------------------------------------------
         function renderDueWarningSystem() {
             const container = document.getElementById('dueAlertListContainer');
@@ -1279,8 +1287,7 @@
             }
 
             const members = ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'];
-            let memberData = [];
-            let dueCount = 0;
+            let dueMembers = [];
             let totalDueAmount = 0;
 
             globalSummaryTable.forEach(row => {
@@ -1293,76 +1300,63 @@
                     const stock = parseFloat(row[4]) || 0;
 
                     if (stock < 0) {
-                        dueCount++;
                         totalDueAmount += Math.abs(stock);
+                        dueMembers.push({
+                            name: norm,
+                            meal: meal,
+                            cost: cost,
+                            deposit: deposit,
+                            dueAmount: Math.abs(stock)
+                        });
                     }
-
-                    memberData.push({
-                        name: norm,
-                        meal: meal,
-                        cost: cost,
-                        deposit: deposit,
-                        stock: stock,
-                        hasDue: stock < 0
-                    });
                 }
             });
 
             // সর্ট: সবচেয়ে বেশি বকেয়া থাকা সদস্য সবার উপরে থাকবে
-            memberData.sort((a, b) => a.stock - b.stock);
+            dueMembers.sort((a, b) => b.dueAmount - a.dueAmount);
 
             if (badge) {
-                if (dueCount > 0) {
+                if (dueMembers.length > 0) {
                     badge.className = "text-[9px] font-black text-rose-700 bg-rose-100 px-1.5 py-0.5 rounded-md border border-rose-300 animate-pulse";
-                    badge.innerHTML = `⚠️ ${dueCount} জনের বকেয়া (৳${totalDueAmount})`;
+                    badge.innerHTML = `⚠️ ${dueMembers.length} জনের বকেয়া (৳${totalDueAmount})`;
                 } else {
                     badge.className = "text-[9px] font-black text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded-md border border-emerald-300";
-                    badge.innerHTML = `✅ সবার ব্যালেন্স ঠিক আছে`;
+                    badge.innerHTML = `✅ কারো বকেয়া নেই`;
                 }
             }
 
+            if (dueMembers.length === 0) {
+                container.innerHTML = `
+                    <div class="py-2.5 px-2 text-center text-emerald-800 bg-emerald-50/90 rounded-xl border border-emerald-200 text-[10px] font-bold flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
+                        <span>আলহামদুলিল্লাহ! এই মুহূর্তে মেসের কারো কোনো বকেয়া নেই</span>
+                    </div>
+                `;
+                return;
+            }
+
             let html = '';
-            memberData.forEach(m => {
-                if (m.hasDue) {
-                    html += `
-                        <div class="flex items-center justify-between p-1.5 rounded-lg bg-rose-50/90 border border-rose-200/90 transition hover:bg-rose-100/70">
-                            <div class="flex items-center gap-1.5 min-w-0">
-                                <div class="w-6 h-6 rounded-md bg-rose-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-2xs">
-                                    <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-1">
-                                        <strong class="text-xs font-black text-rose-950 truncate">${m.name}</strong>
-                                        <span class="text-[9px] font-extrabold text-rose-700 bg-rose-200/70 px-1 py-0.2 rounded">বকেয়া</span>
-                                    </div>
-                                    <span class="text-[9px] text-rose-700 block leading-tight truncate">মিল: ${m.meal}টি (৳${m.cost}) | জমা: ৳${m.deposit}</span>
-                                </div>
+            dueMembers.forEach(m => {
+                html += `
+                    <div class="flex items-center justify-between p-1.5 rounded-lg bg-rose-50/90 border border-rose-200/90 transition hover:bg-rose-100/70">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <div class="w-6 h-6 rounded-md bg-rose-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-2xs">
+                                <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
                             </div>
-                            <div class="text-right shrink-0">
-                                <span class="text-xs font-black text-rose-700 block leading-none">-৳ ${Math.abs(m.stock)}</span>
-                                <button onclick="openDepositHistoryModal('${m.name}')" class="text-[8px] font-bold text-rose-800 underline hover:text-rose-950 mt-0.5 cursor-pointer">পাসবুক</button>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1">
+                                    <strong class="text-xs font-black text-rose-950 truncate">${m.name}</strong>
+                                    <span class="text-[9px] font-extrabold text-rose-700 bg-rose-200/70 px-1 py-0.2 rounded">বকেয়া</span>
+                                </div>
+                                <span class="text-[9px] text-rose-700 block leading-tight truncate">মিল: ${m.meal}টি (৳${m.cost}) | জমা: ৳${m.deposit}</span>
                             </div>
                         </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="flex items-center justify-between p-1.5 rounded-lg bg-white hover:bg-emerald-50/50 border border-slate-200/70 transition">
-                            <div class="flex items-center gap-1.5 min-w-0">
-                                <div class="w-6 h-6 rounded-md bg-emerald-100 text-emerald-800 flex items-center justify-center text-[10px] font-black shrink-0">
-                                    <i class="fa-solid fa-check text-[10px]"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <strong class="text-xs font-bold text-slate-800 truncate">${m.name}</strong>
-                                    <span class="text-[9px] text-slate-500 block leading-tight">জমা: ৳${m.deposit} | খরচ: ৳${m.cost}</span>
-                                </div>
-                            </div>
-                            <div class="text-right shrink-0">
-                                <span class="text-xs font-bold text-emerald-700 block leading-none">+৳ ${m.stock}</span>
-                                <span class="text-[8px] text-emerald-600 font-semibold">উদ্বৃত্ত</span>
-                            </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-xs font-black text-rose-700 block leading-none">-৳ ${m.dueAmount}</span>
+                            <button onclick="openDepositHistoryModal('${m.name}')" class="text-[8px] font-bold text-rose-800 underline hover:text-rose-950 mt-0.5 cursor-pointer">পাসবুক</button>
                         </div>
-                    `;
-                }
+                    </div>
+                `;
             });
 
             container.innerHTML = html;
