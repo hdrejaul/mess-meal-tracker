@@ -500,22 +500,30 @@
                 let shiftTitle = "আজকের অর্ডার";
                 let shiftMealText = "";
                 let badgesHtml = "";
+                let isZeroOrder = false;
 
                 // ছুটির দিন (শুক্রবার ও শনিবার) অথবা যেখানে দুপুর ও রাতের আলাদা মিল রয়েছে
                 if (isWeekend || hasExplicitShifts || lunchCount > 0) {
                     const activeLunch = lunchCount;
-                    const activeDinner = (dinnerCount > 0) ? dinnerCount : (mealCount > activeLunch ? (mealCount - activeLunch) : 0);
+                    const activeDinner = (dinnerCount > 0) ? dinnerCount : (hasExplicitShifts ? 0 : (mealCount > activeLunch ? (mealCount - activeLunch) : 0));
 
                     if (hour < 16) {
                         // ☀️ দুপুরের শিফট
-                        shiftTitle = "☀️ দুপুরের অর্ডার";
-                        const showCount = (activeLunch > 0) ? activeLunch : mealCount;
-                        shiftMealText = `দুপুরে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${showCount}</span> টা মিল দিবেন`;
+                        const showCount = activeLunch;
+                        if (showCount > 0) {
+                            shiftTitle = "☀️ দুপুরের অর্ডার";
+                            shiftMealText = `দুপুরে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${showCount}</span> টা মিল দিবেন`;
+                            isZeroOrder = false;
+                        } else {
+                            shiftTitle = "☀️ দুপুরের নোটিশ";
+                            shiftMealText = `<span class="text-rose-300 font-black text-xl sm:text-2xl">আজ দুপুরে কোনো মিল লাগবে না</span> <span class="text-rose-400 text-xs font-bold block sm:inline">(মিল বন্ধ)</span>`;
+                            isZeroOrder = true;
+                        }
                         
                         badgesHtml = `
                             <div class="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap text-xs pt-1">
-                                <span class="bg-amber-400/20 text-amber-300 border border-amber-400/50 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1">
-                                    <i class="fa-solid fa-sun text-[10px] text-amber-400"></i> দুপুর: ${showCount}টি
+                                <span class="${showCount > 0 ? 'bg-amber-400/20 text-amber-300 border-amber-400/50' : 'bg-rose-500/20 text-rose-300 border-rose-400/50'} border px-2.5 py-1 rounded-xl font-bold flex items-center gap-1">
+                                    <i class="fa-solid ${showCount > 0 ? 'fa-sun text-amber-400' : 'fa-ban text-rose-400'} text-[10px]"></i> দুপুর: ${showCount > 0 ? showCount + 'টি' : '০টি (লাগবে না)'}
                                 </span>
                                 ${activeDinner > 0 ? `
                                 <span class="bg-indigo-400/20 text-indigo-300 border border-indigo-400/50 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1">
@@ -529,9 +537,16 @@
                         `;
                     } else {
                         // 🌙 রাতের শিফট
-                        shiftTitle = "🌙 রাতের অর্ডার";
-                        const showCount = (activeDinner > 0) ? activeDinner : (activeLunch > 0 ? Math.max(0, mealCount - activeLunch) : mealCount);
-                        shiftMealText = `রাতে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${showCount}</span> টা মিল দিবেন`;
+                        const showCount = activeDinner;
+                        if (showCount > 0) {
+                            shiftTitle = "🌙 রাতের অর্ডার";
+                            shiftMealText = `রাতে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${showCount}</span> টা মিল দিবেন`;
+                            isZeroOrder = false;
+                        } else {
+                            shiftTitle = "🌙 রাতের নোটিশ";
+                            shiftMealText = `<span class="text-rose-300 font-black text-xl sm:text-2xl">আজ রাতে কোনো মিল লাগবে না</span> <span class="text-rose-400 text-xs font-bold block sm:inline">(মিল বন্ধ)</span>`;
+                            isZeroOrder = true;
+                        }
 
                         badgesHtml = `
                             <div class="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap text-xs pt-1">
@@ -540,8 +555,8 @@
                                     <i class="fa-solid fa-circle-check text-[10px] text-amber-400"></i> দুপুরে ছিল: ${activeLunch}টি
                                 </span>
                                 ` : ''}
-                                <span class="bg-indigo-400/20 text-indigo-300 border border-indigo-400/50 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1">
-                                    <i class="fa-solid fa-utensils text-[10px] text-indigo-300"></i> রাতের ডেলিভারি: ${showCount}টি
+                                <span class="${showCount > 0 ? 'bg-indigo-400/20 text-indigo-300 border-indigo-400/50' : 'bg-rose-500/20 text-rose-300 border-rose-400/50'} border px-2.5 py-1 rounded-xl font-bold flex items-center gap-1">
+                                    <i class="fa-solid ${showCount > 0 ? 'fa-utensils text-indigo-300' : 'fa-ban text-rose-400'} text-[10px]"></i> রাতের ডেলিভারি: ${showCount > 0 ? showCount + 'টি' : '০টি (লাগবে না)'}
                                 </span>
                                 <span class="bg-emerald-400/20 text-emerald-300 border border-emerald-400/50 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1">
                                     <i class="fa-solid fa-chart-pie text-[10px] text-emerald-300"></i> সারাদিনের মোট: ${mealCount}টি
@@ -551,38 +566,55 @@
                     }
                 } else {
                     // স্বাভাবিক কর্মদিবস (রবিবার থেকে বৃহস্পতিবার - শুধুমাত্র রাতের মিল)
-                    shiftTitle = "🌙 রাতের অর্ডার";
-                    shiftMealText = `রাতে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${mealCount}</span> টা মিল দিবেন`;
-                    badgesHtml = `
-                        <div class="flex items-center justify-center gap-2 flex-wrap text-xs pt-1">
-                            <span class="bg-indigo-400/20 text-indigo-300 border border-indigo-400/50 px-3 py-1 rounded-xl font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-moon text-[10px] text-indigo-300"></i> রাতের ডেলিভারি: ${mealCount}টি
-                            </span>
-                            <span class="bg-emerald-400/20 text-emerald-300 border border-emerald-400/50 px-3 py-1 rounded-xl font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-chart-pie text-[10px] text-emerald-300"></i> আজকের মোট: ${mealCount}টি
-                            </span>
-                        </div>
-                    `;
+                    if (mealCount > 0) {
+                        shiftTitle = "🌙 রাতের অর্ডার";
+                        shiftMealText = `রাতে <span class="text-emerald-400 font-black text-3xl sm:text-4xl mx-0.5 drop-shadow">${mealCount}</span> টা মিল দিবেন`;
+                        isZeroOrder = false;
+                        badgesHtml = `
+                            <div class="flex items-center justify-center gap-2 flex-wrap text-xs pt-1">
+                                <span class="bg-indigo-400/20 text-indigo-300 border border-indigo-400/50 px-3 py-1 rounded-xl font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-moon text-[10px] text-indigo-300"></i> রাতের ডেলিভারি: ${mealCount}টি
+                                </span>
+                                <span class="bg-emerald-400/20 text-emerald-300 border border-emerald-400/50 px-3 py-1 rounded-xl font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-chart-pie text-[10px] text-emerald-300"></i> আজকের মোট: ${mealCount}টি
+                                </span>
+                            </div>
+                        `;
+                    } else {
+                        shiftTitle = "🌙 রাতের নোটিশ";
+                        shiftMealText = `<span class="text-rose-300 font-black text-xl sm:text-2xl">আজ রাতে কোনো মিল লাগবে না</span> <span class="text-rose-400 text-xs font-bold block sm:inline">(মিল বন্ধ)</span>`;
+                        isZeroOrder = true;
+                        badgesHtml = `
+                            <div class="flex items-center justify-center gap-2 flex-wrap text-xs pt-1">
+                                <span class="bg-rose-500/20 text-rose-300 border border-rose-400/50 px-3 py-1 rounded-xl font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-ban text-[10px] text-rose-400"></i> রাতের ডেলিভারি: ০টি (মিল লাগবে না)
+                                </span>
+                            </div>
+                        `;
+                    }
                 }
 
-                banner.className = "p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/80 bg-gradient-to-br from-emerald-950/90 via-slate-900 to-emerald-950/90 shadow-xl emerald-glow transition-all duration-300";
+                banner.className = isZeroOrder 
+                    ? "p-4 sm:p-5 rounded-2xl border-2 border-rose-500/80 bg-gradient-to-br from-rose-950/90 via-slate-900 to-rose-950/90 shadow-xl transition-all duration-300"
+                    : "p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/80 bg-gradient-to-br from-emerald-950/90 via-slate-900 to-emerald-950/90 shadow-xl emerald-glow transition-all duration-300";
+                
                 banner.classList.remove('hidden');
                 banner.innerHTML = `
                     <div class="space-y-3">
                         <!-- Top Bar: Two Corners (Larger & Bold) -->
                         <div class="flex items-center justify-between gap-2">
-                            <span class="bg-emerald-400 text-slate-950 text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
-                                <i class="fa-solid fa-utensils text-xs"></i> ${shiftTitle}
+                            <span class="${isZeroOrder ? 'bg-rose-500 text-white' : 'bg-emerald-400 text-slate-950'} text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid ${isZeroOrder ? 'fa-ban' : 'fa-utensils'} text-xs"></i> ${shiftTitle}
                             </span>
                             <span class="text-slate-200 text-xs sm:text-sm font-extrabold bg-slate-950/90 px-3.5 py-1 rounded-full border border-slate-700 shadow-md flex items-center gap-1.5">
-                                <i class="fa-solid fa-calendar-days text-emerald-400"></i> ${dateStr}
+                                <i class="fa-solid fa-calendar-days ${isZeroOrder ? 'text-rose-400' : 'text-emerald-400'}"></i> ${dateStr}
                             </span>
                         </div>
 
                         <!-- Center: Meal Count Showcase with Icon -->
                         <div class="py-0.5 flex items-center justify-center gap-3">
-                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/20 border border-emerald-400/80 flex items-center justify-center text-emerald-400 text-xl sm:text-2xl shrink-0 shadow-md">
-                                <i class="fa-solid fa-utensils"></i>
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${isZeroOrder ? 'bg-rose-500/20 border-rose-400/80 text-rose-400' : 'bg-emerald-500/20 border-emerald-400/80 text-emerald-400'} border flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-md">
+                                <i class="fa-solid ${isZeroOrder ? 'fa-ban' : 'fa-utensils'}"></i>
                             </div>
                             <h3 class="text-xl sm:text-2xl font-black text-amber-300 tracking-tight leading-snug">
                                 ${shiftMealText}
