@@ -1260,12 +1260,13 @@
                             }
                         }
                     });
-                } else if (foundRow && !isEnteredInSheet) {
-                    // গুগল শিটের রো পাওয়া গেছে কিন্তু এন্ট্রি খালি বা ০ (মুছে ফেলা হয়েছে), তাই লোকাল শিফটও ০ হবে
+                } else {
+                    // গুগল শিটের রো খালি বা সব ০ থাকলে লোকাল শিফট ও সেভ ফ্ল্যাগ সম্পূর্ণ রিসেট
                     members.forEach(m => {
                         dayShift.lunch[m] = 0;
                         dayShift.dinner[m] = 0;
                     });
+                    dayShift.saved = { lunch: false, dinner: false };
                 }
 
                 const allShifts = getAllMealShiftsData();
@@ -1298,19 +1299,24 @@
                 }
             });
 
-            const isCurrentShiftSaved = dayShift.saved && (dayShift.saved[currentMealShift] === true);
             if (isExplicitSave) {
                 isMealFormInSavedState = true;
-            } else if (isCurrentShiftSaved) {
-                isMealFormInSavedState = true;
-            } else if (currentMealShift === 'dinner') {
-                const hasDinnerInput = members.some(m => (dayShift.dinner[m] || 0) > 0);
-                isMealFormInSavedState = isEnteredInSheet && hasDinnerInput;
-            } else if (currentMealShift === 'lunch') {
-                const hasLunchInput = members.some(m => (dayShift.lunch[m] || 0) > 0);
-                isMealFormInSavedState = isEnteredInSheet && hasLunchInput;
+            } else if (!isEnteredInSheet) {
+                // গুগল শিটে কোনো এন্ট্রি না থাকলে বা মুছে দিলে ফর্ম আনসেভড/ফ্রেশ এন্ট্রি মোডে থাকবে
+                isMealFormInSavedState = false;
             } else {
-                isMealFormInSavedState = isEnteredInSheet;
+                const isCurrentShiftSaved = dayShift.saved && (dayShift.saved[currentMealShift] === true);
+                if (isCurrentShiftSaved) {
+                    isMealFormInSavedState = true;
+                } else if (currentMealShift === 'dinner') {
+                    const hasDinnerInput = members.some(m => (dayShift.dinner[m] || 0) > 0);
+                    isMealFormInSavedState = hasDinnerInput;
+                } else if (currentMealShift === 'lunch') {
+                    const hasLunchInput = members.some(m => (dayShift.lunch[m] || 0) > 0);
+                    isMealFormInSavedState = hasLunchInput;
+                } else {
+                    isMealFormInSavedState = true;
+                }
             }
 
             refreshAllMealCardsVisuals();
