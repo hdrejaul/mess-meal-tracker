@@ -350,19 +350,25 @@
                         </div>
                         <input type="date" id="entryDate" onchange="isUserEditingMealForm = false; syncMealFormWithSelectedDate()" required class="w-full px-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none text-xs text-slate-800 font-bold bg-white shadow-2xs transition">
 
-                        <!-- শিফট সিলেক্টর (দুপুর / রাত / সারাদিন) -->
+                        <!-- শিফট সিলেক্টর (দুপুর ও রাত) -->
                         <div class="pt-1">
-                            <div class="bg-slate-200/70 p-1 rounded-xl flex items-center gap-1">
-                                <button type="button" id="shiftLunchBtn" onclick="setMealShift('lunch')" class="flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer">
+                            <div class="bg-slate-200/70 p-1 rounded-xl flex items-center gap-1.5">
+                                <button type="button" id="shiftLunchBtn" onclick="setMealShift('lunch')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer">
                                     <span>☀️ দুপুর</span>
                                 </button>
-                                <button type="button" id="shiftDinnerBtn" onclick="setMealShift('dinner')" class="flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-200 cursor-pointer">
+                                <button type="button" id="shiftDinnerBtn" onclick="setMealShift('dinner')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-200 cursor-pointer">
                                     <span>🌙 রাত</span>
                                 </button>
-                                <button type="button" id="shiftFullBtn" onclick="setMealShift('full')" class="flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer">
-                                    <span>📊 সারাদিন</span>
-                                </button>
                             </div>
+                        </div>
+
+                        <!-- 📊 আজকের মোট মিল সারসংক্ষেপ বার -->
+                        <div id="liveDayMealSummaryBadge" class="bg-indigo-50/90 border border-indigo-200/80 py-1.5 px-3 rounded-xl flex items-center justify-between text-xs text-indigo-950 font-bold shadow-2xs">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-chart-pie text-indigo-600 text-xs"></i> 
+                                <span>আজকের মোট মিল:</span>
+                            </span>
+                            <span id="liveDayTotalTxt" class="text-indigo-700 font-extrabold">০ টি (৳ ০)</span>
                         </div>
                     </div>
 
@@ -702,23 +708,20 @@
         }
 
         function setMealShift(shiftName) {
-            currentMealShift = shiftName;
+            currentMealShift = (shiftName === 'lunch') ? 'lunch' : 'dinner';
             isUserEditingMealForm = false;
-            isMealFormInSavedState = false; // শিফট পরিবর্তন করলে নতুন এন্ট্রি মোড (কখনই হালকা বা লক থাকবে না)
+            isMealFormInSavedState = false; // শিফট পরিবর্তন করলে ফ্রেশ এন্ট্রি মোড
 
             const btnLunch = document.getElementById('shiftLunchBtn');
             const btnDinner = document.getElementById('shiftDinnerBtn');
-            const btnFull = document.getElementById('shiftFullBtn');
 
             // অ্যাক্টিভ শিফট বাটন গাঢ় ও স্পষ্ট, ইনঅ্যাক্টিভ শিফট বাটন হালকা থাকবে
-            const activeLunchClass = "flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-amber-900 shadow-xs border border-amber-300 cursor-pointer";
-            const activeDinnerClass = "flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-300 cursor-pointer";
-            const activeFullClass = "flex-1 py-1 px-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-emerald-700 shadow-xs border border-emerald-300 cursor-pointer";
-            const inactiveClass = "flex-1 py-1 px-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 text-slate-500 hover:text-slate-800 opacity-70 hover:opacity-100 cursor-pointer";
+            const activeLunchClass = "flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-amber-900 shadow-xs border border-amber-300 cursor-pointer";
+            const activeDinnerClass = "flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-300 cursor-pointer";
+            const inactiveClass = "flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 text-slate-500 hover:text-slate-800 opacity-70 hover:opacity-100 cursor-pointer";
 
-            if (btnLunch) btnLunch.className = (shiftName === 'lunch') ? activeLunchClass : inactiveClass;
-            if (btnDinner) btnDinner.className = (shiftName === 'dinner') ? activeDinnerClass : inactiveClass;
-            if (btnFull) btnFull.className = (shiftName === 'full') ? activeFullClass : inactiveClass;
+            if (btnLunch) btnLunch.className = (currentMealShift === 'lunch') ? activeLunchClass : inactiveClass;
+            if (btnDinner) btnDinner.className = (currentMealShift === 'dinner') ? activeDinnerClass : inactiveClass;
 
             syncMealFormWithSelectedDate();
         }
@@ -792,13 +795,13 @@
                 // 🌟 কার্ড সবসময় ১০০% সক্রিয়, উজ্জ্বল ও গাঢ় (Opacity-100) থাকবে — কখনোই হালকা থাকবে না:
                 if (val > 0) {
                     if (rowCard) {
-                        rowCard.className = "bg-indigo-50/60 hover:bg-indigo-50/80 px-3 py-2.5 rounded-2xl border-2 border-indigo-500 shadow-xs transition-all duration-200 opacity-100";
+                        rowCard.className = "bg-indigo-50/60 hover:bg-indigo-50/80 px-3 py-2 rounded-2xl border-2 border-indigo-500 shadow-xs transition-all duration-200 opacity-100";
                     }
                     select.className = "bg-white border-2 border-indigo-600 text-slate-950 font-black rounded-xl px-2.5 py-1 text-xs outline-none shadow-xs transition cursor-pointer";
                     if (customInp) customInp.className = "w-16 px-2 py-1 border-2 border-indigo-600 rounded-xl text-xs font-black text-slate-950 bg-white pr-5 shadow-xs outline-none";
                 } else {
                     if (rowCard) {
-                        rowCard.className = "bg-white hover:bg-slate-50 px-3 py-2.5 rounded-2xl border-2 border-slate-200 shadow-2xs transition-all duration-200 opacity-100";
+                        rowCard.className = "bg-white hover:bg-slate-50 px-3 py-2 rounded-2xl border-2 border-slate-200 shadow-2xs transition-all duration-200 opacity-100";
                     }
                     select.className = "bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer";
                     if (customInp) customInp.className = "w-16 px-2 py-1 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 bg-white pr-5 shadow-2xs outline-none";
@@ -825,20 +828,23 @@
             const dateVal = dateInput ? dateInput.value : '';
             const dayShift = getDayMealShiftData(dateVal);
 
-            let grandDailyTotal = 0;
             const members = ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'];
             const vals = { 'Rejaul': rVal, 'Tafiqul': tVal, 'Rafiul': rfVal, 'Samiul': sVal };
 
+            let curLunch = 0;
+            let curDinner = 0;
+
             members.forEach(m => {
                 if (currentMealShift === 'lunch') {
-                    grandDailyTotal += (vals[m] || 0) + (dayShift.dinner[m] || 0);
-                } else if (currentMealShift === 'dinner') {
-                    grandDailyTotal += (dayShift.lunch[m] || 0) + (vals[m] || 0);
+                    curLunch += (vals[m] || 0);
+                    curDinner += (dayShift.dinner[m] || 0);
                 } else {
-                    grandDailyTotal += (vals[m] || 0);
+                    curLunch += (dayShift.lunch[m] || 0);
+                    curDinner += (vals[m] || 0);
                 }
             });
 
+            const grandDailyTotal = curLunch + curDinner;
             const totalCost = grandDailyTotal * 80;
             let activeCount = 0;
             if (rVal > 0) activeCount++;
@@ -846,25 +852,31 @@
             if (rfVal > 0) activeCount++;
             if (sVal > 0) activeCount++;
 
+            // 📊 উপরের সারসংক্ষেপ বার আপডেট করা
+            const liveSummaryTxt = document.getElementById('liveDayTotalTxt');
+            if (liveSummaryTxt) {
+                if (grandDailyTotal > 0) {
+                    liveSummaryTxt.innerHTML = `<span class="text-indigo-900 font-black">${grandDailyTotal} টি</span> <span class="text-slate-500 font-medium text-[11px]">(☀️ ${curLunch} + 🌙 ${curDinner})</span> • <span class="text-emerald-700 font-extrabold">৳ ${totalCost}</span>`;
+                } else {
+                    liveSummaryTxt.innerHTML = `০ টি (৳ ০)`;
+                }
+            }
+
             if (isMealFormInSavedState) {
                 // ✅ সেভ করা থাকলে
                 btn.className = "w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-105 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer border border-emerald-500/40";
                 if (currentMealShift === 'lunch') {
                     btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>☀️ দুপুরের মিল সেভ করা আছে (${currentInputTotal} মিল)</span>`;
-                } else if (currentMealShift === 'dinner') {
-                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>🌙 রাতের মিল সেভ করা আছে (সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 } else {
-                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>📊 মিল সেভ করা আছে (মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>🌙 রাতের মিল সেভ করা আছে (সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 }
             } else {
                 // ✏️ এডিটিং বা নতুন এন্ট্রির সময়
                 btn.className = "w-full bg-gradient-to-r from-indigo-600 via-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer";
                 if (currentMealShift === 'lunch') {
                     btn.innerHTML = `<i class="fa-solid fa-sun text-xs text-amber-300"></i> <span>☀️ দুপুরের মিল সেভ করুন (${activeCount} জনের • ${currentInputTotal} মিল)</span>`;
-                } else if (currentMealShift === 'dinner') {
-                    btn.innerHTML = `<i class="fa-solid fa-moon text-xs text-indigo-200"></i> <span>🌙 রাতের মিল সেভ করুন (${activeCount} জনের • সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 } else {
-                    btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> <span>📊 সারাদিনের মিল সেভ করুন (${activeCount} জনের • ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-moon text-xs text-indigo-200"></i> <span>🌙 রাতের মিল সেভ করুন (${activeCount} জনের • সারাদিনের মোট: ${grandDailyTotal} মিল • ৳${totalCost})</span>`;
                 }
             }
         }
@@ -1264,22 +1276,17 @@
                     setMemberMealInput(m, lVal);
                     if (infoEl) {
                         infoEl.innerHTML = lVal > 0 
-                            ? `<span class="text-amber-700 font-extrabold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">☀️ দুপুরে: ${lVal} মিল</span>`
-                            : `<span class="text-slate-400 font-medium">☀️ দুপুরের মিল নির্বাচন</span>`;
-                    }
-                } else if (currentMealShift === 'dinner') {
-                    setMemberMealInput(m, dVal);
-                    if (infoEl) {
-                        const lunchBadge = lVal > 0
-                            ? `<span class="text-amber-800 font-black bg-amber-100/90 px-1.5 py-0.2 rounded border border-amber-300">☀️ দুপুরে ছিল: ${lVal}</span>`
-                            : `<span class="text-slate-400 font-medium">☀️ দুপুরে ছিল না</span>`;
-                        const totalBadge = `<span class="text-indigo-700 font-black ml-1">📊 মোট: ${totVal} মিল</span>`;
-                        infoEl.innerHTML = `${lunchBadge} ${totalBadge}`;
+                            ? `<span class="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 inline-flex items-center gap-1"><i class="fa-solid fa-sun text-amber-500 text-[9px]"></i> দুপুরের মিল: ${lVal}টি</span>`
+                            : `<span class="text-slate-400 font-medium text-[10px]">☀️ দুপুরের মিল নির্বাচন</span>`;
                     }
                 } else {
-                    setMemberMealInput(m, totVal);
+                    setMemberMealInput(m, dVal);
                     if (infoEl) {
-                        infoEl.innerHTML = `<span class="text-slate-600 font-bold">☀️ দুপুর ${lVal} + 🌙 রাত ${dVal} = <strong class="text-indigo-700 font-black">${totVal} মিল</strong></span>`;
+                        // 🌙 রাতের শিফটে শুধু দুপুরে কী ছিল তা পরিষ্কারভাবে দেখা যাবে (কোনো ওভারফ্লো বা মোট মিলের অতিরিক্ত লেখা থাকবে না)
+                        const lunchBadge = lVal > 0
+                            ? `<span class="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 inline-flex items-center gap-1"><i class="fa-solid fa-sun text-amber-500 text-[9px]"></i> দুপুরে ছিল: ${lVal}টি</span>`
+                            : `<span class="text-slate-400 font-medium text-[10px]">☀️ দুপুরে ছিল না</span>`;
+                        infoEl.innerHTML = lunchBadge;
                     }
                 }
             });
