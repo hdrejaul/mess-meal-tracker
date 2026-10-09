@@ -1191,13 +1191,16 @@
             return null;
         }
 
-        // 📌 গুগল শিটের রো-তে কোনো ডাটা এন্ট্রি আছে কিনা (ফাঁকা "" বাদে কোনো সংখ্যা আছে কিনা)
+        // 📌 গুগল শিটের রো-তে কোনো সক্রিয় মিল এন্ট্রি আছে কিনা (০ বাদে ধনাত্মক সংখ্যা আছে কিনা)
         function isMealRowEntered(row) {
             if (!row || row.length < 5) return false;
             for (let c = 1; c <= 4; c++) {
                 const val = row[c];
                 if (val !== "" && val !== null && val !== undefined) {
-                    return true;
+                    const num = parseInt(val, 10);
+                    if (!isNaN(num) && num > 0) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -1237,9 +1240,13 @@
                 const memberIndices = { 'Rejaul': 1, 'Tafiqul': 2, 'Rafiul': 3, 'Samiul': 4 };
                 members.forEach(m => {
                     const idx = memberIndices[m];
-                    const sheetTot = (foundRow[idx] === "" || foundRow[idx] === null || foundRow[idx] === undefined) ? 0 : (parseInt(foundRow[idx], 10) || 0);
+                    const rawVal = foundRow[idx];
+                    const sheetTot = (rawVal === "" || rawVal === null || rawVal === undefined) ? 0 : (parseInt(rawVal, 10) || 0);
                     const currentSum = (dayShift.lunch[m] || 0) + (dayShift.dinner[m] || 0);
-                    if (currentSum !== sheetTot) {
+                    if (sheetTot === 0) {
+                        dayShift.lunch[m] = 0;
+                        dayShift.dinner[m] = 0;
+                    } else if (currentSum !== sheetTot) {
                         if (dayShift.lunch[m] > 0 && sheetTot >= dayShift.lunch[m]) {
                             dayShift.dinner[m] = sheetTot - dayShift.lunch[m];
                         } else {
@@ -1247,6 +1254,12 @@
                             dayShift.lunch[m] = 0;
                         }
                     }
+                });
+            } else {
+                // গুগল শিট থেকে যদি এন্ট্রি মুছে দেওয়া হয় বা সব ০ থাকে, তবে লোকাল শিফটও তৎক্ষণাৎ ০ হবে!
+                members.forEach(m => {
+                    dayShift.lunch[m] = 0;
+                    dayShift.dinner[m] = 0;
                 });
             }
 
