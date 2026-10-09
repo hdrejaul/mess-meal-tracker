@@ -235,7 +235,7 @@
         </div>
     </div>
 
-    <div class="w-full max-w-[1700px] 2xl:max-w-[1850px] mx-auto space-y-1.5 sm:space-y-2">
+    <div class="w-full max-w-7xl 2xl:max-w-[1400px] mx-auto space-y-2 sm:space-y-2.5">
         
         <!-- Header -->
         <header class="bg-indigo-700 text-white rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 shadow-xs flex flex-col md:flex-row justify-between items-center gap-1.5">
@@ -389,7 +389,7 @@
                     </div>
 
                     <!-- Member 1: Rejaul -->
-                    <div id="meal_row_Rejaul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1 sm:py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                    <div id="meal_row_Rejaul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
                         <div class="flex items-center justify-between gap-1.5">
                             <div class="flex items-center gap-2 min-w-0">
                                 <div class="w-6 h-6 bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">R</div>
@@ -402,7 +402,7 @@
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Rejaul" class="relative">
-                                    <select id="meal_Rejaul" onchange="handleMealDropdownChange('Rejaul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Rejaul" onchange="handleMealDropdownChange('Rejaul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2.5 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer min-w-[95px] text-center">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -411,7 +411,7 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Rejaul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Rejaul" oninput="updateMealInputColor('Rejaul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-indigo-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-indigo-400">
+                                    <input type="number" id="custom_meal_Rejaul" oninput="updateMealInputColor('Rejaul')" placeholder="মিল" min="0" class="w-16 px-1.5 py-0.5 border border-indigo-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-indigo-400">
                                     <button type="button" onclick="cancelCustomMeal('Rejaul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
@@ -421,7 +421,7 @@
                     </div>
 
                     <!-- Member 2: Tafiqul -->
-                    <div id="meal_row_Tafiqul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1 sm:py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                    <div id="meal_row_Tafiqul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
                         <div class="flex items-center justify-between gap-1.5">
                             <div class="flex items-center gap-2 min-w-0">
                                 <div class="w-6 h-6 bg-gradient-to-tr from-teal-600 to-emerald-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">T</div>
@@ -434,7 +434,7 @@
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Tafiqul" class="relative">
-                                    <select id="meal_Tafiqul" onchange="handleMealDropdownChange('Tafiqul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Tafiqul" onchange="handleMealDropdownChange('Tafiqul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2.5 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer min-w-[95px] text-center">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -443,7 +443,7 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Tafiqul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Tafiqul" oninput="updateMealInputColor('Tafiqul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-teal-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-teal-400">
+                                    <input type="number" id="custom_meal_Tafiqul" oninput="updateMealInputColor('Tafiqul')" placeholder="মিল" min="0" class="w-16 px-1.5 py-0.5 border border-teal-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-teal-400">
                                     <button type="button" onclick="cancelCustomMeal('Tafiqul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
@@ -453,7 +453,7 @@
                     </div>
 
                     <!-- Member 3: Rafiul -->
-                    <div id="meal_row_Rafiul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1 sm:py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                    <div id="meal_row_Rafiul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
                         <div class="flex items-center justify-between gap-1.5">
                             <div class="flex items-center gap-2 min-w-0">
                                 <div class="w-6 h-6 bg-gradient-to-tr from-violet-600 to-purple-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">R</div>
@@ -466,7 +466,7 @@
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Rafiul" class="relative">
-                                    <select id="meal_Rafiul" onchange="handleMealDropdownChange('Rafiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Rafiul" onchange="handleMealDropdownChange('Rafiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2.5 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer min-w-[95px] text-center">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -475,7 +475,7 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Rafiul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Rafiul" oninput="updateMealInputColor('Rafiul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-violet-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-violet-400">
+                                    <input type="number" id="custom_meal_Rafiul" oninput="updateMealInputColor('Rafiul')" placeholder="মিল" min="0" class="w-16 px-1.5 py-0.5 border border-violet-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-violet-400">
                                     <button type="button" onclick="cancelCustomMeal('Rafiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
@@ -485,7 +485,7 @@
                     </div>
 
                     <!-- Member 4: Samiul -->
-                    <div id="meal_row_Samiul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1 sm:py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                    <div id="meal_row_Samiul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
                         <div class="flex items-center justify-between gap-1.5">
                             <div class="flex items-center gap-2 min-w-0">
                                 <div class="w-6 h-6 bg-gradient-to-tr from-amber-500 to-orange-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">S</div>
@@ -498,7 +498,7 @@
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Samiul" class="relative">
-                                    <select id="meal_Samiul" onchange="handleMealDropdownChange('Samiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Samiul" onchange="handleMealDropdownChange('Samiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2.5 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer min-w-[95px] text-center">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -507,7 +507,7 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Samiul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Samiul" oninput="updateMealInputColor('Samiul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-amber-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-amber-400">
+                                    <input type="number" id="custom_meal_Samiul" oninput="updateMealInputColor('Samiul')" placeholder="মিল" min="0" class="w-16 px-1.5 py-0.5 border border-amber-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-amber-400">
                                     <button type="button" onclick="cancelCustomMeal('Samiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
