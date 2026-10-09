@@ -33,7 +33,7 @@
         }
     </style>
 </head>
-<body class="p-2 sm:p-3 md:p-4 relative">
+<body class="p-1 sm:p-2 md:p-2.5 relative">
 
 
 
@@ -219,153 +219,153 @@
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto space-y-2.5 sm:space-y-3">
+    <div class="max-w-6xl mx-auto space-y-1.5 sm:space-y-2">
         
         <!-- Header -->
-        <header class="bg-indigo-700 text-white rounded-xl p-3 sm:p-3.5 shadow-md flex flex-col md:flex-row justify-between items-center gap-2.5">
+        <header class="bg-indigo-700 text-white rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 shadow-xs flex flex-col md:flex-row justify-between items-center gap-1.5">
             <div>
-                <h1 class="text-lg md:text-xl font-bold flex items-center gap-2">
+                <h1 class="text-base md:text-lg font-bold flex items-center gap-1.5">
                     <i class="fa-solid fa-utensils text-amber-300"></i> মেস মিল ম্যানেজমেন্ট সিস্টেম
                 </h1>
-                <p class="text-indigo-200 text-xs">নাবিলা ক্যাটারিং সার্ভিস মিল ট্র্যাকার (মিল রেট: ৳৮০/মিল)</p>
+                <p class="text-indigo-200 text-[11px] leading-tight">নাবিলা ক্যাটারিং সার্ভিস মিল ট্র্যাকার (মিল রেট: ৳৮০/মিল)</p>
             </div>
-            <div class="flex items-center gap-2 w-full md:w-auto flex-wrap justify-end">
-                <a href="catering-view.html" class="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-extrabold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1.5 text-xs border border-amber-300 transition shrink-0">
+            <div class="flex items-center gap-1.5 w-full md:w-auto flex-wrap justify-end">
+                <a href="catering-view.html" class="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-extrabold px-2.5 py-1 rounded-lg shadow-xs flex items-center gap-1 text-xs border border-amber-300 transition shrink-0">
                     <i class="fa-solid fa-utensils text-slate-950 text-xs"></i>
                     <span>নাবিলা ক্যাটারিং পেজ</span>
-                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                    <i class="fa-solid fa-arrow-right text-[8px]"></i>
                 </a>
                 
                 <!-- 🌟 অফলাইন সেভ হিস্ট্রি বাটন (শুধুমাত্র অফলাইনে ডাটা সেভ হলে উপরে দেখাবে) -->
-                <button id="headerOfflineHistoryBtn" onclick="openPendingQueueModal()" class="hidden bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-black px-2.5 sm:px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 text-xs border border-amber-300 transition shrink-0 animate-pulse cursor-pointer" title="অফলাইনে সেভ হওয়া হিস্ট্রি দেখতে ক্লিক করুন">
+                <button id="headerOfflineHistoryBtn" onclick="openPendingQueueModal()" class="hidden bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-black px-2 py-1 rounded-lg shadow-xs flex items-center gap-1 text-xs border border-amber-300 transition shrink-0 animate-pulse cursor-pointer" title="অফলাইনে সেভ হওয়া হিস্ট্রি দেখতে ক্লিক করুন">
                     <i class="fa-solid fa-cloud-arrow-down text-slate-950 text-xs"></i>
-                    <span>অফলাইন সেভ: <strong id="headerOfflineCountBadge">১টি</strong></span>
-                    <span class="bg-slate-950 text-amber-300 text-[10px] px-1.5 py-0.5 rounded-md font-bold">হিস্ট্রি</span>
+                    <span>অফলাইন: <strong id="headerOfflineCountBadge">১টি</strong></span>
+                    <span class="bg-slate-950 text-amber-300 text-[9px] px-1 py-0.5 rounded-md font-bold">হিস্ট্রি</span>
                 </button>
                 
                 <!-- Connectivity / Live Sync Status Pill -->
-                <div id="connStatusBadge" onclick="openPendingQueueModalIfAny()" class="bg-indigo-800/90 border border-indigo-500/60 px-2.5 py-1.5 rounded-lg text-xs font-bold text-emerald-300 flex items-center gap-1.5 shadow-xs cursor-pointer transition active:scale-95" title="কানেক্টিভিটি স্ট্যাটাস">
+                <div id="connStatusBadge" onclick="openPendingQueueModalIfAny()" class="bg-indigo-800/90 border border-indigo-500/60 px-2 py-1 rounded-lg text-xs font-bold text-emerald-300 flex items-center gap-1.5 shadow-2xs cursor-pointer transition active:scale-95" title="কানেক্টিভিটি স্ট্যাটাস">
                     <span id="connDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                    <span id="connStatusText" class="text-[11px]">লাইভ সিঙ্ক</span>
+                    <span id="connStatusText" class="text-[10px]">লাইভ সিঙ্ক</span>
                 </div>
 
-                <div class="bg-indigo-800 px-3 py-1 rounded-lg text-center border border-indigo-500 flex-1 md:flex-initial">
-                    <span class="text-[10px] text-indigo-300 block uppercase font-semibold">আজকের তারিখ</span>
-                    <span id="currentDate" class="text-sm font-bold"></span>
+                <div class="bg-indigo-800 px-2.5 py-0.5 rounded-lg text-center border border-indigo-500 flex-1 md:flex-initial">
+                    <span class="text-[9px] text-indigo-300 block uppercase font-semibold leading-none">আজকের তারিখ</span>
+                    <span id="currentDate" class="text-xs sm:text-sm font-bold leading-tight"></span>
                 </div>
-                <button onclick="fetchLiveSheetData()" id="refreshBtn" title="শিট রিফ্রেশ করুন" class="bg-indigo-800 hover:bg-indigo-900 text-indigo-200 hover:text-white p-2 rounded-lg border border-indigo-500 transition shadow-sm cursor-pointer">
+                <button onclick="fetchLiveSheetData()" id="refreshBtn" title="শিট রিফ্রেশ করুন" class="bg-indigo-800 hover:bg-indigo-900 text-indigo-200 hover:text-white p-1.5 rounded-lg border border-indigo-500 transition shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-arrows-rotate text-xs" id="refreshIcon"></i>
                 </button>
-                <button onclick="lockAdmin()" title="লক করুন" class="bg-indigo-800 hover:bg-indigo-900 text-indigo-200 hover:text-white p-2 rounded-lg border border-indigo-500 transition shadow-sm cursor-pointer">
+                <button onclick="lockAdmin()" title="লক করুন" class="bg-indigo-800 hover:bg-indigo-900 text-indigo-200 hover:text-white p-1.5 rounded-lg border border-indigo-500 transition shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-lock text-xs"></i>
                 </button>
             </div>
         </header>
 
         <!-- Dynamic Summary Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
-            <div class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2">
+            <div class="bg-white px-2.5 py-1.5 rounded-xl shadow-2xs border border-gray-100 flex items-center gap-2">
+                <div class="w-7 h-7 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xs shrink-0">
                     <i class="fa-solid fa-bowl-food"></i>
                 </div>
                 <div>
-                    <p class="text-[10px] text-gray-500 font-medium leading-none">মোট মিল সংখ্যা</p>
-                    <h3 id="cardTotalMeals" class="text-base font-bold text-gray-800 mt-1">
+                    <p class="text-[9px] text-gray-500 font-medium leading-none">মোট মিল সংখ্যা</p>
+                    <h3 id="cardTotalMeals" class="text-sm sm:text-base font-black text-gray-800 mt-0.5 leading-tight">
                         <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
                     </h3>
                 </div>
             </div>
 
-            <div class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+            <div class="bg-white px-2.5 py-1.5 rounded-xl shadow-2xs border border-gray-100 flex items-center gap-2">
+                <div class="w-7 h-7 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xs shrink-0">
                     <i class="fa-solid fa-money-bill-wave"></i>
                 </div>
                 <div>
-                    <p class="text-[10px] text-gray-500 font-medium leading-none">মোট ক্যাটারিং খরচ</p>
-                    <h3 id="cardTotalCost" class="text-base font-bold text-gray-800 mt-1">
+                    <p class="text-[9px] text-gray-500 font-medium leading-none">মোট ক্যাটারিং খরচ</p>
+                    <h3 id="cardTotalCost" class="text-sm sm:text-base font-black text-gray-800 mt-0.5 leading-tight">
                         <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
                     </h3>
                 </div>
             </div>
 
-            <div onclick="openDepositHistoryModal()" class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 hover:border-purple-300 hover:shadow-md transition active:scale-98 cursor-pointer flex items-center justify-between gap-2 group" title="মেস জমা স্টেটমেন্ট ও হিস্ট্রি দেখতে ক্লিক করুন">
-                <div class="flex items-center gap-2.5 min-w-0">
-                    <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-sm shrink-0 group-hover:scale-105 transition">
+            <div onclick="openDepositHistoryModal()" class="bg-white px-2.5 py-1.5 rounded-xl shadow-2xs border border-gray-100 hover:border-purple-300 hover:shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-between gap-1.5 group" title="মেস জমা স্টেটমেন্ট ও হিস্ট্রি দেখতে ক্লিক করুন">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-7 h-7 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xs shrink-0 group-hover:scale-105 transition">
                         <i class="fa-solid fa-wallet"></i>
                     </div>
                     <div class="min-w-0">
-                        <p class="text-[10px] text-gray-500 font-medium leading-none">মোট জমা টাকা</p>
-                        <h3 id="cardTotalDeposit" class="text-base font-bold text-gray-800 mt-1">
+                        <p class="text-[9px] text-gray-500 font-medium leading-none">মোট জমা টাকা</p>
+                        <h3 id="cardTotalDeposit" class="text-sm sm:text-base font-black text-gray-800 mt-0.5 leading-tight">
                             <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
                         </h3>
                     </div>
                 </div>
                 <span class="text-[9px] font-bold bg-purple-50 group-hover:bg-purple-600 text-purple-700 group-hover:text-white px-1.5 py-0.5 rounded-md border border-purple-200 group-hover:border-purple-600 transition flex items-center gap-0.5 shrink-0">
-                    <span>হিস্ট্রি</span> <i class="fa-solid fa-chevron-right text-[7px]"></i>
+                    <span>হিস্ট্রি</span> <i class="fa-solid fa-chevron-right text-[6px]"></i>
                 </span>
             </div>
 
-            <div class="bg-white p-2.5 rounded-xl shadow-xs border border-gray-100 flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+            <div class="bg-white px-2.5 py-1.5 rounded-xl shadow-2xs border border-gray-100 flex items-center gap-2">
+                <div class="w-7 h-7 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xs shrink-0">
                     <i class="fa-solid fa-piggy-bank"></i>
                 </div>
                 <div>
-                    <p class="text-[10px] text-gray-500 font-medium leading-none">স্টক ব্যালেন্স</p>
-                    <h3 id="cardStockBalance" class="text-base font-bold text-emerald-600 mt-1">
+                    <p class="text-[9px] text-gray-500 font-medium leading-none">স্টক ব্যালেন্স</p>
+                    <h3 id="cardStockBalance" class="text-sm sm:text-base font-black text-emerald-600 mt-0.5 leading-tight">
                         <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
                     </h3>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-2.5 sm:gap-3">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-2.5">
 
             <!-- Entry Form with 3 Tabs -->
-            <div class="lg:col-span-1 bg-white p-3 sm:p-3.5 rounded-xl shadow-xs border border-gray-100 space-y-2.5">
+            <div class="lg:col-span-1 bg-white p-2.5 sm:p-3 rounded-xl shadow-2xs border border-gray-100 space-y-1.5">
                 
                 <!-- 3 Tab Switching Buttons -->
-                <div class="flex bg-gray-100 p-0.5 rounded-lg gap-1 text-[11px] font-bold">
-                    <button id="tabMealBtn" onclick="switchTab('meal')" class="flex-1 py-1.5 rounded-md transition bg-white text-indigo-700 shadow-xs flex items-center justify-center gap-1">
+                <div class="flex bg-gray-100 p-0.5 rounded-lg gap-0.5 text-[11px] font-bold">
+                    <button id="tabMealBtn" onclick="switchTab('meal')" class="flex-1 py-1 rounded-md transition bg-white text-indigo-700 shadow-xs flex items-center justify-center gap-1">
                         <i class="fa-solid fa-utensils text-xs"></i> মিল এন্ট্রি
                     </button>
-                    <button id="tabDepositBtn" onclick="switchTab('deposit')" class="flex-1 py-1.5 rounded-md transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1">
+                    <button id="tabDepositBtn" onclick="switchTab('deposit')" class="flex-1 py-1 rounded-md transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1">
                         <i class="fa-solid fa-wallet text-xs"></i> মেস জমা
                     </button>
-                    <button id="tabCateringBtn" onclick="switchTab('catering')" class="flex-1 py-1.5 rounded-md transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1">
+                    <button id="tabCateringBtn" onclick="switchTab('catering')" class="flex-1 py-1 rounded-md transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1">
                         <i class="fa-solid fa-hand-holding-dollar text-xs"></i> খাবার ওয়ালা
                     </button>
                 </div>
 
                 <!-- ১. দৈনিক মিল এন্ট্রি ফর্ম (দুপুর ও রাতের আলাদা এন্ট্রি + ছুটির দিন স্মার্ট ডিটেকশন) -->
-                <form id="mealForm" onsubmit="submitMeals(event)" class="space-y-2.5">
-                    <div class="bg-slate-50/80 p-2.5 rounded-2xl border border-slate-200/70 space-y-1.5">
+                <form id="mealForm" onsubmit="submitMeals(event)" class="space-y-1.5">
+                    <div class="bg-slate-50/80 p-2 rounded-xl border border-slate-200/70 space-y-1">
                         <div class="flex justify-between items-center">
-                            <label class="block text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                            <label class="block text-[10px] font-bold text-slate-700 flex items-center gap-1">
                                 <i class="fa-regular fa-calendar text-indigo-600 text-xs"></i>
                                 <span>তারিখ (Date)</span>
                             </label>
-                            <span id="dayTypeBadge" class="text-[9px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-lg border border-amber-300 flex items-center gap-1">
+                            <span id="dayTypeBadge" class="text-[9px] bg-amber-100 text-amber-900 font-extrabold px-1.5 py-0.5 rounded-md border border-amber-300 flex items-center gap-1">
                                 🏖️ ছুটির দিন (দুপুর + রাত)
                             </span>
                         </div>
-                        <input type="date" id="entryDate" onchange="isUserEditingMealForm = false; syncMealFormWithSelectedDate()" required class="w-full px-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none text-xs text-slate-800 font-bold bg-white shadow-2xs transition">
+                        <input type="date" id="entryDate" onchange="isUserEditingMealForm = false; syncMealFormWithSelectedDate()" required class="w-full px-2.5 py-1 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none text-xs text-slate-800 font-bold bg-white shadow-2xs transition">
 
                         <!-- শিফট সিলেক্টর (দুপুর ও রাত) -->
-                        <div class="pt-1">
-                            <div class="bg-slate-200/70 p-1 rounded-xl flex items-center gap-1.5">
-                                <button type="button" id="shiftLunchBtn" onclick="setMealShift('lunch')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer">
+                        <div>
+                            <div class="bg-slate-200/70 p-0.5 rounded-lg flex items-center gap-1">
+                                <button type="button" id="shiftLunchBtn" onclick="setMealShift('lunch')" class="flex-1 py-1 px-2.5 rounded-md text-xs font-black transition-all flex items-center justify-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer">
                                     <span>☀️ দুপুর</span>
                                 </button>
-                                <button type="button" id="shiftDinnerBtn" onclick="setMealShift('dinner')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-200 cursor-pointer">
+                                <button type="button" id="shiftDinnerBtn" onclick="setMealShift('dinner')" class="flex-1 py-1 px-2.5 rounded-md text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-200 cursor-pointer">
                                     <span>🌙 রাত</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- 📊 আজকের মোট মিল সারসংক্ষেপ বার -->
-                        <div id="liveDayMealSummaryBadge" class="bg-indigo-50/90 border border-indigo-200/80 py-1.5 px-3 rounded-xl flex items-center justify-between text-xs text-indigo-950 font-bold shadow-2xs">
-                            <span class="flex items-center gap-1.5">
-                                <i class="fa-solid fa-chart-pie text-indigo-600 text-xs"></i> 
+                        <div id="liveDayMealSummaryBadge" class="bg-indigo-50/90 border border-indigo-200/80 py-1 px-2.5 rounded-lg flex items-center justify-between text-[11px] text-indigo-950 font-bold shadow-2xs">
+                            <span class="flex items-center gap-1">
+                                <i class="fa-solid fa-chart-pie text-indigo-600 text-[10px]"></i> 
                                 <span>আজকের মোট মিল:</span>
                             </span>
                             <span id="liveDayTotalTxt" class="text-indigo-700 font-extrabold">০ টি (৳ ০)</span>
@@ -373,20 +373,20 @@
                     </div>
 
                     <!-- Member 1: Rejaul -->
-                    <div id="meal_row_Rejaul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2.5 min-w-0">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">R</div>
+                    <div id="meal_row_Rejaul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                        <div class="flex items-center justify-between gap-1.5">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">R</div>
                                 <div class="min-w-0">
-                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Rejaul</span>
-                                    <div id="meal_shift_info_Rejaul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                    <span class="font-bold text-slate-800 text-xs tracking-tight block leading-tight">Rejaul</span>
+                                    <div id="meal_shift_info_Rejaul" class="text-[9px] text-slate-500 font-bold leading-none truncate">
                                         ☀️ দুপুরে: 0 মিল
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+                            <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Rejaul" class="relative">
-                                    <select id="meal_Rejaul" onchange="handleMealDropdownChange('Rejaul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Rejaul" onchange="handleMealDropdownChange('Rejaul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -395,8 +395,8 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Rejaul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Rejaul" oninput="updateMealInputColor('Rejaul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-indigo-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-indigo-400">
-                                    <button type="button" onclick="cancelCustomMeal('Rejaul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <input type="number" id="custom_meal_Rejaul" oninput="updateMealInputColor('Rejaul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-indigo-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-indigo-400">
+                                    <button type="button" onclick="cancelCustomMeal('Rejaul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </div>
@@ -405,20 +405,20 @@
                     </div>
 
                     <!-- Member 2: Tafiqul -->
-                    <div id="meal_row_Tafiqul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2.5 min-w-0">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-teal-600 to-emerald-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">T</div>
+                    <div id="meal_row_Tafiqul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                        <div class="flex items-center justify-between gap-1.5">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-teal-600 to-emerald-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">T</div>
                                 <div class="min-w-0">
-                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Tafiqul</span>
-                                    <div id="meal_shift_info_Tafiqul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                    <span class="font-bold text-slate-800 text-xs tracking-tight block leading-tight">Tafiqul</span>
+                                    <div id="meal_shift_info_Tafiqul" class="text-[9px] text-slate-500 font-bold leading-none truncate">
                                         ☀️ দুপুরে: 0 মিল
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+                            <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Tafiqul" class="relative">
-                                    <select id="meal_Tafiqul" onchange="handleMealDropdownChange('Tafiqul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Tafiqul" onchange="handleMealDropdownChange('Tafiqul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -427,8 +427,8 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Tafiqul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Tafiqul" oninput="updateMealInputColor('Tafiqul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-teal-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-teal-400">
-                                    <button type="button" onclick="cancelCustomMeal('Tafiqul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <input type="number" id="custom_meal_Tafiqul" oninput="updateMealInputColor('Tafiqul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-teal-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-teal-400">
+                                    <button type="button" onclick="cancelCustomMeal('Tafiqul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </div>
@@ -437,20 +437,20 @@
                     </div>
 
                     <!-- Member 3: Rafiul -->
-                    <div id="meal_row_Rafiul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2.5 min-w-0">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-violet-600 to-purple-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">R</div>
+                    <div id="meal_row_Rafiul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                        <div class="flex items-center justify-between gap-1.5">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-violet-600 to-purple-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">R</div>
                                 <div class="min-w-0">
-                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Rafiul</span>
-                                    <div id="meal_shift_info_Rafiul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                    <span class="font-bold text-slate-800 text-xs tracking-tight block leading-tight">Rafiul</span>
+                                    <div id="meal_shift_info_Rafiul" class="text-[9px] text-slate-500 font-bold leading-none truncate">
                                         ☀️ দুপুরে: 0 মিল
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+                            <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Rafiul" class="relative">
-                                    <select id="meal_Rafiul" onchange="handleMealDropdownChange('Rafiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Rafiul" onchange="handleMealDropdownChange('Rafiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -459,8 +459,8 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Rafiul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Rafiul" oninput="updateMealInputColor('Rafiul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-violet-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-violet-400">
-                                    <button type="button" onclick="cancelCustomMeal('Rafiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <input type="number" id="custom_meal_Rafiul" oninput="updateMealInputColor('Rafiul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-violet-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-violet-400">
+                                    <button type="button" onclick="cancelCustomMeal('Rafiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </div>
@@ -469,20 +469,20 @@
                     </div>
 
                     <!-- Member 4: Samiul -->
-                    <div id="meal_row_Samiul" class="bg-white hover:bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-200/80 shadow-2xs transition-all duration-200">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2.5 min-w-0">
-                                <div class="w-7 h-7 bg-gradient-to-tr from-amber-500 to-orange-500 text-white rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 shadow-xs">S</div>
+                    <div id="meal_row_Samiul" class="bg-white hover:bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs transition-all duration-200">
+                        <div class="flex items-center justify-between gap-1.5">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <div class="w-6 h-6 bg-gradient-to-tr from-amber-500 to-orange-500 text-white rounded-lg flex items-center justify-center text-[9px] font-black shrink-0 shadow-2xs">S</div>
                                 <div class="min-w-0">
-                                    <span class="font-extrabold text-slate-800 text-xs tracking-tight block">Samiul</span>
-                                    <div id="meal_shift_info_Samiul" class="text-[10px] text-slate-500 font-bold leading-tight truncate">
+                                    <span class="font-bold text-slate-800 text-xs tracking-tight block leading-tight">Samiul</span>
+                                    <div id="meal_shift_info_Samiul" class="text-[9px] text-slate-500 font-bold leading-none truncate">
                                         ☀️ দুপুরে: 0 মিল
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+                            <div class="flex items-center gap-1 shrink-0">
                                 <div id="meal_select_wrap_Samiul" class="relative">
-                                    <select id="meal_Samiul" onchange="handleMealDropdownChange('Samiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer">
+                                    <select id="meal_Samiul" onchange="handleMealDropdownChange('Samiul')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer">
                                         <option value="0" class="text-slate-900 bg-white font-bold">0 Meal</option>
                                         <option value="1" class="text-slate-900 bg-white font-bold">1 Meal</option>
                                         <option value="2" class="text-slate-900 bg-white font-bold">2 Meal</option>
@@ -491,8 +491,8 @@
                                     </select>
                                 </div>
                                 <div id="custom_box_Samiul" class="hidden relative flex items-center">
-                                    <input type="number" id="custom_meal_Samiul" oninput="updateMealInputColor('Samiul')" placeholder="মিল" min="0" class="w-16 px-2 py-1 border border-amber-400 rounded-xl text-xs font-bold text-slate-900 bg-white pr-5 shadow-xs outline-none focus:ring-1 focus:ring-amber-400">
-                                    <button type="button" onclick="cancelCustomMeal('Samiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-xs font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
+                                    <input type="number" id="custom_meal_Samiul" oninput="updateMealInputColor('Samiul')" placeholder="মিল" min="0" class="w-14 px-1.5 py-0.5 border border-amber-400 rounded-lg text-xs font-bold text-slate-900 bg-white pr-4 shadow-2xs outline-none focus:ring-1 focus:ring-amber-400">
+                                    <button type="button" onclick="cancelCustomMeal('Samiul')" class="absolute right-1 text-gray-400 hover:text-rose-500 text-[10px] font-bold p-0.5 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </div>
@@ -500,22 +500,22 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="submitMealBtn" class="w-full bg-gradient-to-r from-indigo-600 via-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
+                    <button type="submit" id="submitMealBtn" class="w-full bg-gradient-to-r from-indigo-600 via-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-2 rounded-xl transition-all shadow-2xs hover:shadow-xs active:scale-[0.99] flex items-center justify-center gap-1.5 text-xs cursor-pointer">
                         <i class="fa-solid fa-paper-plane text-xs"></i>
                         <span>মিল সেভ করুন</span>
                     </button>
                 </form>
 
                 <!-- ২. মেম্বারদের টাকা জমা এন্ট্রি ফর্ম -->
-                <form id="depositForm" onsubmit="submitDeposit(event)" class="space-y-3 hidden">
+                <form id="depositForm" onsubmit="submitDeposit(event)" class="space-y-2 hidden">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">জমার তারিখ</label>
-                        <input type="date" id="depositDate" required class="w-full px-2.5 py-1.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-700 font-semibold">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-0.5">জমার তারিখ</label>
+                        <input type="date" id="depositDate" required class="w-full px-2 py-1 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-700 font-semibold">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">মেম্বার সিলেক্ট করুন</label>
-                        <select id="depositMember" required class="w-full px-2.5 py-1.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-800 font-semibold">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-0.5">মেম্বার সিলেক্ট করুন</label>
+                        <select id="depositMember" required class="w-full px-2 py-1 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-800 font-semibold">
                             <option value="" disabled selected>-- মেম্বার নির্বাচন করুন --</option>
                             <option value="Rejaul">Rejaul</option>
                             <option value="Tafiqul">Tafiqul</option>
@@ -525,9 +525,9 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">জমা টাকার পরিমাণ (৳)</label>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-0.5">জমা টাকার পরিমাণ (৳)</label>
                         <div id="deposit_select_wrap" class="relative">
-                            <select id="depositSelect" onchange="toggleCustomDepositAmount()" required class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-800 font-bold bg-white shadow-xs">
+                            <select id="depositSelect" onchange="toggleCustomDepositAmount()" required class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-800 font-bold bg-white shadow-2xs">
                                 <option value="" disabled selected>-- টাকার পরিমাণ নির্বাচন করুন --</option>
                                 <option value="500">৳ 500</option>
                                 <option value="1000">৳ 1000</option>
@@ -535,33 +535,33 @@
                             </select>
                         </div>
                         <div id="deposit_custom_box" class="hidden relative flex items-center">
-                            <input type="number" id="depositAmount" placeholder="টাকার পরিমাণ লিখুন (যেমন: 1500)" min="1" class="w-full px-2.5 py-1.5 border border-emerald-500 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-900 font-bold bg-white pr-7 shadow-xs">
+                            <input type="number" id="depositAmount" placeholder="টাকার পরিমাণ লিখুন (যেমন: 1500)" min="1" class="w-full px-2 py-1 border border-emerald-500 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-xs text-gray-900 font-bold bg-white pr-7 shadow-2xs">
                             <button type="button" onclick="cancelCustomDeposit()" class="absolute right-2 text-gray-400 hover:text-red-500 text-xs font-bold p-1 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                         </div>
                     </div>
 
-                    <button type="submit" id="submitDepositBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 text-xs sm:text-sm cursor-pointer">
+                    <button type="submit" id="submitDepositBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 rounded-xl transition shadow-xs flex items-center justify-center gap-1.5 text-xs cursor-pointer">
                         <i class="fa-solid fa-piggy-bank"></i> মেস জমা সেভ করুন
                     </button>
 
-                    <button type="button" onclick="openDepositHistoryModal()" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-1.5 rounded-xl border border-emerald-200 transition flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-2xs">
+                    <button type="button" onclick="openDepositHistoryModal()" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-1 rounded-xl border border-emerald-200 transition flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-2xs">
                         <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i> মেম্বারদের জমার হিস্ট্রি ও স্টেটমেন্ট
                     </button>
                 </form>
 
                 <!-- ৩. খাবার ওয়ালাকে পরিশোধের এন্ট্রি -->
-                <form id="cateringPayForm" onsubmit="submitCateringPay(event)" class="space-y-3 hidden">
+                <form id="cateringPayForm" onsubmit="submitCateringPay(event)" class="space-y-2 hidden">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">পরিশোধের তারিখ</label>
-                        <input type="date" id="cateringPayDate" required class="w-full px-2.5 py-1.5 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-700 font-semibold">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-0.5">পরিশোধের তারিখ</label>
+                        <input type="date" id="cateringPayDate" required class="w-full px-2 py-1 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-700 font-semibold">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">খাবার ওয়ালাকে দেওয়া টাকার পরিমাণ (৳)</label>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-0.5">খাবার ওয়ালাকে দেওয়া টাকার পরিমাণ (৳)</label>
                         <div id="catering_select_wrap" class="relative">
-                            <select id="cateringPaySelect" onchange="toggleCustomCateringAmount()" required class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-800 font-bold bg-white shadow-xs">
+                            <select id="cateringPaySelect" onchange="toggleCustomCateringAmount()" required class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-800 font-bold bg-white shadow-2xs">
                                 <option value="" disabled selected>-- টাকার পরিমাণ নির্বাচন করুন --</option>
                                 <option value="500">৳ 500</option>
                                 <option value="1000">৳ 1000</option>
@@ -569,66 +569,66 @@
                             </select>
                         </div>
                         <div id="catering_custom_box" class="hidden relative flex items-center">
-                            <input type="number" id="cateringPayAmount" placeholder="টাকার পরিমাণ লিখুন (যেমন: 1500)" min="1" class="w-full px-2.5 py-1.5 border border-amber-500 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-900 font-bold bg-white pr-7 shadow-xs">
+                            <input type="number" id="cateringPayAmount" placeholder="টাকার পরিমাণ লিখুন (যেমন: 1500)" min="1" class="w-full px-2 py-1 border border-amber-500 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-900 font-bold bg-white pr-7 shadow-2xs">
                             <button type="button" onclick="cancelCustomCatering()" class="absolute right-2 text-gray-400 hover:text-red-500 text-xs font-bold p-1 cursor-pointer transition" title="তালিকায় ফিরে যান">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                         </div>
                     </div>
 
-                    <button type="submit" id="submitCateringBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 text-xs sm:text-sm cursor-pointer">
+                    <button type="submit" id="submitCateringBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 rounded-xl transition shadow-xs flex items-center justify-center gap-1.5 text-xs cursor-pointer">
                         <i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা সেভ করুন
                     </button>
                 </form>
 
                 <!-- Status Message Badge -->
-                <div id="statusMsg" class="hidden p-2.5 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2"></div>
+                <div id="statusMsg" class="hidden p-2 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2"></div>
             </div>
 
             <!-- Summary Table -->
-            <div class="lg:col-span-2 bg-white p-3 sm:p-3.5 rounded-xl shadow-xs border border-gray-100 space-y-2.5">
-                <div class="border-b pb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5">
+            <div class="lg:col-span-2 bg-white p-2.5 sm:p-3 rounded-xl shadow-2xs border border-gray-100 space-y-1.5">
+                <div class="border-b pb-1.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
                     <div>
-                        <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                        <h2 class="text-sm sm:text-base font-bold text-gray-800 flex items-center gap-1.5">
                             <i class="fa-solid fa-table-list text-indigo-600"></i> সদস্যভিত্তিক সার্বিক হিসাব
                         </h2>
-                        <p class="text-[11px] text-gray-500">গুগল শিট থেকে নিয়মিত লাইভ আপডেট</p>
+                        <p class="text-[10px] text-gray-500">গুগল শিট থেকে নিয়মিত লাইভ আপডেট</p>
                     </div>
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <button onclick="openDepositHistoryModal()" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-lg border border-emerald-200 transition flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95" title="মেম্বারদের জমার পূর্ণাঙ্গ হিস্ট্রি দেখুন">
-                            <i class="fa-solid fa-receipt text-emerald-600"></i> মেস জমা স্টেটমেন্ট
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button onclick="openDepositHistoryModal()" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-lg border border-emerald-200 transition flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95" title="মেম্বারদের জমার পূর্ণাঙ্গ হিস্ট্রি দেখুন">
+                            <i class="fa-solid fa-receipt text-emerald-600 text-[10px]"></i> মেস জমা স্টেটমেন্ট
                         </button>
-                        <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2.5 py-1 rounded-full border border-indigo-100">
+                        <span class="text-[11px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-100">
                             মিল রেট: ৳৮০
                         </span>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                    <table class="w-full text-left text-xs border-collapse">
                         <thead>
-                            <tr class="bg-gray-50 text-gray-600 border-b border-gray-200 text-xs">
-                                <th class="p-2 sm:p-2.5 font-semibold">Name (নাম)</th>
-                                <th class="p-2 sm:p-2.5 font-semibold text-center">Total Meal</th>
-                                <th class="p-2 sm:p-2.5 font-semibold text-right">Total Cost (৳)</th>
-                                <th class="p-2 sm:p-2.5 font-semibold text-right">Total Deposit (৳)</th>
-                                <th class="p-2 sm:p-2.5 font-semibold text-right">Stock Balance (৳)</th>
+                            <tr class="bg-gray-50 text-gray-600 border-b border-gray-200 text-[11px]">
+                                <th class="p-1.5 sm:p-2 font-semibold">Name (নাম)</th>
+                                <th class="p-1.5 sm:p-2 font-semibold text-center">Total Meal</th>
+                                <th class="p-1.5 sm:p-2 font-semibold text-right">Total Cost (৳)</th>
+                                <th class="p-1.5 sm:p-2 font-semibold text-right">Total Deposit (৳)</th>
+                                <th class="p-1.5 sm:p-2 font-semibold text-right">Stock Balance (৳)</th>
                             </tr>
                         </thead>
                         <tbody id="memberTableBody" class="divide-y divide-gray-100">
                             <tr>
-                                <td colspan="5" class="p-6 text-center text-gray-500 font-medium text-xs">
-                                    <i class="fa-solid fa-spinner fa-spin text-indigo-600 text-base mr-2"></i> শিট থেকে লাইভ সার্বিক হিসাব লোড হচ্ছে...
+                                <td colspan="5" class="p-4 text-center text-gray-500 font-medium text-xs">
+                                    <i class="fa-solid fa-spinner fa-spin text-indigo-600 text-sm mr-1.5"></i> শিট থেকে লাইভ সার্বিক হিসাব লোড হচ্ছে...
                                 </td>
                             </tr>
                         </tbody>
                         <tfoot>
-                            <tr class="bg-indigo-50 text-indigo-900 font-bold border-t border-indigo-200 text-xs sm:text-sm">
-                                <td class="p-2 sm:p-2.5">Total (All)</td>
-                                <td id="tblTotalMeal" class="p-2 sm:p-2.5 text-center">...</td>
-                                <td id="tblTotalCost" class="p-2 sm:p-2.5 text-right">৳ ...</td>
-                                <td id="tblTotalDeposit" class="p-2 sm:p-2.5 text-right">৳ ...</td>
-                                <td id="tblStockBalance" class="p-2 sm:p-2.5 text-right text-emerald-700">৳ ...</td>
+                            <tr class="bg-indigo-50 text-indigo-900 font-bold border-t border-indigo-200 text-xs">
+                                <td class="p-1.5 sm:p-2">Total (All)</td>
+                                <td id="tblTotalMeal" class="p-1.5 sm:p-2 text-center">...</td>
+                                <td id="tblTotalCost" class="p-1.5 sm:p-2 text-right">৳ ...</td>
+                                <td id="tblTotalDeposit" class="p-1.5 sm:p-2 text-right">৳ ...</td>
+                                <td id="tblStockBalance" class="p-1.5 sm:p-2 text-right text-emerald-700">৳ ...</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -720,9 +720,9 @@
             const btnDinner = document.getElementById('shiftDinnerBtn');
 
             // অ্যাক্টিভ শিফট বাটন গাঢ় ও স্পষ্ট, ইনঅ্যাক্টিভ শিফট বাটন হালকা থাকবে
-            const activeLunchClass = "flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-amber-900 shadow-xs border border-amber-300 cursor-pointer";
-            const activeDinnerClass = "flex-1 py-1.5 px-3 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-xs border border-indigo-300 cursor-pointer";
-            const inactiveClass = "flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 text-slate-500 hover:text-slate-800 opacity-70 hover:opacity-100 cursor-pointer";
+            const activeLunchClass = "flex-1 py-1 px-2.5 rounded-md text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-amber-900 shadow-2xs border border-amber-300 cursor-pointer";
+            const activeDinnerClass = "flex-1 py-1 px-2.5 rounded-md text-xs font-black transition-all flex items-center justify-center gap-1 bg-white text-indigo-700 shadow-2xs border border-indigo-300 cursor-pointer";
+            const inactiveClass = "flex-1 py-1 px-2.5 rounded-md text-xs font-semibold transition-all flex items-center justify-center gap-1 text-slate-500 hover:text-slate-800 opacity-70 hover:opacity-100 cursor-pointer";
 
             if (btnLunch) btnLunch.className = (currentMealShift === 'lunch') ? activeLunchClass : inactiveClass;
             if (btnDinner) btnDinner.className = (currentMealShift === 'dinner') ? activeDinnerClass : inactiveClass;
@@ -799,17 +799,17 @@
                 // 🌟 সেভ করা অবস্থায় ০ মিল থাকা কার্ড হালকা (opacity-40) হবে, আর এডিট করার সময় সব কার্ড স্বাভাবিক ও স্পষ্ট (opacity-100) থাকবে:
                 if (val > 0) {
                     if (rowCard) {
-                        rowCard.className = "bg-indigo-50/60 hover:bg-indigo-50/80 px-3 py-2 rounded-2xl border-2 border-indigo-500 shadow-xs transition-all duration-200 opacity-100";
+                        rowCard.className = "bg-indigo-50/60 hover:bg-indigo-50/80 px-2.5 py-1.5 rounded-xl border-2 border-indigo-500 shadow-2xs transition-all duration-200 opacity-100";
                     }
-                    select.className = "bg-white border-2 border-indigo-600 text-slate-950 font-black rounded-xl px-2.5 py-1 text-xs outline-none shadow-xs transition cursor-pointer";
-                    if (customInp) customInp.className = "w-16 px-2 py-1 border-2 border-indigo-600 rounded-xl text-xs font-black text-slate-950 bg-white pr-5 shadow-xs outline-none";
+                    select.className = "bg-white border-2 border-indigo-600 text-slate-950 font-black rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer";
+                    if (customInp) customInp.className = "w-14 px-1.5 py-0.5 border-2 border-indigo-600 rounded-lg text-xs font-black text-slate-950 bg-white pr-4 shadow-2xs outline-none";
                 } else {
                     const zeroCardOpacity = isMealFormInSavedState ? "opacity-40" : "opacity-100";
                     if (rowCard) {
-                        rowCard.className = `bg-white hover:bg-slate-50 px-3 py-2 rounded-2xl border-2 border-slate-200 shadow-2xs transition-all duration-200 ${zeroCardOpacity}`;
+                        rowCard.className = `bg-white hover:bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs transition-all duration-200 ${zeroCardOpacity}`;
                     }
-                    select.className = "bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-xl px-2.5 py-1 text-xs outline-none shadow-2xs transition cursor-pointer";
-                    if (customInp) customInp.className = "w-16 px-2 py-1 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 bg-white pr-5 shadow-2xs outline-none";
+                    select.className = "bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold rounded-lg px-2 py-0.5 text-xs outline-none shadow-2xs transition cursor-pointer";
+                    if (customInp) customInp.className = "w-14 px-1.5 py-0.5 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white pr-4 shadow-2xs outline-none";
                 }
             });
 
@@ -861,7 +861,7 @@
             const liveSummaryTxt = document.getElementById('liveDayTotalTxt');
             if (liveSummaryTxt) {
                 if (grandDailyTotal > 0) {
-                    liveSummaryTxt.innerHTML = `<span class="text-indigo-900 font-black">${grandDailyTotal} টি</span> <span class="text-slate-600 font-bold text-[11px]">(দুপুর: ${curLunch} + রাত: ${curDinner})</span> • <span class="text-emerald-700 font-black">৳ ${totalCost}</span>`;
+                    liveSummaryTxt.innerHTML = `<span class="text-indigo-900 font-black">${grandDailyTotal} টি</span> <span class="text-slate-600 font-bold text-[10px]">(দুপুর: ${curLunch} + রাত: ${curDinner})</span> • <span class="text-emerald-700 font-black">৳ ${totalCost}</span>`;
                 } else {
                     liveSummaryTxt.innerHTML = `০ টি (৳ ০)`;
                 }
@@ -869,7 +869,7 @@
 
             if (isMealFormInSavedState) {
                 // ✅ সেভ করা থাকলে (ক্লিন ও পরিষ্কার বাটন)
-                btn.className = "w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-105 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer border border-emerald-500/40";
+                btn.className = "w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-105 text-white font-black py-2 rounded-xl transition-all shadow-2xs hover:shadow-xs active:scale-[0.99] flex items-center justify-center gap-1.5 text-xs cursor-pointer border border-emerald-500/40";
                 if (currentMealShift === 'lunch') {
                     btn.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-200"></i> <span>☀️ দুপুরের মিল সেভ করা আছে</span>`;
                 } else {
@@ -877,7 +877,7 @@
                 }
             } else {
                 // ✏️ এডিটিং বা নতুন এন্ট্রির সময় (ক্লিন ও সংক্ষিপ্ত বাটন)
-                btn.className = "w-full bg-gradient-to-r from-indigo-600 via-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-2.5 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer";
+                btn.className = "w-full bg-gradient-to-r from-indigo-600 via-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-2 rounded-xl transition-all shadow-2xs hover:shadow-xs active:scale-[0.99] flex items-center justify-center gap-1.5 text-xs cursor-pointer";
                 if (currentMealShift === 'lunch') {
                     btn.innerHTML = `<i class="fa-solid fa-sun text-xs text-amber-300"></i> <span>☀️ দুপুরের মিল সেভ করুন</span>`;
                 } else {
@@ -1005,19 +1005,19 @@
             depositForm.classList.add('hidden');
             cateringPayForm.classList.add('hidden');
 
-            tabMealBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1";
-            tabDepositBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1";
-            tabCateringBtn.className = "flex-1 py-2 rounded-lg transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1";
+            tabMealBtn.className = "flex-1 py-1 rounded-md transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1 text-xs";
+            tabDepositBtn.className = "flex-1 py-1 rounded-md transition text-gray-600 hover:text-indigo-700 flex items-center justify-center gap-1 text-xs";
+            tabCateringBtn.className = "flex-1 py-1 rounded-md transition text-gray-600 hover:text-amber-700 flex items-center justify-center gap-1 text-xs";
 
             if(tab === 'meal') {
                 mealForm.classList.remove('hidden');
-                tabMealBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-indigo-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+                tabMealBtn.className = "flex-1 py-1 rounded-md transition bg-white text-indigo-700 shadow-xs flex items-center justify-center gap-1 font-bold text-xs";
             } else if(tab === 'deposit') {
                 depositForm.classList.remove('hidden');
-                tabDepositBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-emerald-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+                tabDepositBtn.className = "flex-1 py-1 rounded-md transition bg-white text-emerald-700 shadow-xs flex items-center justify-center gap-1 font-bold text-xs";
             } else if(tab === 'catering') {
                 cateringPayForm.classList.remove('hidden');
-                tabCateringBtn.className = "flex-1 py-2 rounded-lg transition bg-white text-amber-700 shadow-sm flex items-center justify-center gap-1 font-bold";
+                tabCateringBtn.className = "flex-1 py-1 rounded-md transition bg-white text-amber-700 shadow-xs flex items-center justify-center gap-1 font-bold text-xs";
             }
         }
 
@@ -1026,14 +1026,14 @@
             if (!statusMsg) return;
 
             if (isSuccess === 'offline' || isSuccess === 'amber') {
-                statusMsg.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-lg text-amber-700"></i> <span>${msg}</span>`;
-                statusMsg.className = "p-3 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 bg-amber-100 text-amber-950 border border-amber-300 shadow-xs";
+                statusMsg.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-base text-amber-700"></i> <span>${msg}</span>`;
+                statusMsg.className = "p-2 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-1.5 bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs";
             } else if (isSuccess === true) {
-                statusMsg.innerHTML = `<i class="fa-solid fa-circle-check text-lg"></i> <span>${msg}</span>`;
-                statusMsg.className = "p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2 bg-emerald-100 text-emerald-800 border border-emerald-200";
+                statusMsg.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i> <span>${msg}</span>`;
+                statusMsg.className = "p-2 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-1.5 bg-emerald-100 text-emerald-800 border border-emerald-200";
             } else {
-                statusMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-lg"></i> <span>${msg}</span>`;
-                statusMsg.className = "p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2 bg-red-100 text-red-800 border border-red-200";
+                statusMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-base"></i> <span>${msg}</span>`;
+                statusMsg.className = "p-2 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-1.5 bg-red-100 text-red-800 border border-red-200";
             }
             statusMsg.classList.remove('hidden');
             
@@ -1085,18 +1085,18 @@
                     const tr = document.createElement('tr');
                     tr.className = 'hover:bg-slate-50/80 transition group';
                     tr.innerHTML = `
-                        <td class="p-3 font-semibold text-gray-800 flex items-center gap-2">
-                            <div class="w-7 h-7 bg-indigo-100 text-indigo-700 rounded-lg flex items-center justify-center text-xs font-black shadow-2xs">${name.charAt(0)}</div>
-                            <span class="font-bold">${name}</span>
+                        <td class="p-1.5 sm:p-2 font-semibold text-gray-800 flex items-center gap-1.5">
+                            <div class="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-lg flex items-center justify-center text-[10px] font-black shadow-2xs">${name.charAt(0)}</div>
+                            <span class="font-bold text-xs">${name}</span>
                         </td>
-                        <td class="p-3 text-center font-bold text-gray-800">${meal}</td>
-                        <td class="p-3 text-right font-medium text-gray-700">৳ ${cost}</td>
-                        <td onclick="openDepositHistoryModal('${name}')" title="${name} এর জমার পাসবুক ও হিস্ট্রি দেখুন" class="p-3 text-right text-indigo-700 hover:text-emerald-700 font-black cursor-pointer transition">
-                            <span class="bg-indigo-50/80 hover:bg-emerald-50 px-2 py-0.5 rounded-lg border border-indigo-100 hover:border-emerald-200 transition">
-                                ৳ ${deposit} <i class="fa-solid fa-arrow-up-right-from-square text-[8px] opacity-60 ml-0.5"></i>
+                        <td class="p-1.5 sm:p-2 text-center font-bold text-gray-800 text-xs">${meal}</td>
+                        <td class="p-1.5 sm:p-2 text-right font-medium text-gray-700 text-xs">৳ ${cost}</td>
+                        <td onclick="openDepositHistoryModal('${name}')" title="${name} এর জমার পাসবুক ও হিস্ট্রি দেখুন" class="p-1.5 sm:p-2 text-right text-indigo-700 hover:text-emerald-700 font-black cursor-pointer transition text-xs">
+                            <span class="bg-indigo-50/80 hover:bg-emerald-50 px-1.5 py-0.5 rounded-md border border-indigo-100 hover:border-emerald-200 transition text-[11px]">
+                                ৳ ${deposit} <i class="fa-solid fa-arrow-up-right-from-square text-[7px] opacity-60 ml-0.5"></i>
                             </span>
                         </td>
-                        <td class="p-3 text-right ${stockClass}">৳ ${stock}</td>
+                        <td class="p-1.5 sm:p-2 text-right ${stockClass} text-xs">৳ ${stock}</td>
                     `;
                     tbody.appendChild(tr);
                 }
