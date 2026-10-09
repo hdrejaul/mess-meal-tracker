@@ -204,6 +204,18 @@ function doGet(e) {
     Logger.log("doGet depositHistory error: " + err);
   }
   
+  // ☀️🌙 শিফট মিলের ক্লাউড রেকর্ড পড়া (PropertiesService)
+  var mealShifts = {};
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var shiftsJson = props.getProperty("mess_meal_shifts");
+    if (shiftsJson) {
+      mealShifts = JSON.parse(shiftsJson);
+    }
+  } catch(err) {
+    Logger.log("doGet mealShifts error: " + err);
+  }
+  
   var result = {
     "currentMonth": sheet.getName(),
     "allMonths": getAllAvailableMonths(ss),
@@ -212,7 +224,8 @@ function doGet(e) {
     "paidAmount": paidAmount,
     "cateringPayments": cateringPayments,
     "dailyMealsList": dailyMealsList,
-    "depositHistory": depositHistory
+    "depositHistory": depositHistory,
+    "mealShifts": mealShifts
   };
   
   return ContentService.createTextOutput(JSON.stringify(result))
@@ -407,6 +420,19 @@ function doPost(e) {
       sheet.getRange("E" + foundRow).setValue(data.Samiul);
     } else {
       sheet.appendRow([data.date, data.Rejaul, data.Tafiqul, data.Rafiul, data.Samiul]);
+    }
+    
+    // ☀️🌙 শিফট মিলের ক্লাউড রেকর্ড সংরক্ষণ (PropertiesService - মূল শিট ১০০% অপরিবর্তিত)
+    if (data.shifts && data.date) {
+      try {
+        var props = PropertiesService.getScriptProperties();
+        var shiftsJson = props.getProperty("mess_meal_shifts");
+        var allShifts = shiftsJson ? JSON.parse(shiftsJson) : {};
+        allShifts[data.date] = data.shifts;
+        props.setProperty("mess_meal_shifts", JSON.stringify(allShifts));
+      } catch(shiftErr) {
+        Logger.log("mealShifts save error: " + shiftErr);
+      }
     }
     
     return ContentService.createTextOutput(JSON.stringify({"result": "success", "row": foundRow})).setMimeType(ContentService.MimeType.JSON);

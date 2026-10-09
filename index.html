@@ -1430,6 +1430,18 @@
                             renderTodayMealStatus();
                         }
                     }
+
+                    // ☀️🌙 ক্লাউড শিফট মিল ডাটা সিঙ্ক করা
+                    if (data.mealShifts && typeof data.mealShifts === 'object') {
+                        try {
+                            const localShifts = getAllMealShiftsData();
+                            const merged = Object.assign({}, localShifts, data.mealShifts);
+                            saveAllMealShiftsData(merged);
+                            if (!isUserEditingMealForm) {
+                                syncMealFormWithSelectedDate(false);
+                            }
+                        } catch(e){}
+                    }
                 }
             } catch(err) {
                 console.warn("Live fetch error in index:", err);
@@ -2044,7 +2056,9 @@
                 Rejaul: totalRejaul,
                 Tafiqul: totalTafiqul,
                 Rafiul: totalRafiul,
-                Samiul: totalSamiul
+                Samiul: totalSamiul,
+                shift: currentMealShift,
+                shifts: dayShift
             };
 
             // ২. ইন্টারনেট সংযোগ না থাকলে তৎক্ষণাৎ অফলাইন কিউতে রাখা
