@@ -701,8 +701,12 @@
             if (!allData[dateStr]) {
                 allData[dateStr] = {
                     lunch: { 'Rejaul': 0, 'Tafiqul': 0, 'Rafiul': 0, 'Samiul': 0 },
-                    dinner: { 'Rejaul': 0, 'Tafiqul': 0, 'Rafiul': 0, 'Samiul': 0 }
+                    dinner: { 'Rejaul': 0, 'Tafiqul': 0, 'Rafiul': 0, 'Samiul': 0 },
+                    saved: { lunch: false, dinner: false }
                 };
+            }
+            if (!allData[dateStr].saved) {
+                allData[dateStr].saved = { lunch: false, dinner: false };
             }
             return allData[dateStr];
         }
@@ -1293,14 +1297,19 @@
                 }
             });
 
-            if (currentMealShift === 'dinner') {
+            const isCurrentShiftSaved = dayShift.saved && (dayShift.saved[currentMealShift] === true);
+            if (isExplicitSave) {
+                isMealFormInSavedState = true;
+            } else if (isCurrentShiftSaved) {
+                isMealFormInSavedState = true;
+            } else if (currentMealShift === 'dinner') {
                 const hasDinnerInput = members.some(m => (dayShift.dinner[m] || 0) > 0);
-                isMealFormInSavedState = isExplicitSave || (isEnteredInSheet && hasDinnerInput);
+                isMealFormInSavedState = isEnteredInSheet && hasDinnerInput;
             } else if (currentMealShift === 'lunch') {
                 const hasLunchInput = members.some(m => (dayShift.lunch[m] || 0) > 0);
-                isMealFormInSavedState = isExplicitSave || (isEnteredInSheet && hasLunchInput);
+                isMealFormInSavedState = isEnteredInSheet && hasLunchInput;
             } else {
-                isMealFormInSavedState = isEnteredInSheet || isExplicitSave;
+                isMealFormInSavedState = isEnteredInSheet;
             }
 
             refreshAllMealCardsVisuals();
@@ -2048,6 +2057,10 @@
                     }
                 }
             });
+
+            // ✅ এই শিফটটি যে সেভ করা হয়েছে তা রেকর্ড রাখা (০ মিল হলেও সেভ মার্ক থাকবে)
+            dayShift.saved = dayShift.saved || {};
+            dayShift.saved[currentMealShift] = true;
 
             // লোকাল শিফট ডাটা সংরক্ষণ
             const allShifts = getAllMealShiftsData();
