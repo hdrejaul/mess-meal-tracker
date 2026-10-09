@@ -355,6 +355,25 @@ function doPost(e) {
   }
   
   // -------------------------------------------------------------
+  // অ্যাকশন ৩.১: খাবার ওয়ালার ভুল পেমেন্ট এন্ট্রি ডিলিট করা
+  // -------------------------------------------------------------
+  else if (data.type === 'delete_catering_pay') {
+    var rangeH = sheet.getRange("H10:H23").getValues();
+    var rangeI = sheet.getRange("I10:I23").getValues();
+    var deleted = false;
+    for (var i = rangeH.length - 1; i >= 0; i--) {
+      var d = String(rangeH[i][0] || '');
+      var a = parseFloat(rangeI[i][0]) || 0;
+      if (a === parseFloat(data.amount) && (d.indexOf(data.date) !== -1 || data.date.indexOf(d) !== -1 || !data.date)) {
+        sheet.getRange("H" + (10 + i) + ":I" + (10 + i)).clearContent();
+        deleted = true;
+        break;
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({"result": "success", "deleted": deleted})).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  // -------------------------------------------------------------
   // অ্যাকশন ৪: নির্দিষ্ট মাসের ডাটা রিসেট বা শিট ডিলিট করা
   // -------------------------------------------------------------
   else if (data.type === 'delete_month') {
