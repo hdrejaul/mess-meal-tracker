@@ -579,6 +579,23 @@
                     <button type="submit" id="submitCateringBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 rounded-xl transition shadow-xs flex items-center justify-center gap-1.5 text-xs cursor-pointer">
                         <i class="fa-solid fa-hand-holding-dollar"></i> খাবার ওয়ালা সেভ করুন
                     </button>
+
+                    <!-- 📜 খাবার ওয়ালাকে দেওয়া সর্বশেষ ৩টি পেমেন্ট তালিকা -->
+                    <div id="recentCateringPaySection" class="pt-2 border-t border-slate-100 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-extrabold text-slate-600 flex items-center gap-1 uppercase tracking-wider">
+                                <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> সর্বশেষ ৩টি পরিশোধ
+                            </span>
+                            <span id="recentCateringTotalBadge" class="text-[9px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-200">
+                                মোট পরিশোধ: ৳ 0
+                            </span>
+                        </div>
+                        <div id="recentCateringPayList" class="space-y-1">
+                            <div class="py-2.5 px-2 text-center text-slate-400 bg-slate-50/70 rounded-xl border border-slate-100 text-[10px] font-medium">
+                                <i class="fa-regular fa-receipt text-slate-300 mr-1"></i> লোড হচ্ছে...
+                            </div>
+                        </div>
+                    </div>
                 </form>
 
                 <!-- Status Message Badge -->
@@ -1018,6 +1035,7 @@
             } else if(tab === 'catering') {
                 cateringPayForm.classList.remove('hidden');
                 tabCateringBtn.className = "flex-1 py-1 rounded-md transition bg-white text-amber-700 shadow-xs flex items-center justify-center gap-1 font-bold text-xs";
+                renderRecentCateringPayments();
             }
         }
 
@@ -1337,9 +1355,162 @@
 
         const CACHE_KEY_INDEX = 'cached_admin_sheet_full';
         let globalDepositHistory = [];
+        let globalCateringPayments = [];
         let globalSummaryTable = [];
         let globalCurrentMonth = "";
         let globalSelectedMemberFilter = 'all';
+
+        function formatDateDDMMYYYY(rawDate) {
+            if (rawDate === null || rawDate === undefined || rawDate === "") return "-";
+            
+            if (typeof rawDate === 'number' && !isNaN(rawDate) && rawDate >= 1 && rawDate <= 31) {
+                let d = rawDate < 10 ? '0' + rawDate : String(rawDate);
+                let now = new Date();
+                let m = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : String(now.getMonth() + 1);
+                let y = now.getFullYear();
+                return `${d}/${m}/${y}`;
+            }
+
+            let s = String(rawDate).trim();
+            if (/^\d{1,2}$/.test(s)) {
+                let dayNum = parseInt(s, 10);
+                if (dayNum >= 1 && dayNum <= 31) {
+                    let d = dayNum < 10 ? '0' + dayNum : String(dayNum);
+                    let now = new Date();
+                    let m = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : String(now.getMonth() + 1);
+                    let y = now.getFullYear();
+                    return `${d}/${m}/${y}`;
+                }
+            }
+
+            let matchYMD = s.match(/^(\d{4})[-/. ](\d{1,2})[-/. ](\d{1,2})/);
+            if (matchYMD) {
+                let y = matchYMD[1];
+                let m = parseInt(matchYMD[2], 10) < 10 ? '0' + parseInt(matchYMD[2], 10) : String(matchYMD[2]);
+                let d = parseInt(matchYMD[3], 10) < 10 ? '0' + parseInt(matchYMD[3], 10) : String(matchYMD[3]);
+                return `${d}/${m}/${y}`;
+            }
+
+            let matchParts = s.match(/^(\d{1,2})[-/. ](\d{1,2})[-/. ](\d{2,4})/);
+            if (matchParts) {
+                let p1 = parseInt(matchParts[1], 10);
+                let p2 = parseInt(matchParts[2], 10);
+                let y = matchParts[3].length === 2 ? '20' + matchParts[3] : matchParts[3];
+                
+                let d = p1, m = p2;
+                if (p2 > 12 && p1 <= 12) {
+                    d = p2;
+                    m = p1;
+                } else if (p1 > 12 && p2 <= 12) {
+                    d = p1;
+                    m = p2;
+                } else if (p1 <= 12 && p2 <= 12) {
+                    let curMonth = (new Date()).getMonth() + 1;
+                    if (p1 === curMonth && p2 !== curMonth) {
+                        d = p2;
+                        m = p1;
+                    } else if (p2 === curMonth && p1 !== curMonth) {
+                        d = p1;
+                        m = p2;
+                    } else {
+                        d = p1;
+                        m = p2;
+                    }
+                }
+                let dd = d < 10 ? '0' + d : String(d);
+                let mm = m < 10 ? '0' + m : String(m);
+                return `${dd}/${mm}/${y}`;
+            }
+
+            let parsed = new Date(s);
+            if (!isNaN(parsed.getTime())) {
+                let d = parsed.getDate() < 10 ? '0' + parsed.getDate() : String(parsed.getDate());
+                let m = (parsed.getMonth() + 1) < 10 ? '0' + (parsed.getMonth() + 1) : String(parsed.getMonth() + 1);
+                let y = parsed.getFullYear();
+                return `${d}/${m}/${y}`;
+            }
+
+            return s;
+        }
+
+        function renderRecentCateringPayments() {
+            const listEl = document.getElementById('recentCateringPayList');
+            const badgeEl = document.getElementById('recentCateringTotalBadge');
+            if (!listEl) return;
+
+            let allPayments = [];
+
+            // ১. লাইভ / ক্যাশড ক্যাটারিং পেমেন্টস
+            if (globalCateringPayments && Array.isArray(globalCateringPayments)) {
+                globalCateringPayments.forEach(p => {
+                    if (!p) return;
+                    const pDate = p[0] !== undefined ? p[0] : (p.date || '');
+                    const pAmt = parseFloat(p[1] !== undefined ? p[1] : p.amount) || 0;
+                    if (pAmt > 0 || (pDate !== "" && pDate !== null && pDate !== undefined)) {
+                        allPayments.push({
+                            date: pDate,
+                            amount: pAmt,
+                            isOffline: false
+                        });
+                    }
+                });
+            }
+
+            // ২. অফলাইন পেন্ডিং পেমেন্টস
+            const queue = getOfflineQueue();
+            queue.forEach(item => {
+                if (item.payload && item.payload.type === 'catering_pay') {
+                    allPayments.push({
+                        date: item.payload.date || 'আজ (অফলাইন)',
+                        amount: parseFloat(item.payload.amount) || 0,
+                        isOffline: true
+                    });
+                }
+            });
+
+            let totalPaidSum = allPayments.reduce((sum, p) => sum + p.amount, 0);
+            if (badgeEl) {
+                badgeEl.innerText = 'মোট পরিশোধ: ৳ ' + totalPaidSum;
+            }
+
+            if (allPayments.length === 0) {
+                listEl.innerHTML = `
+                    <div class="py-2 px-2 text-center text-slate-400 bg-slate-50/70 rounded-xl border border-slate-100 text-[10px] font-medium">
+                        <i class="fa-regular fa-receipt text-slate-300 mr-1"></i> এখনও কোনো পরিশোধের রেকর্ড নেই
+                    </div>
+                `;
+                return;
+            }
+
+            // সর্বশেষ ৩টি পেমেন্ট (নতুনটি সবার উপরে)
+            const last3 = allPayments.slice(-3).reverse();
+
+            let html = '';
+            last3.forEach((p, idx) => {
+                const dateStr = formatDateDDMMYYYY(p.date);
+                const isLatest = (idx === 0);
+                html += `
+                    <div class="flex items-center justify-between px-2 py-1 rounded-lg ${isLatest ? 'bg-amber-50/90 border border-amber-200/90 shadow-2xs' : 'bg-slate-50 hover:bg-slate-100 border border-slate-200/60'} transition">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <div class="w-5 h-5 rounded-md ${isLatest ? 'bg-amber-200/90 text-amber-950' : 'bg-slate-200/80 text-slate-700'} flex items-center justify-center text-[9px] font-black shrink-0">
+                                #${idx + 1}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs font-bold text-slate-800 leading-tight">${dateStr}</span>
+                                    ${p.isOffline ? '<span class="text-[8px] bg-amber-500 text-white font-extrabold px-1 py-0.2 rounded">অফলাইন</span>' : (isLatest ? '<span class="text-[8px] bg-amber-200 text-amber-950 font-bold px-1 py-0.2 rounded">সর্বশেষ</span>' : '')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-xs font-black text-emerald-700">৳ ${p.amount}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listEl.innerHTML = html;
+        }
 
         async function loadDepositDatabase() {
             try {
@@ -1402,6 +1573,10 @@
                     if (data.depositHistory && (!globalDepositHistory || globalDepositHistory.length === 0)) {
                         globalDepositHistory = data.depositHistory;
                     }
+                    if (data.cateringPayments && Array.isArray(data.cateringPayments)) {
+                        globalCateringPayments = data.cateringPayments;
+                        renderRecentCateringPayments();
+                    }
                     // ☀️🌙 ক্যাশ থেকে শিফট মিল ডাটা সবার আগে রিস্টোর করা (০ মিলিসেকেন্ডে!)
                     if (data.mealShifts && typeof data.mealShifts === 'object') {
                         const localShifts = getAllMealShiftsData();
@@ -1457,6 +1632,11 @@
 
                     if (data.depositHistory) {
                         globalDepositHistory = data.depositHistory;
+                    }
+
+                    if (data.cateringPayments && Array.isArray(data.cateringPayments)) {
+                        globalCateringPayments = data.cateringPayments;
+                        renderRecentCateringPayments();
                     }
 
                     const modal = document.getElementById('depositHistoryModal');
@@ -1529,6 +1709,12 @@
             document.getElementById('cardTotalDeposit').innerText = '৳ ' + totalDeposit;
             document.getElementById('cardStockBalance').innerText = '৳ ' + totalStock;
             
+            globalCateringPayments = [
+                ['2026-10-02', 1000],
+                ['2026-10-05', 500],
+                ['2026-10-08', 500]
+            ];
+            renderRecentCateringPayments();
             renderTodayMealStatus();
         }
 
@@ -1629,6 +1815,8 @@
                     headerOfflineBtn.classList.add('hidden');
                 }
             }
+
+            renderRecentCateringPayments();
 
             // ২. হেডার কানেক্টিভিটি ও সিঙ্ক স্ট্যাটাস ব্যাজ আপডেট
             if (connBadge && connDot && connStatusText) {
@@ -2928,6 +3116,10 @@
                 date: dateVal,
                 amount: amount
             };
+
+            // তৎক্ষণাৎ ক্যাটারিং পেমেন্ট লিস্টে যোগ করা
+            globalCateringPayments.push([dateVal, amount]);
+            renderRecentCateringPayments();
 
             // রিসেট: ড্রপডাউন খালি রাখা এবং কাস্টম বক্স লুকিয়ে দেওয়া
             document.getElementById('cateringPaySelect').value = '';
