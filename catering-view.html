@@ -956,10 +956,17 @@
                 badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg || 'কাস্টমার থেকে সর্বশেষ হিসাব'}`;
                 if (warnBanner) warnBanner.classList.add('hidden');
             } else if (state === 'cached') {
-                badge.className = "bg-rose-950/90 hover:bg-rose-900 border border-rose-500/70 px-3 py-0.5 rounded-full text-[11px] font-extrabold text-rose-300 inline-flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95";
-                badge.onclick = () => fetchLiveCateringData();
-                badge.innerHTML = `<i class="fa-solid fa-arrows-rotate text-rose-400"></i> ${msg || 'কাস্টমারের সর্বশেষ হিসাব দেখতে রিফ্রেশ দিন'}`;
-                if (warnBanner) warnBanner.classList.remove('hidden');
+                if (!navigator.onLine) {
+                    badge.className = "bg-rose-950/90 hover:bg-rose-900 border border-rose-500/70 px-3 py-0.5 rounded-full text-[11px] font-extrabold text-rose-300 inline-flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95";
+                    badge.onclick = () => fetchLiveCateringData();
+                    badge.innerHTML = `<i class="fa-solid fa-wifi text-rose-400"></i> অফলাইন মোড (রিফ্রেশ দিন)`;
+                    if (warnBanner) warnBanner.classList.remove('hidden');
+                } else {
+                    badge.className = "bg-emerald-950/80 border border-emerald-500/50 px-3 py-0.5 rounded-full text-[11px] font-bold text-emerald-300 inline-flex items-center gap-1.5 shadow";
+                    badge.onclick = () => fetchLiveCateringData();
+                    badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> কাস্টমার থেকে সর্বশেষ হিসাব`;
+                    if (warnBanner) warnBanner.classList.add('hidden');
+                }
             }
         }
 
@@ -992,7 +999,7 @@
             // ⚡ ১. ইনস্ট্যান্ট ক্যাশ লোড: লোকাল স্টোরেজ থেকে সাথে সাথে রেন্ডার (০ মিলিসেকেন্ড)
             const hasLoadedCache = loadFromLocalCache();
             if (hasLoadedCache && !isSilent) {
-                setSyncStatus('loading', 'আপডেট হচ্ছে...');
+                setSyncStatus('live', 'কাস্টমার থেকে সর্বশেষ হিসাব');
             } else if (!hasLoadedCache && !isSilent) {
                 setSyncStatus('loading', 'লোড হচ্ছে...');
             }
@@ -1009,9 +1016,9 @@
 
             isFetchingCatering = true;
 
-            // ⚡ ২. সর্বোচ্চ ৮ সেকেন্ড টাইমআউট
+            // ⚡ ২. সর্বোচ্চ ২০ সেকেন্ড টাইমআউট (গুগল অ্যাপস স্ক্রিপ্ট কোল্ড স্টার্ট সাপোর্ট)
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            const timeoutId = setTimeout(() => controller.abort(), 20000);
 
             try {
                 const fetchUrl = GOOGLE_SCRIPT_URL + (GOOGLE_SCRIPT_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
@@ -1033,7 +1040,13 @@
                 if (!loaded && !isSilent) {
                     renderDemoData();
                 }
-                if (!isSilent) setSyncStatus('cached', 'পেজ আবার রিফ্রেশ দিন');
+                if (!navigator.onLine) {
+                    setSyncStatus('cached', 'অফলাইন মোড');
+                } else {
+                    setSyncStatus('live', 'কাস্টমার থেকে সর্বশেষ হিসাব');
+                    // অনলাইনে সাময়িক ব্যর্থ হলে ব্যাকগ্রাউন্ডে ২ সেকেন্ড পর রিট্রাই
+                    setTimeout(() => fetchLiveCateringData(true), 2500);
+                }
             } finally {
                 isFetchingCatering = false;
                 if (!isSilent) hideTopProgress();
