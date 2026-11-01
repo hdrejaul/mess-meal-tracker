@@ -2598,6 +2598,63 @@
         let globalDepositSearchQuery = '';
         let globalAllMonths = [];
 
+        const SHORT_MONTH_MAP = {
+            'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
+            'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+        };
+        const SHORT_MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        function getMonthIndex(nameOrNum) {
+            if (nameOrNum === null || nameOrNum === undefined) return -1;
+            if (typeof nameOrNum === 'number') return (nameOrNum >= 0 && nameOrNum <= 11) ? nameOrNum : -1;
+            const str = String(nameOrNum).trim().toLowerCase();
+            const prefix = str.slice(0, 3);
+            if (SHORT_MONTH_MAP[prefix] !== undefined) return SHORT_MONTH_MAP[prefix];
+            const parsed = parseInt(str, 10);
+            if (!isNaN(parsed) && parsed >= 1 && parsed <= 12) return parsed - 1;
+            return -1;
+        }
+
+        function isTransactionInMonth(tx, targetMonth) {
+            if (!tx) return false;
+            if (!targetMonth) return true;
+            const targetMonthIdx = getMonthIndex(targetMonth);
+            if (targetMonthIdx === -1) return true;
+
+            // ১. ট্রানজ্যাকশনে সরাসরি মাস উল্লেখ থাকলে
+            if (tx.month) {
+                const txMonthIdx = getMonthIndex(tx.month);
+                if (txMonthIdx !== -1) {
+                    return txMonthIdx === targetMonthIdx;
+                }
+            }
+
+            // ২. তারিখ থেকে মাস যাচাই করা
+            const dateStr = String(tx.date || '').trim();
+            if (!dateStr) return false;
+
+            if (dateStr.includes('আজ')) {
+                const todayMonthIdx = (new Date()).getMonth();
+                return todayMonthIdx === targetMonthIdx;
+            }
+
+            // YYYY-MM-DD অথবা DD-MM-YYYY অথবা DD/MM/YYYY পার্স করা
+            const parts = dateStr.split(/[-/]/);
+            if (parts.length === 3) {
+                let mNum = parseInt(parts[1], 10);
+                if (!isNaN(mNum) && mNum >= 1 && mNum <= 12) {
+                    return (mNum - 1) === targetMonthIdx;
+                }
+            }
+
+            const d = new Date(dateStr);
+            if (!isNaN(d.getTime())) {
+                return d.getMonth() === targetMonthIdx;
+            }
+
+            return false;
+        }
+
         function getNormalizedMemberName(name) {
             if (!name || name.toString().toLowerCase() === 'all' || name.toString().toLowerCase().includes('সব')) return 'all';
             const clean = name.toString().trim().toLowerCase();
@@ -2802,21 +2859,27 @@
 
             const currentMemberFilter = getNormalizedMemberName(globalSelectedMemberFilter);
 
+            const activeMonth = globalCurrentMonth || SHORT_MONTH_NAMES[(new Date()).getMonth()];
+
             // সব ডিপোজিট ডাটা একত্রিত করা (লাইভ শিটের হিস্ট্রি + অফলাইন পেন্ডিং জমাগুলো)
-            let allDeposits = [...(globalDepositHistory || [])];
+            let rawDeposits = [...(globalDepositHistory || [])];
 
             // অফলাইন পেন্ডিং কিউ থেকে ডিপোজিটগুলো অন্তর্ভুক্ত করা (যদি থাকে)
             const offlineQueue = getOfflineQueue();
             offlineQueue.forEach(item => {
                 if (item.payload && item.payload.type === 'deposit') {
-                    allDeposits.unshift({
+                    rawDeposits.unshift({
                         date: item.payload.date || 'আজ (অফলাইন)',
                         member: getNormalizedMemberName(item.payload.member),
                         amount: parseFloat(item.payload.amount) || 0,
+                        month: item.payload.month || activeMonth,
                         isPendingOffline: true
                     });
                 }
             });
+
+            // ✅ শুধুমাত্র নির্বাচিত মাসের ডিপোজিটগুলো ফিল্টার করা (আগের মাসের হিস্ট্রি বাদ)
+            let allDeposits = rawDeposits.filter(d => isTransactionInMonth(d, activeMonth));
 
             // সদস্যভিত্তিক ডাটা বিশ্লেষণ ও গুগল শিটের অফিশিয়াল সামারি টেবিল থেকে হিসাব
             const members = ['Rejaul', 'Tafiqul', 'Rafiul', 'Samiul'];
@@ -3000,6 +3063,7 @@
 
             // সার্বিক সব ডিপোজিট একত্রিত ও সাজানো (বেস শিট জমা + নতুন লগসমূহ)
             let masterTransactionList = [];
+            const monthDisplay = globalCurrentMonth || 'চলতি মাস';
             members.forEach(m => {
                 const memLogs = allDeposits.filter(d => getNormalizedMemberName(d.member) === m);
                 let logsSum = 0;
@@ -3011,19 +3075,28 @@
                 const sheetBaseDeposit = memberStats[m].deposit;
                 if (sheetBaseDeposit > logsSum) {
                     masterTransactionList.push({
-                        date: 'অক্টোবর মূল জমা (Sheet)',
+                        date: `${monthDisplay} মূল জমা (Sheet)`,
                         member: m,
                         amount: sheetBaseDeposit - logsSum,
+                        month: activeMonth,
                         isBaseRecord: true
                     });
                 } else if (memLogs.length === 0 && sheetBaseDeposit > 0) {
                     masterTransactionList.push({
-                        date: 'অক্টোবর মূল জমা (Sheet)',
+                        date: `${monthDisplay} মূল জমা (Sheet)`,
                         member: m,
                         amount: sheetBaseDeposit,
+                        month: activeMonth,
                         isBaseRecord: true
                     });
                 }
+            });
+
+            // নতুন তারিখের লেনদেন আগে দেখানো এবং শিটের মূল জমা পরে রাখা
+            masterTransactionList.sort((a, b) => {
+                if (a.isBaseRecord && !b.isBaseRecord) return 1;
+                if (!a.isBaseRecord && b.isBaseRecord) return -1;
+                return (b.date || '').localeCompare(a.date || '');
             });
 
             // ৭. ফিল্টার ও সার্চ অনুযায়ী লেনদেন তালিকা তৈরি
@@ -3107,9 +3180,15 @@
                                     <i class="fa-solid fa-arrow-down-left text-[10px] text-emerald-600"></i>
                                     + ৳${amt}
                                 </span>
-                                <button onclick="event.stopPropagation(); deleteDepositTransaction('${dateStr}', '${m}', ${amt})" title="এই জমার রেকর্ড মুছুন" class="w-8 h-8 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-xl flex items-center justify-center transition active:scale-90 cursor-pointer border border-slate-200/80 hover:border-rose-300 shadow-2xs">
-                                    <i class="fa-regular fa-trash-can text-xs text-rose-500"></i>
-                                </button>
+                                ${tx.isBaseRecord ? `
+                                    <span class="w-8 h-8 text-slate-300 rounded-xl flex items-center justify-center text-xs" title="শিট মূল জমা">
+                                        <i class="fa-solid fa-lock text-[11px] text-slate-300"></i>
+                                    </span>
+                                ` : `
+                                    <button onclick="event.stopPropagation(); deleteDepositTransaction('${dateStr}', '${m}', ${amt})" title="এই জমার রেকর্ড মুছুন" class="w-8 h-8 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-xl flex items-center justify-center transition active:scale-90 cursor-pointer border border-slate-200/80 hover:border-rose-300 shadow-2xs">
+                                        <i class="fa-regular fa-trash-can text-xs text-rose-500"></i>
+                                    </button>
+                                `}
                             </div>
                         </div>
                     `;
@@ -3288,11 +3367,13 @@
                 return;
             }
 
+            const activeMonth = globalCurrentMonth || SHORT_MONTH_NAMES[(new Date()).getMonth()];
             const payload = {
                 type: 'deposit',
                 date: dateVal,
                 member: member,
-                amount: amount
+                amount: amount,
+                month: activeMonth
             };
 
             // তৎক্ষণাৎ লোকাল হিস্ট্রিতে যোগ করা এবং পারসিস্ট করা
@@ -3300,6 +3381,7 @@
                 date: dateVal,
                 member: member,
                 amount: amount,
+                month: activeMonth,
                 note: 'ডিপোজিট'
             });
             try {
