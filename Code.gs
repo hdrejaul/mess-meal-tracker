@@ -412,8 +412,16 @@ function doPost(e) {
   // -------------------------------------------------------------
   else {
     var datesRange = sheet.getRange("A2:A32").getDisplayValues();
-    var entryDateStr = data.date;
-    var entryDay = parseInt(entryDateStr.split("-")[2], 10);
+    var entryDateStr = String(data.date || "");
+    var parts = entryDateStr.split(/[-/]/);
+    var entryDay = -1;
+    if (parts.length === 3) {
+      if (parts[0].length === 4) {
+        entryDay = parseInt(parts[2], 10);
+      } else {
+        entryDay = parseInt(parts[0], 10);
+      }
+    }
     var foundRow = -1;
     
     for (var r = 0; r < datesRange.length; r++) {
