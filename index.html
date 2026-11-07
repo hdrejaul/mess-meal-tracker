@@ -1177,6 +1177,25 @@
                 }
             });
 
+            // 💰 ব্যবহারকারীর চাহিদা অনুযায়ী সরাসরি L9 ঘরের স্টক ব্যালেন্স অগ্রাধিকার দেওয়া
+            const activeStockL9 = (data && data.stockBalance !== undefined && data.stockBalance !== null && String(data.stockBalance).trim() !== "") 
+                ? data.stockBalance 
+                : ((globalStockBalance !== null && globalStockBalance !== undefined && String(globalStockBalance).trim() !== "") ? globalStockBalance : null);
+
+            if (activeStockL9 !== null) {
+                globalStockBalance = activeStockL9;
+                const cardStockEl = document.getElementById('cardStockBalance');
+                if (cardStockEl) {
+                    cardStockEl.innerText = '৳ ' + activeStockL9;
+                    const numVal = parseFloat(String(activeStockL9).replace(/[^0-9.-]/g, ''));
+                    cardStockEl.className = (!isNaN(numVal) && numVal < 0) 
+                        ? 'text-base sm:text-lg font-black text-rose-500 mt-0.5 leading-tight' 
+                        : 'text-base sm:text-lg font-black text-emerald-600 mt-0.5 leading-tight';
+                }
+                const tblStockEl = document.getElementById('tblStockBalance');
+                if (tblStockEl) tblStockEl.innerText = '৳ ' + activeStockL9;
+            }
+
             // ⚠️ বকেয়া (Due) ও ব্যালেন্স অ্যালার্ট আপডেট করা
             renderDueWarningSystem();
         }
@@ -1615,6 +1634,7 @@
         let globalSummaryTable = [];
         let globalCurrentMonth = "";
         let globalSelectedMemberFilter = 'all';
+        let globalStockBalance = null;
 
         function formatDateDDMMYYYY(rawDate) {
             if (rawDate === null || rawDate === undefined || rawDate === "") return "-";
@@ -1843,6 +1863,9 @@
                         globalDailyMeals = data.dailyMealsList;
                         renderTodayMealStatus();
                     }
+                    if (data.stockBalance !== undefined && data.stockBalance !== null && String(data.stockBalance).trim() !== "") {
+                        globalStockBalance = data.stockBalance;
+                    }
                     if (data.summaryTable && data.summaryTable.length > 0) {
                         globalSummaryTable = data.summaryTable;
                         renderAdminSummaryUI(data);
@@ -1889,6 +1912,9 @@
                         globalAllMonths = data.allMonths;
                     }
 
+                    if (data.stockBalance !== undefined && data.stockBalance !== null && String(data.stockBalance).trim() !== "") {
+                        globalStockBalance = data.stockBalance;
+                    }
                     if (data.summaryTable && data.summaryTable.length > 0) {
                         globalSummaryTable = data.summaryTable;
                         renderAdminSummaryUI(data);
@@ -2719,6 +2745,9 @@
                 if (data) {
                     if (data.currentMonth) globalCurrentMonth = data.currentMonth;
                     if (data.allMonths) globalAllMonths = data.allMonths;
+                    if (data.stockBalance !== undefined && data.stockBalance !== null && String(data.stockBalance).trim() !== "") {
+                        globalStockBalance = data.stockBalance;
+                    }
                     if (data.summaryTable && data.summaryTable.length > 0) {
                         globalSummaryTable = data.summaryTable;
                         renderAdminSummaryUI(data);

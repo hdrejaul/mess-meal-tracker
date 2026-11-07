@@ -168,6 +168,17 @@ function doGet(e) {
   
   // বকেয়া টাকা (J12)
   var dueAmount = (allValues[11] && allValues[11][9] !== undefined) ? allValues[11][9] : 0;
+
+  // 💰 স্টক ব্যালেন্স (ব্যবহারকারীর চাহিদা অনুযায়ী সরাসরি L9 সেল থেকে)
+  var stockBalance = (allValues[8] && allValues[8][11] !== undefined && allValues[8][11] !== "") ? allValues[8][11] : null;
+  if (!stockBalance) {
+    try {
+      var l9Val = sheet.getRange("L9").getDisplayValue();
+      if (l9Val !== "" && l9Val !== null && l9Val !== undefined) {
+        stockBalance = l9Val;
+      }
+    } catch(e){}
+  }
   
   // 📜 DepositLogs শিট থেকে বিগত ২ মাসের জমার হিস্ট্রি রিড করা
   var depositHistory = [];
@@ -221,6 +232,7 @@ function doGet(e) {
     "allMonths": getAllAvailableMonths(ss),
     "summaryTable": summaryRange,
     "dueAmount": dueAmount,
+    "stockBalance": stockBalance,
     "paidAmount": paidAmount,
     "cateringPayments": cateringPayments,
     "dailyMealsList": dailyMealsList,
