@@ -169,7 +169,7 @@ function doGet(e) {
   // বকেয়া টাকা (J12)
   var dueAmount = (allValues[11] && allValues[11][9] !== undefined) ? allValues[11][9] : 0;
 
-  // 💰 স্টক ব্যালেন্স (ব্যবহারকারীর চাহিদা অনুযায়ী সরাসরি L9 সেল থেকে)
+  // 💰 স্টক ব্যালেন্স (ব্যবহারকারীর চাহিদা অনুযায়ী আগে L6 ছিল, এখন সরাসরি L9 সেল থেকে)
   var stockBalance = (allValues[8] && allValues[8][11] !== undefined && allValues[8][11] !== "") ? allValues[8][11] : null;
   if (!stockBalance) {
     try {
@@ -178,6 +178,11 @@ function doGet(e) {
         stockBalance = l9Val;
       }
     } catch(e){}
+  }
+
+  // আগে L6 ছিল, এখন L9 এর মান দিয়ে সামারি টেবিলের টোটাল রো-এর স্টক ব্যালেন্সও আপডেট করা
+  if (stockBalance && summaryRange.length >= 5) {
+    summaryRange[summaryRange.length - 1][4] = stockBalance;
   }
   
   // 📜 DepositLogs শিট থেকে বিগত ২ মাসের জমার হিস্ট্রি রিড করা
