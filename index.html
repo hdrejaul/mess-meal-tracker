@@ -3593,6 +3593,47 @@
             }
         });
 
+        // -------------------------------------------------------------
+        // 🔄 ৬ ঘণ্টা পর পর এবং দিন পরিবর্তিত হলে স্বয়ংক্রিয় ফুল পেজ রিলোড ইঞ্জিন
+        // -------------------------------------------------------------
+        const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
+        const pageLoadTimestamp = Date.now();
+        const initialLoadDay = (new Date()).getDate();
+
+        function checkAndTriggerFullPageReload() {
+            // ব্যবহারকারী যদি ফর্মে কিছু এডিট করতে থাকেন তবে ডাটা যাতে না হারায়
+            if (typeof isUserEditingMealForm !== 'undefined' && isUserEditingMealForm) {
+                return;
+            }
+
+            const now = new Date();
+            const elapsed = Date.now() - pageLoadTimestamp;
+            const currentDay = now.getDate();
+
+            // ১. পেজ লোডের সময় থেকে ৬ ঘণ্টা বা তার বেশি অতিক্রান্ত হলে
+            // ২. অথবা দিন পরিবর্তিত হয়ে নতুন দিন শুরু হলে (পরবর্তী দিন আসলে)
+            if (elapsed >= SIX_HOURS_MS || currentDay !== initialLoadDay) {
+                window.location.reload();
+            }
+        }
+
+        // ৬ ঘণ্টা পর পর ফুল পেজ রিলোড টাইমার
+        setInterval(() => {
+            checkAndTriggerFullPageReload();
+        }, SIX_HOURS_MS);
+
+        // প্রতি ৫ মিনিট পর পর ব্যাকগ্রাউন্ড চেক (দিন পরিবর্তন বা দীর্ঘক্ষণ পর ট্যাব ওপেন করলে রিলোড)
+        setInterval(() => {
+            checkAndTriggerFullPageReload();
+        }, 5 * 60 * 1000);
+
+        // মোবাইল স্ক্রিন অন বা অন্য ট্যাব থেকে ফিরলে ইনস্ট্যান্ট চেক
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                checkAndTriggerFullPageReload();
+            }
+        });
+
         // ৩. প্রতি ৪৫ সেকেন্ড পর পর ব্যাকগ্রাউন্ডে ডাটা সিঙ্ক
         setInterval(() => {
             if (document.visibilityState === 'visible' && !isUserEditingMealForm) {

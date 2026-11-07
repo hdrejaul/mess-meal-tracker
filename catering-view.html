@@ -1152,6 +1152,38 @@
                 fetchLiveCateringData(true);
             }
         }, 20000);
+
+        // -------------------------------------------------------------
+        // 🔄 ৬ ঘণ্টা পর পর এবং দিন পরিবর্তিত হলে স্বয়ংক্রিয় ফুল পেজ রিলোড ইঞ্জিন
+        // -------------------------------------------------------------
+        const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
+        const cateringPageLoadTimestamp = Date.now();
+        const cateringInitialLoadDay = (new Date()).getDate();
+
+        function checkAndTriggerCateringFullReload() {
+            const now = new Date();
+            const elapsed = Date.now() - cateringPageLoadTimestamp;
+            const currentDay = now.getDate();
+
+            // পেজ লোডের বয়স ৬ ঘণ্টা হলে অথবা দিন পরিবর্তন হয়ে গেলে স্বয়ংক্রিয় ফ্রেশ রিলোড
+            if (elapsed >= SIX_HOURS_MS || currentDay !== cateringInitialLoadDay) {
+                window.location.reload();
+            }
+        }
+
+        setInterval(() => {
+            checkAndTriggerCateringFullReload();
+        }, SIX_HOURS_MS);
+
+        setInterval(() => {
+            checkAndTriggerCateringFullReload();
+        }, 5 * 60 * 1000);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                checkAndTriggerCateringFullReload();
+            }
+        });
     </script>
 
 </body>
