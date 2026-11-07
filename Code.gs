@@ -12,6 +12,9 @@ var MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"
 
 // 📌 ১. চলতি বা নির্দিষ্ট মাসের শিট স্বয়ংক্রিয়ভাবে বের করা বা তৈরি করা
 function getOrCreateSheet(ss, targetMonthName) {
+  if (!ss) {
+    ss = SpreadsheetApp.getActiveSpreadsheet();
+  }
   var monthName = targetMonthName;
   if (!monthName || monthName === "current") {
     monthName = MONTH_NAMES[new Date().getMonth()];
@@ -50,6 +53,7 @@ function getOrCreateSheet(ss, targetMonthName) {
 
 // 📌 ২. স্প্রেডশিটের সব সক্রিয় মাসের তালিকা পড়া
 function getAllAvailableMonths(ss) {
+  if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
   var list = [];
   for (var i = 0; i < sheets.length; i++) {
@@ -67,6 +71,7 @@ function getAllAvailableMonths(ss) {
 
 // 📌 ৩. ক্লাউড ডিপোজিট লগ শিট তৈরি করা বা খুঁজে নেওয়া
 function getOrCreateDepositLogsSheet(ss) {
+  if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = ss.getSheetByName("DepositLogs");
   if (!logSheet) {
     logSheet = ss.insertSheet("DepositLogs");
