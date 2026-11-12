@@ -334,7 +334,7 @@
                 </div>
             </div>
 
-            <!-- Card 5: আপনি পাওনা (বকেয়া) -->
+            <!-- Card 5: আপনাদের বকেয়া -->
             <div onclick="window.location.href='catering-view.html'" class="bg-gradient-to-br from-amber-50 to-orange-50/80 px-3 py-2 rounded-xl shadow-2xs border border-amber-200/90 hover:border-amber-400 hover:shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-between gap-2 group col-span-2 md:col-span-1" title="নাবিলা ক্যাটারিং পেজে পূর্ণাঙ্গ বকেয়া ও মিল হিসাব দেখুন">
                 <div class="flex items-center gap-2.5 min-w-0">
                     <div class="w-8 h-8 bg-amber-500 text-white rounded-lg flex items-center justify-center text-sm shrink-0 shadow-xs group-hover:scale-105 transition">
@@ -342,7 +342,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-[11px] sm:text-xs text-amber-900 font-bold leading-none flex items-center gap-1">
-                            <span>আপনি পাওনা (বকেয়া)</span>
+                            <span>আপনাদের বকেয়া</span>
                         </p>
                         <h3 id="cardCateringDue" class="text-base sm:text-lg font-black text-amber-600 mt-0.5 leading-tight">
                             <span class="text-xs font-normal text-amber-500 animate-pulse">লোড হচ্ছে...</span>
@@ -594,7 +594,7 @@
                     <div class="p-3 rounded-xl bg-slate-900 border border-amber-500/50 text-center space-y-1.5 shadow-md">
                         <div id="cateringPayTabDueBadgeWrap" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/60 text-amber-300 text-xs font-extrabold shadow-sm">
                             <i id="cateringPayTabDueIcon" class="fa-solid fa-hand-holding-dollar text-amber-400 text-xs"></i>
-                            <span id="cateringPayTabDueLabel">আপনি পাওনা (বকেয়া):</span>
+                            <span id="cateringPayTabDueLabel">আপনাদের বকেয়া:</span>
                         </div>
                         <div id="cateringPayTabDueBig" class="text-2xl sm:text-3xl font-black text-amber-400 tracking-tight drop-shadow-md flex items-center justify-center gap-2">
                             <span>৳ 0</span>
@@ -1231,12 +1231,12 @@
             // ⚠️ বকেয়া (Due) ও ব্যালেন্স অ্যালার্ট আপডেট করা
             renderDueWarningSystem();
 
-            // 💰 ক্যাটারিং বকেয়া / "আপনি পাওনা (বকেয়া)" আপডেট করা
+            // 💰 ক্যাটারিং বকেয়া / "আপনাদের বকেয়া" আপডেট করা
             renderCateringDueUI(data);
         }
 
         // -------------------------------------------------------------
-        // 💰 ক্যাটারিং বকেয়া / "আপনি পাওনা (বকেয়া)" লাইভ ডিসপ্লে ইঞ্জিন
+        // 💰 ক্যাটারিং বকেয়া / "আপনাদের বকেয়া" লাইভ ডিসপ্লে ইঞ্জিন
         // -------------------------------------------------------------
         function renderCateringDueUI(data) {
             let dueAmt = null;
@@ -1308,7 +1308,7 @@
                 if (dueAmt > 0) {
                     if (tabBadgeWrap) tabBadgeWrap.className = 'inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/60 text-amber-300 text-xs font-extrabold shadow-sm';
                     if (tabIcon) tabIcon.className = 'fa-solid fa-hand-holding-dollar text-amber-400 text-xs';
-                    if (tabLabel) tabLabel.innerText = 'আপনি পাওনা (বকেয়া):';
+                    if (tabLabel) tabLabel.innerText = 'আপনাদের বকেয়া:';
                     tabBig.className = 'text-2xl sm:text-3xl font-black text-amber-400 tracking-tight drop-shadow-md';
                     tabBig.innerText = '৳ ' + dueAmt;
                 } else if (dueAmt < 0) {
