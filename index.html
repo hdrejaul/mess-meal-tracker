@@ -246,9 +246,10 @@
                 <p class="text-indigo-100 text-xs sm:text-sm leading-tight">নাবিলা ক্যাটারিং সার্ভিস মিল ট্র্যাকার (মিল রেট: ৳৮০/মিল)</p>
             </div>
             <div class="flex items-center gap-2 w-full md:w-auto flex-wrap justify-end">
-                <a href="catering-view.html" class="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-black px-3 py-1.5 rounded-lg shadow-xs flex items-center gap-1.5 text-xs sm:text-sm border border-amber-300 transition shrink-0">
+                <a href="catering-view.html" class="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 active:scale-95 text-slate-950 font-black px-3 py-1.5 rounded-lg shadow-xs flex items-center gap-1.5 text-xs sm:text-sm border border-amber-300 transition shrink-0" title="নাবিলা ক্যাটারিং পেজে পূর্ণাঙ্গ বকেয়া ও মিল হিসাব দেখুন">
                     <i class="fa-solid fa-utensils text-slate-950 text-xs"></i>
                     <span>নাবিলা ক্যাটারিং পেজ</span>
+                    <span id="headerCateringDueBadge" class="hidden text-[10px] sm:text-xs bg-slate-950 text-amber-300 px-2 py-0.5 rounded-md font-black border border-amber-400/50"></span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </a>
                 
@@ -279,7 +280,7 @@
         </header>
 
         <!-- Dynamic Summary Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
             <div class="bg-white px-3 py-2 rounded-xl shadow-2xs border border-gray-100 flex items-center gap-2.5">
                 <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm shrink-0">
                     <i class="fa-solid fa-bowl-food"></i>
@@ -322,7 +323,7 @@
             </div>
 
             <div class="bg-white px-3 py-2 rounded-xl shadow-2xs border border-gray-100 flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-sm shrink-0">
+                <div class="w-8 h-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-sm shrink-0">
                     <i class="fa-solid fa-piggy-bank"></i>
                 </div>
                 <div>
@@ -331,6 +332,26 @@
                         <span class="text-xs font-normal text-gray-400 animate-pulse">লোড হচ্ছে...</span>
                     </h3>
                 </div>
+            </div>
+
+            <!-- Card 5: আপনি পাওনা (বকেয়া) -->
+            <div onclick="window.location.href='catering-view.html'" class="bg-gradient-to-br from-amber-50 to-orange-50/80 px-3 py-2 rounded-xl shadow-2xs border border-amber-200/90 hover:border-amber-400 hover:shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-between gap-2 group col-span-2 md:col-span-1" title="নাবিলা ক্যাটারিং পেজে পূর্ণাঙ্গ বকেয়া ও মিল হিসাব দেখুন">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 bg-amber-500 text-white rounded-lg flex items-center justify-center text-sm shrink-0 shadow-xs group-hover:scale-105 transition">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-[11px] sm:text-xs text-amber-900 font-bold leading-none flex items-center gap-1">
+                            <span>আপনি পাওনা (বকেয়া)</span>
+                        </p>
+                        <h3 id="cardCateringDue" class="text-base sm:text-lg font-black text-amber-600 mt-0.5 leading-tight">
+                            <span class="text-xs font-normal text-amber-500 animate-pulse">লোড হচ্ছে...</span>
+                        </h3>
+                    </div>
+                </div>
+                <span class="text-[10px] font-bold bg-amber-100 group-hover:bg-amber-600 text-amber-900 group-hover:text-white px-2 py-0.5 rounded-md border border-amber-300 group-hover:border-amber-600 transition flex items-center gap-1 shrink-0">
+                    <span>ক্যাটারিং</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                </span>
             </div>
         </div>
 
@@ -569,6 +590,17 @@
 
                 <!-- ৩. খাবার ওয়ালাকে পরিশোধের এন্ট্রি -->
                 <form id="cateringPayForm" onsubmit="submitCateringPay(event)" class="space-y-2 hidden">
+                    <!-- 💰 খাবার ওয়ালা বকেয়া ব্যানার (হুবহু নাবিলা ক্যাটারিং ভিউ পেজের স্টাইল) -->
+                    <div class="p-3 rounded-xl bg-slate-900 border border-amber-500/50 text-center space-y-1.5 shadow-md">
+                        <div id="cateringPayTabDueBadgeWrap" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/60 text-amber-300 text-xs font-extrabold shadow-sm">
+                            <i id="cateringPayTabDueIcon" class="fa-solid fa-hand-holding-dollar text-amber-400 text-xs"></i>
+                            <span id="cateringPayTabDueLabel">আপনি পাওনা (বকেয়া):</span>
+                        </div>
+                        <div id="cateringPayTabDueBig" class="text-2xl sm:text-3xl font-black text-amber-400 tracking-tight drop-shadow-md flex items-center justify-center gap-2">
+                            <span>৳ 0</span>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-[11px] font-semibold text-gray-600 mb-0.5">পরিশোধের তারিখ</label>
                         <input type="date" id="cateringPayDate" required class="w-full px-2 py-1 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs text-gray-700 font-semibold">
@@ -1198,6 +1230,101 @@
 
             // ⚠️ বকেয়া (Due) ও ব্যালেন্স অ্যালার্ট আপডেট করা
             renderDueWarningSystem();
+
+            // 💰 ক্যাটারিং বকেয়া / "আপনি পাওনা (বকেয়া)" আপডেট করা
+            renderCateringDueUI(data);
+        }
+
+        // -------------------------------------------------------------
+        // 💰 ক্যাটারিং বকেয়া / "আপনি পাওনা (বকেয়া)" লাইভ ডিসপ্লে ইঞ্জিন
+        // -------------------------------------------------------------
+        function renderCateringDueUI(data) {
+            let dueAmt = null;
+            if (data && data.dueAmount !== undefined && data.dueAmount !== null && String(data.dueAmount).trim() !== "") {
+                dueAmt = parseFloat(data.dueAmount);
+            } else if (globalDueAmount !== null && globalDueAmount !== undefined && String(globalDueAmount).trim() !== "") {
+                dueAmt = parseFloat(globalDueAmount);
+            }
+
+            // Fallback calculation: (Total Meals * 80) - Total Catering Payments
+            if (isNaN(dueAmt) || dueAmt === null) {
+                let totalMeals = 0;
+                if (globalSummaryTable && globalSummaryTable.length > 0) {
+                    const totRow = globalSummaryTable.find(r => r[0] && r[0].toString().toLowerCase().includes('total'));
+                    if (totRow) {
+                        totalMeals = parseFloat(totRow[1]) || 0;
+                    }
+                }
+                let totalBill = totalMeals * 80;
+                let totalPaid = 0;
+                if (globalCateringPayments && Array.isArray(globalCateringPayments)) {
+                    globalCateringPayments.forEach(p => {
+                        const amt = parseFloat(p[1] !== undefined ? p[1] : p.amount) || 0;
+                        totalPaid += amt;
+                    });
+                }
+                dueAmt = totalBill - totalPaid;
+            }
+
+            globalDueAmount = dueAmt;
+
+            // ১. টপ কার্ড (Card 5: আপনি পাওনা বকেয়া)
+            const cardEl = document.getElementById('cardCateringDue');
+            if (cardEl) {
+                if (dueAmt > 0) {
+                    cardEl.innerText = '৳ ' + dueAmt;
+                    cardEl.className = 'text-base sm:text-lg font-black text-amber-600 mt-0.5 leading-tight';
+                } else if (dueAmt < 0) {
+                    cardEl.innerText = '+৳ ' + Math.abs(dueAmt) + ' (অগ্রিম)';
+                    cardEl.className = 'text-base sm:text-lg font-black text-emerald-600 mt-0.5 leading-tight';
+                } else {
+                    cardEl.innerText = '৳ ০ (পরিশোধিত)';
+                    cardEl.className = 'text-base sm:text-lg font-black text-blue-600 mt-0.5 leading-tight';
+                }
+            }
+
+            // ২. হেডার ব্যানার ব্যাজ
+            const headerBadge = document.getElementById('headerCateringDueBadge');
+            if (headerBadge) {
+                if (dueAmt > 0) {
+                    headerBadge.innerText = 'বকেয়া: ৳ ' + dueAmt;
+                    headerBadge.className = 'text-[10px] sm:text-xs bg-slate-950 text-amber-300 px-2 py-0.5 rounded-md font-black border border-amber-400/50 inline-block';
+                } else if (dueAmt < 0) {
+                    headerBadge.innerText = 'অগ্রিম: ৳ ' + Math.abs(dueAmt);
+                    headerBadge.className = 'text-[10px] sm:text-xs bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded-md font-black border border-emerald-400/50 inline-block';
+                } else {
+                    headerBadge.innerText = 'পরিশোধিত';
+                    headerBadge.className = 'text-[10px] sm:text-xs bg-blue-950 text-blue-300 px-2 py-0.5 rounded-md font-black border border-blue-400/50 inline-block';
+                }
+            }
+
+            // ৩. "খাবার ওয়ালা" ট্যাব ব্যানার (হুবহু ইউজার স্ক্রিনশটের ডিজাইন)
+            const tabBadgeWrap = document.getElementById('cateringPayTabDueBadgeWrap');
+            const tabIcon = document.getElementById('cateringPayTabDueIcon');
+            const tabLabel = document.getElementById('cateringPayTabDueLabel');
+            const tabBig = document.getElementById('cateringPayTabDueBig');
+
+            if (tabBig) {
+                if (dueAmt > 0) {
+                    if (tabBadgeWrap) tabBadgeWrap.className = 'inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/60 text-amber-300 text-xs font-extrabold shadow-sm';
+                    if (tabIcon) tabIcon.className = 'fa-solid fa-hand-holding-dollar text-amber-400 text-xs';
+                    if (tabLabel) tabLabel.innerText = 'আপনি পাওনা (বকেয়া):';
+                    tabBig.className = 'text-2xl sm:text-3xl font-black text-amber-400 tracking-tight drop-shadow-md';
+                    tabBig.innerText = '৳ ' + dueAmt;
+                } else if (dueAmt < 0) {
+                    if (tabBadgeWrap) tabBadgeWrap.className = 'inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-xs font-extrabold shadow-sm';
+                    if (tabIcon) tabIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-xs';
+                    if (tabLabel) tabLabel.innerText = 'অগ্রিম বেশি দেওয়া আছে:';
+                    tabBig.className = 'text-2xl sm:text-3xl font-black text-emerald-400 tracking-tight drop-shadow-md';
+                    tabBig.innerText = '৳ ' + Math.abs(dueAmt);
+                } else {
+                    if (tabBadgeWrap) tabBadgeWrap.className = 'inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-950/90 border border-blue-500/60 text-blue-300 text-xs font-extrabold shadow-sm';
+                    if (tabIcon) tabIcon.className = 'fa-solid fa-circle-check text-blue-400 text-xs';
+                    if (tabLabel) tabLabel.innerText = 'সকল হিসাব সম্পূর্ণ পরিশোধিত';
+                    tabBig.className = 'text-2xl sm:text-3xl font-black text-blue-400 tracking-tight drop-shadow-md';
+                    tabBig.innerText = '৳ ০';
+                }
+            }
         }
 
         // -------------------------------------------------------------
@@ -1635,6 +1762,7 @@
         let globalCurrentMonth = "";
         let globalSelectedMemberFilter = 'all';
         let globalStockBalance = null;
+        let globalDueAmount = null;
 
         function formatDateDDMMYYYY(rawDate) {
             if (rawDate === null || rawDate === undefined || rawDate === "") return "-";
@@ -1866,9 +1994,14 @@
                     if (data.stockBalance !== undefined && data.stockBalance !== null && String(data.stockBalance).trim() !== "") {
                         globalStockBalance = data.stockBalance;
                     }
+                    if (data.dueAmount !== undefined && data.dueAmount !== null && String(data.dueAmount).trim() !== "") {
+                        globalDueAmount = data.dueAmount;
+                    }
                     if (data.summaryTable && data.summaryTable.length > 0) {
                         globalSummaryTable = data.summaryTable;
                         renderAdminSummaryUI(data);
+                    } else {
+                        renderCateringDueUI(data);
                     }
                 }
             } catch(e) {}
@@ -1915,9 +2048,14 @@
                     if (data.stockBalance !== undefined && data.stockBalance !== null && String(data.stockBalance).trim() !== "") {
                         globalStockBalance = data.stockBalance;
                     }
+                    if (data.dueAmount !== undefined && data.dueAmount !== null && String(data.dueAmount).trim() !== "") {
+                        globalDueAmount = data.dueAmount;
+                    }
                     if (data.summaryTable && data.summaryTable.length > 0) {
                         globalSummaryTable = data.summaryTable;
                         renderAdminSummaryUI(data);
+                    } else {
+                        renderCateringDueUI(data);
                     }
 
                     if (data.depositHistory) {
@@ -2006,6 +2144,7 @@
             ];
             renderRecentCateringPayments();
             renderTodayMealStatus();
+            renderCateringDueUI({ dueAmount: 430 });
         }
 
         function getMemberMealValue(memberName) {
@@ -2748,9 +2887,14 @@
                     if (data.stockBalance !== undefined && data.stockBalance !== null && String(data.stockBalance).trim() !== "") {
                         globalStockBalance = data.stockBalance;
                     }
+                    if (data.dueAmount !== undefined && data.dueAmount !== null && String(data.dueAmount).trim() !== "") {
+                        globalDueAmount = data.dueAmount;
+                    }
                     if (data.summaryTable && data.summaryTable.length > 0) {
                         globalSummaryTable = data.summaryTable;
                         renderAdminSummaryUI(data);
+                    } else {
+                        renderCateringDueUI(data);
                     }
                     if (data.depositHistory) globalDepositHistory = data.depositHistory;
                     if (data.dailyMealsList) {
@@ -3516,6 +3660,10 @@
             // তৎক্ষণাৎ ক্যাটারিং পেমেন্ট লিস্টে যোগ করা
             globalCateringPayments.push([dateVal, amount]);
             renderRecentCateringPayments();
+            if (globalDueAmount !== null) {
+                globalDueAmount = (parseFloat(globalDueAmount) || 0) - amount;
+                renderCateringDueUI({ dueAmount: globalDueAmount });
+            }
 
             // রিসেট: ড্রপডাউন খালি রাখা এবং কাস্টম বক্স লুকিয়ে দেওয়া
             document.getElementById('cateringPaySelect').value = '';
